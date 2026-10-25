@@ -98,3 +98,7 @@ MIT License。詳細は `LICENSE` を参照してください。
 中級の m-r1 は [nginx combined 形式](https://nginx.org/en/docs/http/ngx_http_log_module.html)、m-r2 は教材用のJSON、上級の a-r2 は [ECS の @timestamp](https://www.elastic.co/docs/reference/ecs/ecs-base) と [event.ingested](https://www.elastic.co/docs/reference/ecs/ecs-event) を使った合成JSONです。製品の実ログを転載したものではありません。形式を読む課題では元のログを最初から表示します。
 
 m-r3 は [Sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) の Image / ProcessId / ParentProcessId / ParentImage との対応を説明します。m-f4 は [grep の文字列検索](https://www.gnu.org/software/grep/manual/grep.html) と、独立した列に対する [KQL の等価比較](https://learn.microsoft.com/en-us/kusto/query/equals-operator?view=microsoft-fabric) を区別します。
+
+<p align="center">
+  <img src="assets/campfire.png" width="960" alt="森の焚き火を囲んで休憩するroomシリーズの仲間たち">
+</p>

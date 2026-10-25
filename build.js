@@ -7,11 +7,6 @@ for(const [key,file] of Object.entries({CSS:'style.css',DATA:'data.js',TRANSLATI
   const source=fs.readFileSync(path.join(__dirname,'src',file),'utf8');
   html=html.replace(marker,()=>file.endsWith('.js')?source.replace(/<\/script/gi,'<\\/script'):source);
 }
-// Keep the original artwork in the source tree and embed it for offline use.
-const artworkMarker='__ENDING_ART_DATA_URI__';
-if(html.split(artworkMarker).length!==2)throw new Error('Invalid ending artwork marker');
-const artwork=fs.readFileSync(path.join(__dirname,'assets','campfire.png')).toString('base64');
-html=html.replace(artworkMarker,()=>`data:image/png;base64,${artwork}`);
 const license=fs.readFileSync(path.join(__dirname,'LICENSE'),'utf8');
 html=html.replace('<!doctype html>','<!doctype html>\n<!--\n'+license+'\n-->');
 const target=path.resolve(process.argv[2]||path.join(__dirname,'socroom-easy.html'));
