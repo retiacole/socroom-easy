@@ -102,6 +102,21 @@ test('row selection is an exact set: missing and extra evidence both fail', () =
   E.setInput(p, 'rows', { rowIds: ['row-c', 'row-a'] }); assert.equal(E.submit(p).passed, true);
 });
 
+test('row feedback distinguishes missing, excess and same-count wrong selections', () => {
+  for (const kind of ['rows', 'evidence']) {
+    const mission = { ...definitions[2], kind };
+    const { E, p } = harness([mission]);
+    E.setInput(p, 'rows', { rowIds: ['row-a'] });
+    assert.match(E.submit(p).message, /1 件足りません/);
+    E.setInput(p, 'rows', { rowIds: ['row-a', 'row-b', 'row-c'] });
+    assert.match(E.submit(p).message, /1 件多い/);
+    E.setInput(p, 'rows', { rowIds: ['row-a', 'row-b'] });
+    const wrongIdentity = E.submit(p);
+    assert.equal(wrongIdentity.passed, false);
+    assert.match(wrongIdentity.message, /件数は合っています/);
+  }
+});
+
 test('filter exercises require both using the search query and selecting matching evidence', () => {
   const { E, p } = harness(); unlock(E, p, 'filter');
   E.setInput(p, 'filter', { query: '', rowIds: ['filter-a'] });
@@ -110,10 +125,48 @@ test('filter exercises require both using the search query and selecting matchin
   E.setInput(p, 'filter', { query: ' LOGIN_FAILED ', rowIds: ['filter-a'] }); assert.equal(E.submit(p).passed, true);
 });
 
+test('evidence search accepts effective visible-content queries but requires all evidence and some narrowing', () => {
+  const mission = { ...common, id: 'search', kind: 'filter', searchMode: 'evidence', rows: [
+    { id: 'internal-a', raw: 'host=pc-a user=mina result=failed' },
+    { id: 'internal-b', raw: 'host=pc-a user=mina result=success' },
+    { id: 'internal-c', raw: 'host=pc-b user=mina2 result=failed' },
+    { id: 'internal-d', raw: 'host=pc-c user=kai result=success' }
+  ], answer: { query: 'user=mina', rowIds: ['internal-a', 'internal-b'] } };
+  const { E, p } = harness([mission]);
+  for (const query of ['pc-a', ' ＨＯＳＴ＝ＰＣ－Ａ ', 'user=mina']) {
+    E.setInput(p, 'search', { query, rowIds: mission.answer.rowIds });
+    assert.equal(E.submit(p).passed, true, `${query} retains both required rows and hides another`);
+    assert.equal(E.hydrate(E.exportProgress(p)).records.search.completed, true);
+  }
+  for (const query of ['', '  ', 'result=', 'result=failed', 'internal-a', 'unknown']) {
+    E.setInput(p, 'search', { query, rowIds: mission.answer.rowIds });
+    assert.equal(E.submit(p).passed, false, `${query} is not an effective complete search`);
+  }
+  E.setInput(p, 'search', { query: 'user=mina', rowIds: ['internal-a', 'internal-c'] });
+  assert.equal(E.submit(p).passed, false, 'a valid query cannot compensate for wrong evidence');
+  assert.match(p.records.search.feedback.message, /件数は合っています/);
+});
+
+test('shared search normalization uses displayed content and excludes internal row IDs and hidden fields', () => {
+  const { E } = harness();
+  const rows = [
+    { id: 'only-internal', sourceType: 'log', raw: 'ＨＯＳＴ＝ＰＣ－Ａ   user=mina', body: 'unused-body', event: 'login', title: 'Host record', note: '要確認' },
+    { id: 'second-internal', sourceType: 'reply', raw: 'unused-raw', title: '担当者の回答', body: 'Host=pc-b', event: 'hidden-event' }
+  ];
+  assert.equal(E.normalizeText(' ＨＯＳＴ＝ＰＣ－Ａ\n USER=MINA '), 'host=pc-a user=mina');
+  assert.deepEqual(clone(E.filterRows(rows, 'host=pc-a')), [rows[0]]);
+  assert.deepEqual(clone(E.filterRows(rows, '要確認')), [rows[0]]);
+  assert.deepEqual(clone(E.filterRows(rows, 'host=pc-b')), [rows[1]]);
+  for (const query of ['only-internal', 'second-internal', 'unused-body', 'unused-raw', 'hidden-event']) {
+    assert.equal(E.filterRows(rows, query).length, 0, `${query} is not visible source text`);
+  }
+});
+
 test('chronology validates full order rather than just selecting the correct set', () => {
   const { E, p } = harness(); unlock(E, p, 'order');
   assert.equal(E.submit(p).passed, false);
   E.setInput(p, 'order', { orderIds: ['first', 'later', 'middle'] }); assert.equal(E.submit(p).passed, false);
+  assert.match(p.records.order.feedback.message, /2 か所の位置が違います/);
   assert.throws(() => E.setInput(p, 'order', { orderIds: ['first', 'later'] }), /すべて/);
   E.setInput(p, 'order', { orderIds: ['first', 'middle', 'later'] }); assert.equal(E.submit(p).passed, true);
 });
@@ -175,12 +228,14 @@ test('hints and solutions never solve a mission; review keeps help provenance an
   assert.equal(p.records.token.completed, false);
   E.retry(p); assert.equal(p.records.token.hints, 3); assert.equal(p.records.token.revealed, true);
   solve(E, p, 'token'); E.retry(p);
-  assert.equal(E.stats(p).points, 100); assert.equal(E.stats(p).assisted, 1); assert.equal(E.stats(p).independent, 0);
+  assert.equal(E.stats(p).points, 100); assert.equal(E.stats(p).assisted, 0); assert.equal(E.stats(p).independent, 1);
+  assert.equal(p.records.token.assisted, true, 'lifetime help is retained after independent review');
   E.setInput(p, 'token', { tokenId: 'time' }); assert.equal(E.submit(p).passed, false);
   assert.equal(E.stats(p).points, 100);
   const restored = E.hydrate(E.exportProgress(p));
   assert.equal(restored.records.token.completed, true); assert.equal(restored.records.token.feedback.passed, false);
-  assert.equal(E.stats(restored).assisted, 1);
+  assert.equal(E.stats(restored).assisted, 0);
+  assert.equal(restored.records.token.independent, true);
 });
 
 test('investigation hints are counted per stage and retained when restarting', () => {
@@ -193,6 +248,115 @@ test('investigation hints are counted per stage and retained when restarting', (
   assert.equal(p.records.graduate.stage, 0); assert.equal(p.records.graduate.solved.length, 1);
   const restored = E.hydrate(p);
   assert.equal(restored.records.graduate.assisted, true); assert.equal(restored.records.graduate.completed, false);
+});
+
+test('retry hides prior help, and reopening an old hint or solution assists the new attempt', () => {
+  const { E, p } = harness();
+  E.revealHint(p); E.revealSolution(p); solve(E, p, 'token');
+  E.retry(p);
+  assert.equal(p.records.token.attemptAssisted, false);
+  assert.deepEqual(clone(p.records.token.attemptHintCounts), [0]);
+  assert.deepEqual(clone(p.records.token.attemptRevealedStages), []);
+  let restored = E.hydrate(E.exportProgress(p));
+  assert.equal(restored.records.token.attemptAssisted, false);
+  assert.equal(E.revealHint(restored), common.hints[0]);
+  solve(E, restored, 'token');
+  assert.equal(restored.records.token.independent, false);
+  restored = E.hydrate(E.exportProgress(restored));
+  assert.equal(restored.records.token.hints, 1, 'the same hint across attempts is one distinct hint');
+  assert.deepEqual(clone(restored.records.token.attemptHintCounts), [1]);
+  E.retry(restored); E.revealSolution(restored); solve(E, restored, 'token');
+  assert.equal(restored.records.token.attemptAssisted, true);
+  assert.equal(restored.records.token.independent, false);
+  E.retry(restored); solve(E, restored, 'token');
+  assert.equal(restored.records.token.independent, true);
+  E.retry(restored); E.revealHint(restored);
+  assert.equal(E.hydrate(restored).records.token.independent, true, 'a later assisted attempt does not erase an earned independent pass');
+});
+
+test('graduation independent completion requires all stages in one attempt, surviving saves between stages', () => {
+  const initial = harness(); const { E } = initial; let p = initial.p;
+  unlock(E, p, 'graduate');
+  E.revealHint(p); solve(E, p, 'graduate');
+  assert.equal(p.records.graduate.independent, false);
+  E.retry(p);
+  E.setInput(p, 'graduate', inputFor(E.currentStep(p))); E.submit(p); E.advanceStep(p);
+  E.setInput(p, 'graduate', inputFor(E.currentStep(p))); E.submit(p);
+  assert.equal(p.records.graduate.completed, true);
+  assert.equal(p.records.graduate.independent, false, 'old completed stages cannot finish an independent review');
+  E.retry(p);
+  for (let stage = 0; stage < 4; stage++) {
+    E.setInput(p, 'graduate', inputFor(E.currentStep(p))); E.submit(p);
+    p = E.hydrate(E.exportProgress(p));
+    assert.equal(p.records.graduate.independent, stage === 3);
+    if (stage < 3) E.advanceStep(p);
+  }
+  assert.equal(p.records.graduate.assisted, true);
+  assert.equal(p.records.graduate.independentSolved.length, 4);
+  E.retry(p);
+  assert.equal(E.hydrate(E.exportProgress(p)).records.graduate.independent, true);
+});
+
+test('help on any graduation stage prevents the entire attempt from becoming independent', () => {
+  const { E, p } = harness(); unlock(E, p, 'graduate');
+  for (let stage = 0; stage < 4; stage++) {
+    if (stage === 2) E.revealSolution(p);
+    E.setInput(p, 'graduate', inputFor(E.currentStep(p))); E.submit(p);
+    if (stage < 3) E.advanceStep(p);
+  }
+  const restored = E.hydrate(E.exportProgress(p));
+  assert.equal(restored.records.graduate.completed, true);
+  assert.equal(restored.records.graduate.independent, false);
+  assert.deepEqual(clone(restored.records.graduate.independentSolved), []);
+});
+
+test('independent completion is regraded from a full proof, never a saved boolean or partial proof', () => {
+  const { E, p } = harness(); unlock(E, p, 'graduate'); solve(E, p, 'graduate');
+  const missing = clone(p); missing.records.graduate.independentSolved = [];
+  assert.equal(E.hydrate(missing).records.graduate.independent, false);
+  for (const edit of [
+    record => { record.independentSolved.pop(); },
+    record => { record.independentSolved[0].input.rowIds = ['g-other']; },
+    record => { record.independentSolved[1].assisted = true; },
+    record => { delete record.attemptAssisted; },
+    record => { record.attemptHintCounts = [0, 0, 0, 4]; }
+  ]) {
+    const raw = clone(p); edit(raw.records.graduate);
+    assert.throws(() => E.hydrate(raw));
+  }
+});
+
+test('current help evidence in history cannot be hidden while past attempts stay cleared', () => {
+  const { E, p } = harness();
+  E.revealHint(p); E.revealSolution(p); E.retry(p); E.revealHint(p);
+  const edited = clone(p);
+  edited.records.token.attemptAssisted = false;
+  edited.records.token.attemptHintCounts = [0];
+  const restored = E.hydrate(edited);
+  assert.equal(restored.records.token.attemptAssisted, true);
+  assert.deepEqual(clone(restored.records.token.attemptHintCounts), [1]);
+  assert.deepEqual(clone(restored.records.token.attemptRevealedStages), [], 'an earlier attempt solution remains hidden');
+  solve(E, restored, 'token');
+  assert.equal(restored.records.token.independent, false);
+});
+
+test('old v2 saves migrate completed reviews and historical help beyond the current stage', () => {
+  const { E, p } = harness(); unlock(E, p, 'graduate');
+  E.setInput(p, 'graduate', inputFor(E.currentStep(p))); E.submit(p); E.advanceStep(p);
+  E.revealHint(p); E.revealSolution(p); E.retry(p);
+  const old = clone(p);
+  for (const record of Object.values(old.records)) {
+    for (const key of ['attemptAssisted', 'attemptHintCounts', 'attemptRevealedStages', 'independentSolved', 'independent']) delete record[key];
+  }
+  const restored = E.hydrate(old);
+  assert.equal(restored.records.token.independent, true);
+  assert.equal(restored.records.graduate.independent, false);
+  assert.equal(restored.records.graduate.attemptAssisted, true, 'older saves conservatively retain their current help state');
+  assert.deepEqual(clone(restored.records.graduate.hintCounts), [0, 1, 0, 0]);
+  assert.deepEqual(clone(restored.records.graduate.attemptHintCounts), [0, 0, 0, 0]);
+  assert.deepEqual(clone(E.hydrate(E.exportProgress(restored))), clone(restored));
+  E.retry(restored); solve(E, restored, 'graduate');
+  assert.equal(E.hydrate(restored).records.graduate.independent, true);
 });
 
 test('round trip preserves drafts, cleared flags, investigation stage, and every interaction type', () => {
@@ -482,7 +646,12 @@ test('genuine v0.1 save migrates all beginner records, assistance and graduation
   assert.equal(restored.records.g1.stageResults.length, 2);
   assert.equal(restored.records.g1.solved.length, 2);
   assert.deepEqual(clone(restored.records.g1.input), { choiceId: 'g1-judge-approved' });
-  for (const [id, oldRecord] of Object.entries(legacyFixture.progress.records)) assert.deepEqual(clone(restored.records[id]), oldRecord, `${id} survives unchanged`);
+  for (const [id, oldRecord] of Object.entries(legacyFixture.progress.records)) {
+    const migrated = clone(restored.records[id]);
+    for (const key of ['attemptAssisted', 'attemptHintCounts', 'attemptRevealedStages', 'independentSolved', 'independent']) delete migrated[key];
+    assert.deepEqual(migrated, oldRecord, `${id} retains all original progress`);
+    assert.equal(restored.records[id].independent, oldRecord.completed && !oldRecord.assisted);
+  }
   assert.deepEqual(clone(restored.history), legacyFixture.progress.history);
   assert.deepEqual(original, legacyFixture, 'migration does not edit its source');
   for (const mission of D.missions.filter(mission => mission.level !== 'beginner')) {

@@ -38,11 +38,11 @@ test('every task supplies teaching, an example, staged help, and reachable sourc
       assert.equal(new Set(ids).size,ids.length,m.id+' distinct source IDs');
       assert.ok(s.rows.every(r=>r.raw||r.body),m.id+' all sources visible');
       if(s.kind==='filter'){
-        assert.ok(s.task.includes(s.answer.query),m.id+' specifies required literal search');
+        assert.ok(s.task.includes(s.answer.query),m.id+' supplies a literal search example or required query');
         for(const id of s.answer.rowIds){
           const r=s.rows.find(r=>r.id===id);
           assert.ok(r,m.id+' known answer');
-          assert.ok(normalized([r.raw,r.id,r.event,r.body,r.title].join(' ')).includes(normalized(s.answer.query)),m.id+' correct evidence reachable through search');
+          assert.ok(normalized([r.raw,r.event,r.body,r.title,r.note].join(' ')).includes(normalized(s.answer.query)),m.id+' correct evidence reachable through search');
         }
       }
       if(s.kind==='order'){

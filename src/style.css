@@ -24,3 +24,7 @@ dialog{width:min(620px,calc(100% - 32px));max-height:85vh;padding:0;border:1px s
 @media(max-width:1000px){.level-cards{gap:13px}.level-card{padding:18px}.level-card>strong{font-size:16px}.level-description{font-size:11px}.levels-heading h2{font-size:18px}.levels-heading>p{font-size:10px;max-width:220px}}
 @media(max-width:800px){.levels-heading{display:block}.levels-heading>p{font-size:11px;max-width:none;margin-top:8px}.level-card{padding:16px;gap:10px}.level-card>strong{font-size:14px}.level-label{font-size:11px}.level-card-top{font-size:9px;gap:6px}.level-description{font-size:11px}.level-prerequisite{font-size:9px}.level-card-bottom{font-size:10px;gap:7px}}
 @media(max-width:600px){.level-cards{grid-template-columns:1fr;gap:12px}.level-card{padding:19px 20px;gap:8px}.level-card>strong{font-size:17px}.level-card-top{font-size:11px}.level-label{font-size:12px}.level-description{font-size:12px}.level-prerequisite{font-size:10px}.level-card-bottom{font-size:11px}.level-selector{margin-bottom:32px}.levels-heading h2{font-size:18px}.level-unlock-note{font-size:10px}.hero{padding-top:32px;padding-bottom:28px}.hero-art{height:265px}}
+
+/* The final graduation report remains readable as one paragraph. */
+.report-preview{padding:22px;border:1px solid var(--line);border-radius:12px;background:#fffefa;overflow-wrap:anywhere}
+.report-preview h3{font-size:14px;margin-bottom:12px}.report-preview-text{font-size:13px;line-height:2;white-space:pre-wrap}.report-preview .small{margin:12px 0;color:var(--muted)}

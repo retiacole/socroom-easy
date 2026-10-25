@@ -57,7 +57,9 @@
     return {
       input: emptyInput(steps(mission)[0]), stage: 0, completed: false, attempts: 0,
       hints: 0, hintCounts: steps(mission).map(() => 0), revealed: false,
-      revealedStages: [], assisted: false, feedback: null, stageResults: [], solved: []
+      revealedStages: [], assisted: false, feedback: null, stageResults: [], solved: [],
+      attemptAssisted: false, attemptHintCounts: steps(mission).map(() => 0), attemptRevealedStages: [],
+      independentSolved: [], independent: false
     };
   }
   function createProgress() {
@@ -117,11 +119,25 @@
     return input;
   }
   function normalizeText(value, sensitive = false) {
-    const text = value.normalize('NFKC').trim().replace(/\s+/g, ' ');
+    const text = String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ');
     return sensitive ? text : text.toLocaleLowerCase('en-US');
+  }
+  function searchableRow(row) {
+    const reference = row.sourceType && row.sourceType !== 'log';
+    return normalizeText(reference ? [row.title, row.body].join(' ') : [row.raw || row.body, row.title, row.event, row.note].join(' '));
+  }
+  function filterRows(rows, query) {
+    const normalized = normalizeText(query);
+    return rows.filter(row => !normalized || searchableRow(row).includes(normalized));
   }
   function sameSet(left, right) { return left.length === right.length && left.every(id => right.includes(id)); }
   function sameOrder(left, right) { return left.length === right.length && left.every((id, index) => id === right[index]); }
+  function selectionFeedback(input, answer) {
+    const difference = input.length - answer.length;
+    if (difference < 0) return `選んだ資料が ${-difference} 件足りません。条件に合う資料を見直しましょう。`;
+    if (difference > 0) return `選んだ資料が ${difference} 件多いです。条件と関係のない資料を見直しましょう。`;
+    return '選んだ資料の件数は合っています。対象・時刻・条件を比べ、資料の組み合わせを見直しましょう。';
+  }
   function grade(step, input) {
     const answer = step.answer;
     let passed = false;
@@ -137,17 +153,26 @@
         break;
       case 'rows': case 'evidence':
         passed = sameSet(input.rowIds, answer.rowIds);
-        message = '選んだ資料に、条件と関係のないものや不足しているものがないか確認しましょう。';
+        message = selectionFeedback(input.rowIds, answer.rowIds);
         break;
-      case 'filter':
-        passed = normalizeText(input.query) === normalizeText(answer.query) && sameSet(input.rowIds, answer.rowIds);
-        message = normalizeText(input.query) !== normalizeText(answer.query)
-          ? '検索欄に、課題で指定された検索語を入力して絞り込みましょう。行を選ぶだけでは検索の練習は完了しません。'
-          : '検索語は合っています。絞り込んだ結果から、課題に合う証拠の行を選びましょう。';
+      case 'filter': {
+        const query = normalizeText(input.query);
+        const visible = filterRows(step.rows, query).map(row => row.id);
+        const flexible = step.searchMode === 'evidence';
+        const queryPassed = flexible
+          ? !!query && visible.length < step.rows.length && answer.rowIds.every(id => visible.includes(id))
+          : query === normalizeText(answer.query);
+        passed = queryPassed && sameSet(input.rowIds, answer.rowIds);
+        message = !queryPassed
+          ? flexible
+            ? '必要な証拠をすべて残し、少なくとも 1 行を除ける検索語で絞り込みましょう。'
+            : '検索欄に、課題で指定された検索語を入力して絞り込みましょう。行を選ぶだけでは検索の練習は完了しません。'
+          : `検索で必要な証拠を残せています。${selectionFeedback(input.rowIds, answer.rowIds)}`;
         break;
+      }
       case 'order':
         passed = sameOrder(input.orderIds, answer.rowIds);
-        message = '各行の時刻を比較し、最も早い出来事から順番に並べましょう。';
+        message = `${input.orderIds.filter((id, index) => id !== answer.rowIds[index]).length} か所の位置が違います。各行の時刻を比較し、最も早い出来事から順番に並べましょう。`;
         break;
       case 'choice': {
         passed = input.choiceId === answer.choiceId;
@@ -190,10 +215,14 @@
     rec.attempts = Math.min(1000000, rec.attempts + 1);
     rec.feedback = result;
     if (result.passed) {
-      const proof = { input: copy(rec.input), assisted: rec.assisted };
-      rec.stageResults[rec.stage] = { passed: true, input: copy(rec.input), message: result.message, assisted: rec.assisted };
+      const proof = { input: copy(rec.input), assisted: rec.attemptAssisted };
+      rec.stageResults[rec.stage] = { passed: true, input: copy(rec.input), message: result.message, assisted: rec.attemptAssisted };
       rec.solved[rec.stage] = proof;
       rec.completed = steps(getMission(id)).every((_, index) => !!rec.solved[index]);
+      if (!rec.attemptAssisted && steps(getMission(id)).every((_, index) => rec.stageResults[index] && !rec.stageResults[index].assisted)) {
+        rec.independentSolved = rec.stageResults.map(result => ({ input: copy(result.input), assisted: false }));
+        rec.independent = true;
+      }
     } else rec.stageResults.splice(rec.stage);
     addHistory(progress, { type: 'submit', id, stage: rec.stage, passed: result.passed });
     return { ...result, completed: rec.completed };
@@ -201,23 +230,27 @@
   function revealHint(progress, id = progress.currentId) {
     const rec = requireUnlocked(progress, id);
     const step = currentStep(progress, id);
-    const count = rec.hintCounts[rec.stage];
+    const count = rec.attemptHintCounts[rec.stage];
     if (count < Math.min(3, step.hints.length)) {
-      rec.hintCounts[rec.stage] += 1;
-      rec.hints += 1;
+      rec.attemptHintCounts[rec.stage] += 1;
+      rec.hintCounts[rec.stage] = Math.max(rec.hintCounts[rec.stage], rec.attemptHintCounts[rec.stage]);
+      rec.hints = rec.hintCounts.reduce((sum, value) => sum + value, 0);
       rec.assisted = true;
+      rec.attemptAssisted = true;
       addHistory(progress, { type: 'hint', id, stage: rec.stage });
     }
-    return step.hints[Math.max(0, rec.hintCounts[rec.stage] - 1)] || '';
+    return step.hints[Math.max(0, rec.attemptHintCounts[rec.stage] - 1)] || '';
   }
   function revealSolution(progress, id = progress.currentId) {
     const rec = requireUnlocked(progress, id);
-    if (!rec.revealedStages.includes(rec.stage)) {
-      rec.revealedStages.push(rec.stage);
+    if (!rec.attemptRevealedStages.includes(rec.stage)) {
+      rec.attemptRevealedStages.push(rec.stage);
       addHistory(progress, { type: 'solution', id, stage: rec.stage });
     }
+    if (!rec.revealedStages.includes(rec.stage)) rec.revealedStages.push(rec.stage);
     rec.revealed = true;
     rec.assisted = true;
+    rec.attemptAssisted = true;
     return currentStep(progress, id).solution;
   }
   function advanceStep(progress, id = progress.currentId) {
@@ -249,6 +282,9 @@
     rec.input = emptyInput(steps(getMission(id))[0]);
     rec.feedback = null;
     rec.stageResults = [];
+    rec.attemptAssisted = false;
+    rec.attemptHintCounts = steps(getMission(id)).map(() => 0);
+    rec.attemptRevealedStages = [];
     addHistory(progress, { type: 'retry', id, stage: 0 });
     return rec;
   }
@@ -288,6 +324,7 @@
       if (missionLevel(currentMission) !== raw.currentLevel || raw.currentByLevel[raw.currentLevel] !== raw.currentId) fail('表示中の難易度とミッションが一致しません。');
     }
     const progress = createProgress();
+    const oldRecords = new Set();
     for (const mission of savedMissions) {
       const saved = raw.records[mission.id];
       if (!plain(saved)) fail('ミッションの進捗がありません。');
@@ -304,6 +341,32 @@
       rec.revealed = rec.revealedStages.length > 0;
       if (typeof saved.assisted !== 'boolean') fail('学習補助の記録が正しくありません。');
       rec.assisted = saved.assisted || rec.hints > 0 || rec.revealed;
+      const attemptFields = ['attemptAssisted', 'attemptHintCounts', 'attemptRevealedStages', 'independentSolved'];
+      if (attemptFields.some(key => own(saved, key))) {
+        if (!attemptFields.every(key => own(saved, key)) || typeof saved.attemptAssisted !== 'boolean'
+          || !Array.isArray(saved.attemptHintCounts) || saved.attemptHintCounts.length !== count
+          || !Array.isArray(saved.attemptRevealedStages) || saved.attemptRevealedStages.length > count
+          || new Set(saved.attemptRevealedStages).size !== saved.attemptRevealedStages.length
+          || !Array.isArray(saved.independentSolved) || ![0, count].includes(saved.independentSolved.length)
+          || Object.keys(saved.independentSolved).length !== saved.independentSolved.length) fail('再挑戦の記録が正しくありません。');
+        rec.attemptHintCounts = saved.attemptHintCounts.map((value, index) => integer(value, 0, Math.min(3, missionSteps[index].hints.length), '今回のヒント数'));
+        rec.attemptRevealedStages = saved.attemptRevealedStages.map(value => integer(value, 0, count - 1, '今回の解答表示のステップ'));
+        if (rec.attemptHintCounts.some((value, index) => value > 0 && index > rec.stage)
+          || rec.attemptRevealedStages.some(index => index > rec.stage)) fail('未完了のステップに学習補助の記録があります。');
+        rec.attemptAssisted = saved.attemptAssisted || rec.attemptHintCounts.some(Boolean) || rec.attemptRevealedStages.length > 0;
+        rec.independentSolved = saved.independentSolved.map((proof, index) => {
+          const verified = readProof(proof, missionSteps[index]);
+          if (verified.assisted) fail('独力クリアの回答に学習補助の記録があります。');
+          return verified;
+        });
+      } else {
+        oldRecords.add(mission.id);
+        // Older saves kept hints visible after retry. Their current attempt remains
+        // assisted until a fresh retry explicitly hides that help.
+        rec.attemptAssisted = rec.assisted;
+        rec.attemptHintCounts = rec.hintCounts.map((value, index) => index <= rec.stage ? value : 0);
+        rec.attemptRevealedStages = rec.revealedStages.filter(index => index <= rec.stage);
+      }
       if (!Array.isArray(saved.solved) || saved.solved.length > count || !Array.isArray(saved.stageResults) || saved.stageResults.length > rec.stage + 1) fail('保存された回答の数が正しくありません。');
       if (Object.keys(saved.solved).length !== saved.solved.length || Object.keys(saved.stageResults).length !== saved.stageResults.length) fail('保存された回答に抜けがあります。');
       rec.solved = saved.solved.map((proof, index) => readProof(proof, missionSteps[index]));
@@ -315,7 +378,9 @@
       });
       if (rec.stage > rec.stageResults.length) fail('未完了のステップを飛ばした保存データです。');
       if (rec.solved.some(proof => proof.assisted) || rec.stageResults.some(proof => proof.assisted)) rec.assisted = true;
+      if (rec.stageResults.some(proof => proof.assisted)) rec.attemptAssisted = true;
       rec.completed = missionSteps.every((_, index) => !!rec.solved[index]);
+      if (rec.independentSolved.length && !rec.completed) fail('未完了のミッションに独力クリアの記録があります。');
       rec.input = cleanInput(missionSteps[rec.stage], saved.input);
       if (saved.feedback !== null && saved.feedback !== undefined) {
         if (!plain(saved.feedback) || typeof saved.feedback.passed !== 'boolean') fail('回答結果の形式が正しくありません。');
@@ -326,9 +391,9 @@
     }
     for (const mission of DATA.missions) {
       const rec = progress.records[mission.id];
-      if (!isUnlocked(progress, mission.id) && (rec.completed || rec.solved.length || rec.stage > 0 || rec.attempts || rec.hints || rec.revealed || rec.stageResults.length)) fail('未開放のミッションに回答記録があります。');
+      if (!isUnlocked(progress, mission.id) && (rec.completed || rec.solved.length || rec.stage > 0 || rec.attempts || rec.hints || rec.revealed || rec.stageResults.length || rec.attemptAssisted || rec.independentSolved.length)) fail('未開放のミッションに回答記録があります。');
     }
-    const historicalHints = new Map();
+    const attemptHistory = new Map();
     progress.history = raw.history.map(event => {
       if (!plain(event) || !['submit', 'hint', 'solution', 'advance', 'retry'].includes(event.type)) fail('学習履歴の形式が正しくありません。');
       const mission = getMission(event.id);
@@ -336,15 +401,20 @@
       const result = { type: event.type, id: event.id, stage: integer(event.stage, 0, steps(mission).length - 1, '履歴のステップ') };
       if (!isUnlocked(progress, event.id)) fail('未開放のミッションに学習履歴があります。');
       const rec = progress.records[event.id];
+      if (!attemptHistory.has(event.id) || event.type === 'retry') {
+        attemptHistory.set(event.id, { hints: steps(mission).map(() => 0), revealed: [], assisted: false });
+      }
+      const attempt = attemptHistory.get(event.id);
       if (event.type === 'hint') {
-        const key = `${event.id}:${event.stage}`;
-        const count = (historicalHints.get(key) || 0) + 1;
-        historicalHints.set(key, count);
-        rec.hintCounts[event.stage] = Math.max(rec.hintCounts[event.stage], Math.min(3, count));
+        attempt.hints[event.stage] = Math.min(3, steps(mission)[event.stage].hints.length, attempt.hints[event.stage] + 1);
+        attempt.assisted = true;
+        rec.hintCounts[event.stage] = Math.max(rec.hintCounts[event.stage], attempt.hints[event.stage]);
         rec.hints = rec.hintCounts.reduce((sum, value) => sum + value, 0);
         rec.assisted = true;
       }
       if (event.type === 'solution') {
+        if (!attempt.revealed.includes(event.stage)) attempt.revealed.push(event.stage);
+        attempt.assisted = true;
         if (!rec.revealedStages.includes(event.stage)) rec.revealedStages.push(event.stage);
         rec.revealed = true;
         rec.assisted = true;
@@ -355,6 +425,27 @@
       }
       return result;
     });
+    for (const mission of savedMissions) {
+      const rec = progress.records[mission.id];
+      const observed = attemptHistory.get(mission.id);
+      if (observed) {
+        rec.attemptHintCounts = rec.attemptHintCounts.map((value, index) => Math.max(value, observed.hints[index]));
+        rec.attemptRevealedStages = [...new Set([...rec.attemptRevealedStages, ...observed.revealed])];
+        rec.attemptAssisted ||= observed.assisted;
+      }
+      rec.hintCounts = rec.hintCounts.map((value, index) => Math.max(value, rec.attemptHintCounts[index]));
+      rec.revealedStages = [...new Set([...rec.revealedStages, ...rec.attemptRevealedStages])];
+      rec.hints = rec.hintCounts.reduce((sum, value) => sum + value, 0);
+      rec.revealed = rec.revealedStages.length > 0;
+      rec.assisted ||= rec.attemptAssisted || rec.hints > 0 || rec.revealed;
+      if (oldRecords.has(mission.id)) {
+        rec.attemptAssisted ||= rec.assisted;
+        rec.attemptHintCounts = rec.hintCounts.map((value, index) => index <= rec.stage ? value : 0);
+        rec.attemptRevealedStages = rec.revealedStages.filter(index => index <= rec.stage);
+        if (rec.completed && !rec.assisted) rec.independentSolved = copy(rec.solved);
+      }
+      rec.independent = rec.independentSolved.length === steps(mission).length;
+    }
     progress.currentLevel = legacy ? 'beginner' : raw.currentLevel;
     for (const levelId of levelIds) {
       const cursor = legacy ? (levelId === 'beginner' ? raw.currentId : progress.currentByLevel[levelId]) : raw.currentByLevel[levelId];
@@ -368,7 +459,7 @@
     const nextGroup = getLevelMissions(levelId === undefined ? progress.currentLevel : levelId);
     const records = group.map(mission => record(progress, mission.id));
     const completed = records.filter(rec => rec.completed).length;
-    const assisted = records.filter(rec => rec.completed && rec.assisted).length;
+    const assisted = records.filter(rec => rec.completed && !rec.independent).length;
     return {
       completed, total: records.length, points: completed * 100,
       hintsUsed: records.reduce((sum, rec) => sum + rec.hints, 0),
@@ -381,7 +472,7 @@
   function exportProgress(progress) {
     return { format: 'socroom-easy-save', version: 2, progress: copy(progress) };
   }
-  const api = Object.freeze({ createProgress, getMission, currentStep, isUnlocked, setInput, submit, revealHint, revealSolution, advanceStep, openMission, selectLevel, retry, hydrate, stats, exportProgress });
+  const api = Object.freeze({ createProgress, getMission, currentStep, isUnlocked, setInput, submit, revealHint, revealSolution, advanceStep, openMission, selectLevel, retry, hydrate, stats, exportProgress, normalizeText, searchableRow, filterRows });
   root.EasyEngine = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

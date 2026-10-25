@@ -33,11 +33,13 @@ function harness(t, saved = null, options = {}) {
   let now = 0, nextId = 0, networkCalls = 0;
   const virtualConsole = new VirtualConsole();
   virtualConsole.on('jsdomError', error => errors.push(error));
-  const dom = new JSDOM(assembledHTML(), {
+  const markup = options.transformHTML ? options.transformHTML(assembledHTML()) : assembledHTML();
+  const dom = new JSDOM(markup, {
     runScripts: 'dangerously', // The locally assembled scripts above only.
     // Do not add resources or url: this harness performs no page navigation.
     virtualConsole,
     beforeParse(window) {
+      if(options.noSegmenter)window.Intl.Segmenter=undefined;
       Object.defineProperty(window, 'localStorage', { configurable: true, value: {
         getItem(key) { if (options.failStorage) throw new Error('storage unavailable'); return storage.get(key) ?? null; },
         setItem(key, value) { if (options.failStorage || options.failWriteKeys?.includes(key)) throw new Error('storage unavailable'); storage.set(key, String(value)); },
@@ -360,7 +362,7 @@ test('ordering uses enabled up/down controls and saves the reordered draft', t =
   assert.ok(restored.document.querySelector('.feedback.success'));
 });
 
-test('hints and solution do not auto-clear a task; assisted status survives retry and reload', t => {
+test('retry hides help and an independent pass upgrades status while preserving help history', t => {
   const h = harness(t), mission = E.getMission('r1');
   h.click('.hero-start');
   for (let index = 1; index <= 3; index++) {
@@ -376,6 +378,8 @@ test('hints and solution do not auto-clear a task; assisted status survives retr
   assert.equal(h.snapshot().progress.records.r1.assisted, true);
   h.click('[data-action="retry"]');
   assert.equal(h.document.querySelector('.feedback'), null);
+  assert.equal(h.document.querySelector('.hint-card .hint,.solution'), null);
+  assert.equal(h.snapshot().progress.records.r1.attemptAssisted, false);
   assert.match(h.get('.review-note').textContent, /獲得済み/);
   assert.equal(h.get('#submit-answer').disabled, true);
   const reloaded = harness(t, h.snapshot());
@@ -386,6 +390,10 @@ test('hints and solution do not auto-clear a task; assisted status survives retr
   assert.match(reloaded.get('.points').textContent, /100/);
   assert.equal(reloaded.snapshot().progress.records.r1.hints, 3);
   assert.equal(reloaded.snapshot().progress.records.r1.revealed, true);
+  assert.match(reloaded.get('.mission-row[data-open="r1"]').textContent, /ヒントなしでクリア/);
+  assert.equal(reloaded.snapshot().progress.records.r1.independent, true);
+  const again = harness(t, reloaded.snapshot());
+  assert.match(again.get('.mission-row[data-open="r1"]').textContent, /ヒントなしでクリア/);
 });
 
 test('report requires all three parts and explains an unsupported factual claim', t => {
@@ -624,8 +632,15 @@ test('first v0.2 launch migrates genuine v0.1 graduation progress and preserves 
   assert.equal(migrated.version, 2);
   assert.equal(migrated.progress.currentLevel, 'beginner');
   assert.equal(migrated.progress.records.g1.stage, 2);
-  assert.deepEqual(migrated.progress.records.g1, legacyFixture.progress.records.g1);
-  assert.deepEqual(migrated.progress.records.f1, legacyFixture.progress.records.f1);
+  for (const id of ['g1','f1']) {
+    const previous = legacyFixture.progress.records[id];
+    for (const key of Object.keys(previous)) {
+      const expected = key === 'stageResults' ? previous[key].map((proof,index)=>({...proof,message:(E.getMission(id).steps||[E.getMission(id)])[index].answerExplanation})) : previous[key];
+      assert.deepEqual(migrated.progress.records[id][key], expected, 'legacy field retained: '+id+'.'+key);
+    }
+  }
+  assert.equal(migrated.progress.records.g1.attemptAssisted, true);
+  assert.equal(migrated.progress.records.g1.independent, false);
   assert.equal(migrated.progress.records['m-r1'].completed, false);
   assert.equal(migrated.progress.records['a-r1'].completed, false);
   h.click('.hero-start');
@@ -713,4 +728,92 @@ test('unreadable v2 saves are backed up without falling back to or modifying v1 
   cannotBackup.click('[data-action="export"]');
   assert.equal(JSON.parse(cannotBackup.downloads[0].content).progress.records.r1.completed, true, 'manual export still preserves new work');
   assert.equal(cannotBackup.storage.get(STORE), corrupt);
+});
+
+
+test('opening an old hint after retry marks this attempt assisted again', t => {
+  const h = harness(t), mission = E.getMission('r1');
+  h.click('.hero-start'); h.click('[data-action="hint"]');
+  fillAnswerThroughDOM(h, mission); h.submit(); h.click('[data-action="retry"]');
+  assert.equal(h.document.querySelector('.hint'), null);
+  h.click('[data-action="hint"]');
+  assert.equal(h.document.querySelectorAll('.hint').length, 1);
+  assert.equal(h.get('.hint p').textContent, mission.hints[0]);
+  assert.equal(h.snapshot().progress.records.r1.attemptAssisted, true);
+  fillAnswerThroughDOM(h, mission); h.submit(); h.click('[data-action="map"]');
+  assert.match(h.get('.mission-row[data-open="r1"]').textContent, /ヒントを使ってクリア/);
+});
+
+test('filter ignores internal IDs and highlights normalized matches without changing source characters', t => {
+  const mission = E.getMission('f1'), target = mission.rows.find(row=>row.id===mission.answer.rowIds[0]);
+  const fullwidth = 'ＨＯＳＴ＝ＰＣ－ＫＡＩ';
+  const replacement = target.raw.replace('host=pc-kai', fullwidth)+' tag=㍻　　ｶﾞ';
+  const h = harness(t, saveBefore('f1'), {transformHTML: html=>html.replace(JSON.stringify(target.raw), JSON.stringify(replacement))});
+  h.click('.hero-start');
+  h.input('#log-query', target.id);
+  assert.equal(h.document.querySelectorAll('[data-row]').length, 0);
+  h.input('#log-query', 'host=pc-kai');
+  assert.equal(h.get('mark').textContent, fullwidth);
+  assert.equal(h.get('.source-card .raw-log').textContent, replacement);
+  h.input('#log-query', '平成 ガ');
+  assert.equal(h.get('mark').textContent, '㍻　　ｶﾞ');
+  assert.equal(h.get('.source-card .raw-log').textContent, replacement);
+});
+
+test('advanced and intermediate search accept an alternative narrowing query through DOM', t => {
+  for (const [id,query] of [['m-f1','REQ-731'],['m-f4','mina'],['a-f1','TR-602']]) {
+    const mission = E.getMission(id), h = harness(t, saveBefore(id));
+    h.click('.hero-start'); h.input('#log-query', query);
+    const visible = [...h.document.querySelectorAll('[data-row]')].map(row=>row.dataset.row);
+    assert.ok(visible.length < mission.rows.length);
+    for (const rowId of mission.answer.rowIds) h.click(`[data-select="${rowId}"]`);
+    h.submit();
+    assert.ok(h.document.querySelector('.feedback.success'), id+' accepts a learner-selected narrowing search');
+  }
+});
+
+test('graduation preview joins selected sentences and only exports the checked final report', t => {
+  for (const id of ['g1','m-g1','a-g1']) {
+    const mission = E.getMission(id), h = harness(t, saveBefore(id));
+    h.click('.hero-start');
+    for (const stage of mission.steps.slice(0,-1)) {
+      assert.equal(h.document.querySelector('#report-preview'), null);
+      fillAnswerThroughDOM(h, stage); h.submit(); h.click('[data-action="advance"]');
+    }
+    const report = mission.steps.at(-1);
+    assert.equal(h.get('[data-action="export-report"]').disabled, true);
+    fillAnswerThroughDOM(h, report);
+    const expected = ['fact','limit','next'].map(group=>report.choices.find(c=>c.id===report.answer.parts[group]).label).join('');
+    assert.equal(h.get('.report-preview-text').textContent, expected);
+    assert.equal(h.get('[data-action="export-report"]').disabled, true);
+    const wrong = report.choices.find(c=>c.group==='fact'&&c.id!==report.answer.parts.fact);
+    h.radio(`input[data-part="fact"][value="${wrong.id}"]`); h.submit();
+    assert.ok(h.get('.report-preview-text').textContent.startsWith(wrong.label));
+    assert.equal(h.get('[data-action="export-report"]').disabled, true);
+    h.radio(`input[data-part="fact"][value="${report.answer.parts.fact}"]`); h.submit();
+    h.click('[data-action="export-report"]');
+    assert.deepEqual(h.downloads[0], {name:'socroom-easy-'+id+'-report.txt',content:mission.title+'\n\n'+expected+'\n',type:'text/plain;charset=utf-8'});
+    h.click('[data-action="retry"]');
+    assert.equal(h.document.querySelector('#report-preview'), null);
+  }
+});
+
+
+test('older browsers keep normalized search correct without misaligned highlighting', t => {
+  const mission = E.getMission('f1'), target = mission.rows.find(row=>row.id===mission.answer.rowIds[0]);
+  const replacement = target.raw+' note=ｶﾞX';
+  const h = harness(t, saveBefore('f1'), {noSegmenter:true,transformHTML:html=>html.replace(JSON.stringify(target.raw),JSON.stringify(replacement))});
+  h.click('.hero-start');h.input('#log-query','ガx');
+  assert.equal(h.document.querySelectorAll('[data-row]').length,1);
+  assert.equal(h.get('.source-card .raw-log').textContent,replacement);
+  assert.equal(h.document.querySelector('mark'),null);
+});
+
+
+test('real-format token lessons show the complete original log before answering', t => {
+  for(const id of ['m-r1','a-r2']){
+    const h=harness(t,saveBefore(id));h.click('.hero-start');
+    assert.equal(h.get('.raw-reference').open,true);
+    assert.equal(h.get('.raw-reference .raw-log').textContent,E.getMission(id).rows[0].raw);
+  }
 });
