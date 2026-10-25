@@ -15,3 +15,17 @@ if(data.missions.length!==63||new Set(data.missions.map(m=>m.id)).size!==63||new
 for(const level of levels){const ms=data.missions.filter(m=>m.level===level.id);if(ms.length!==21||level.chapters.length!==6)throw new Error('Expected 21 missions and 6 chapters: '+level.id);for(const chapter of level.chapters)if(ms.filter(m=>m.chapter===chapter.id).length!==(chapter.id==='graduate'?1:4))throw new Error('Invalid chapter size: '+level.id+'/'+chapter.id);}
 fs.writeFileSync(path.join(__dirname,'src/data.js'),'/* Fictional teaching data, bundled for offline use. */\nglobalThis.EASY_DATA = '+JSON.stringify(data,null,2)+';\nif (typeof module !== "undefined" && module.exports) module.exports = globalThis.EASY_DATA;\n');
 console.log('Assembled '+data.missions.length+' missions / '+levels.length+' levels.');
+
+// Exact Japanese source strings are the display catalog keys. Grading data is not rewritten.
+const english={};
+for(const file of fs.readdirSync(path.join(__dirname,'content')).filter(f=>/^en-.*\.json$/.test(f)).sort())Object.assign(english,read(file.slice(0,-5)));
+const hasJapanese=/[\u3040-\u30ff\u3400-\u9fff]/u;
+function validateTranslation(value,parts=[]){
+  if(parts.includes('answer'))return;
+  if(typeof value==='string'&&hasJapanese.test(value)){
+    if(!Object.hasOwn(english,value)||!english[value].trim()||hasJapanese.test(english[value]))throw new Error('Missing English translation: '+parts.join('.'));
+  }else if(Array.isArray(value))value.forEach((item,index)=>validateTranslation(item,[...parts,index]));
+  else if(value&&typeof value==='object')Object.entries(value).forEach(([key,item])=>validateTranslation(item,[...parts,key]));
+}
+validateTranslation(data);
+fs.writeFileSync(path.join(__dirname,'src/translations.js'),'/* English display catalog, bundled offline. */\nglobalThis.EASY_EN = '+JSON.stringify(english,null,2)+';\nif(typeof module!=="undefined"&&module.exports)module.exports=globalThis.EASY_EN;\n');

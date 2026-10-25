@@ -7,6 +7,7 @@
     DATA = loaded && Array.isArray(loaded.missions) ? loaded : root.EASY_DATA;
   }
   if (!DATA || !Array.isArray(DATA.missions) || !DATA.missions.length) throw new Error('学習データを読み込めませんでした。');
+  const I18N = root.EasyI18n || (typeof require === 'function' ? require('./i18n.js') : null);
   const VERSION = 'socroom-easy-2';
   const LEGACY_VERSION = 'socroom-easy-1';
   const GROUPS = ['fact', 'limit', 'next'];
@@ -124,7 +125,11 @@
   }
   function searchableRow(row) {
     const reference = row.sourceType && row.sourceType !== 'log';
-    return normalizeText(reference ? [row.title, row.body].join(' ') : [row.raw || row.body, row.title, row.event, row.note].join(' '));
+    const source = reference ? [row.title, row.body].join(' ') : [row.raw || row.body, row.title, row.event, row.note].join(' ');
+    // Search both display languages regardless of the selected locale, so saved
+    // queries and their grading proofs remain valid after switching languages.
+    const english = I18N?.english(source) || source;
+    return normalizeText(english === source ? source : source + ' ' + english);
   }
   function filterRows(rows, query) {
     const normalized = normalizeText(query);

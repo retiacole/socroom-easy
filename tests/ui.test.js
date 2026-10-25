@@ -19,7 +19,7 @@ function assembledHTML() {
   // CSS parsing and inline script boundaries, without opening it in a browser.
   if (process.env.SOCROOM_EASY_HTML) return fs.readFileSync(path.resolve(process.env.SOCROOM_EASY_HTML), 'utf8');
   let html = fs.readFileSync(path.join(SRC, 'ui.html'), 'utf8');
-  for (const [marker, name] of Object.entries({ CSS: null, DATA: 'data.js', ENGINE: 'engine.js', APP: 'app.js' })) {
+  for (const [marker, name] of Object.entries({ CSS: null, DATA: 'data.js', TRANSLATIONS: 'translations.js', I18N: 'i18n.js', ENGINE: 'engine.js', APP: 'app.js' })) {
     const content = name ? fs.readFileSync(path.join(SRC, name), 'utf8').replace(/<\/script/gi, '<\\/script') : '';
     html = html.replace(`/*__${marker}__*/`, () => content);
   }
@@ -170,7 +170,7 @@ function fillAnswerThroughDOM(h, step) {
 test('new learner sees one unlocked beginner start, 21 scoped tasks, three levels and an accessible glossary', t => {
   const h = harness(t);
   if (process.env.SOCROOM_EASY_HTML) {
-    assert.equal(h.document.querySelectorAll('script').length, 3, 'standalone HTML contains all three scripts');
+    assert.equal(h.document.querySelectorAll('script').length, 5, 'standalone HTML contains all five offline scripts');
     assert.ok(h.document.styleSheets[0]?.cssRules.length > 0, 'standalone stylesheet parses');
     assert.equal(h.document.querySelector('script[src],link[rel="stylesheet"]'), null, 'standalone app has no external code dependencies');
   }
@@ -816,4 +816,77 @@ test('real-format token lessons show the complete original log before answering'
     assert.equal(h.get('.raw-reference').open,true);
     assert.equal(h.get('.raw-reference .raw-log').textContent,E.getMission(id).rows[0].raw);
   }
+});
+
+const LANGUAGE_STORE = 'socroom-easy.language.v1';
+const EN = require('../src/translations.js');
+function setLanguage(h, value) { h.input('#language-select', value, 'change'); }
+function assertEnglish(h, context) {
+  const walker=h.document.createTreeWalker(h.document.body,h.window.NodeFilter.SHOW_TEXT);
+  const leftovers=[];let node;
+  while((node=walker.nextNode()))if(!node.parentElement?.closest('script,style,[data-language-name]')&&/[\u3040-\u30ff\u3400-\u9fff]/u.test(node.nodeValue))leftovers.push(node.nodeValue);
+  for(const el of h.document.querySelectorAll('[aria-label],[title],[placeholder]'))for(const attr of ['aria-label','title','placeholder'])if(/[\u3040-\u30ff\u3400-\u9fff]/u.test(el.getAttribute(attr)||''))leftovers.push(el.getAttribute(attr));
+  assert.deepEqual(leftovers,[],context+' has complete English display coverage');
+}
+
+test('English menu switches safely, restores static text, persists separately, and works without storage', t => {
+  const h=harness(t),canonical=JSON.stringify(h.window.EASY_DATA),before=h.snapshot();
+  setLanguage(h,'en');
+  assert.equal(h.document.documentElement.lang,'en');assert.equal(h.get('#language-select').value,'en');
+  assert.equal(h.get('.skip').textContent,'Skip to content');assert.match(h.document.title,/Small discoveries/);assertEnglish(h,'map');
+  assert.deepEqual(h.snapshot(),before,'locale does not change progress schema or records');
+  assert.equal(h.storage.get(LANGUAGE_STORE),'en');
+  h.click('.hero-start');h.click('[data-token="'+D.missions[0].answer.tokenId+'"]');h.click('[data-action="hint"]');
+  const draft=h.snapshot();
+  setLanguage(h,'ja');
+  assert.equal(h.document.documentElement.lang,'ja');assert.equal(h.get('.skip').textContent,'本文へ進む');assert.match(h.document.title,/小さな発見/);
+  assert.equal(h.get('.hint p').textContent,D.missions[0].hints[0]);assert.deepEqual(h.snapshot(),draft);
+  setLanguage(h,'en');assertEnglish(h,'restored lesson');assert.deepEqual(h.snapshot(),draft);
+  assert.equal(JSON.stringify(h.window.EASY_DATA),canonical,'canonical curriculum and log data are untouched');
+  h.click('[data-action="glossary"]');assertEnglish(h,'glossary');h.click('[data-action="close"]');
+  const reloaded=harness(t,h.snapshot(),{otherStorage:{[LANGUAGE_STORE]:h.storage.get(LANGUAGE_STORE)}});
+  assert.equal(reloaded.document.documentElement.lang,'en');assertEnglish(reloaded,'reload');
+  const blocked=harness(t,null,{failStorage:true});setLanguage(blocked,'en');assertEnglish(blocked,'storage unavailable');blocked.click('[data-action="export"]');assert.equal(blocked.downloads.length,1);
+});
+
+test('all 63 English missions, all hints and solutions, feedback, and graduation report exports work offline', t => {
+  const h=harness(t,null,{otherStorage:{[LANGUAGE_STORE]:'en'}});
+  for(const level of D.levels){
+    h.click('[data-level="'+level.id+'"]');assertEnglish(h,level.id+' map');h.click('.hero-start');
+    for(const mission of D.missions.filter(m=>m.level===level.id)){
+      assert.equal(h.get('.lesson-title h1').textContent,EN[mission.title]);
+      for(const [index,step] of (mission.steps||[mission]).entries()){
+        assert.equal(h.get('#task-heading').textContent,EN[step.task]);assertEnglish(h,mission.id+' initial');
+        for(const hint of step.hints){h.click('[data-action="hint"]');assert.equal([...h.document.querySelectorAll('.hint p')].at(-1).textContent,EN[hint]);}
+        h.click('[data-action="solution"]');assert.equal(h.get('.solution p').textContent,EN[step.solution]);assertEnglish(h,mission.id+' help');
+        fillAnswerThroughDOM(h,step);assertEnglish(h,mission.id+' draft');
+        if(step.kind==='report'&&mission.kind==='investigation')assert.equal(h.get('[data-action="export-report"]').disabled,true);
+        h.submit();assert.ok(h.document.querySelector('.feedback.success'),mission.id+' passes in English');assertEnglish(h,mission.id+' feedback');
+        if(step.kind==='report'&&mission.kind==='investigation'){
+          const preview=h.get('.report-preview-text').textContent;
+          const expected=['fact','limit','next'].map(group=>EN[step.choices.find(c=>c.id===step.answer.parts[group]).label]).join(' ');
+          assert.equal(preview,expected);h.click('[data-action="export-report"]');
+          assert.equal(h.downloads.at(-1).content,EN[mission.title]+'\n\n'+expected+'\n');
+          const snapshot=h.snapshot();setLanguage(h,'ja');setLanguage(h,'en');assert.deepEqual(h.snapshot(),snapshot,'completed report remains valid across locale switches');
+        }
+        if(index<(mission.steps?.length||1)-1)h.click('[data-action="advance"]');
+      }
+      h.click('[data-action="'+(mission.chapter==='graduate'?'finish':'next')+'"]');
+    }
+  }
+  assert.equal(E.stats(E.hydrate(h.snapshot())).completed,63);assertEnglish(h,'completed map');
+  assert.equal(h.downloads.length,3,'each graduation exports its English report');
+});
+
+test('English wrong answers, imports and bilingual search remain localized and preserve proofs', async t => {
+  const h=harness(t,null,{otherStorage:{[LANGUAGE_STORE]:'en'}});h.click('.hero-start');
+  h.click('[data-token="'+D.missions[0].tokens.find(x=>x.id!==D.missions[0].answer.tokenId).id+'"]');h.submit();assertEnglish(h,'incorrect token');
+  await h.importFile('{"format":"invalid"}');assertEnglish(h,'invalid import');
+  await h.importFile(legacyText);assertEnglish(h,'legacy import confirmation');h.click('[data-action="close"]');
+  const m=E.getMission('m-f4'),search=harness(t,saveBefore('m-f4'),{otherStorage:{[LANGUAGE_STORE]:'en'}});search.click('.hero-start');
+  search.input('#log-query','Read the');
+  for(const id of m.answer.rowIds)search.click('[data-select="'+id+'"]');
+  const before=search.snapshot();setLanguage(search,'ja');assert.deepEqual(search.snapshot(),before);setLanguage(search,'en');search.submit();
+  assert.ok(search.document.querySelector('.feedback.success'));assertEnglish(search,'English evidence search');
+  assert.equal(E.hydrate(search.snapshot()).records['m-f4'].completed,true,'English query proof validates in Node and after reload');
 });

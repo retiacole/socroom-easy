@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
 let html=fs.readFileSync(path.join(__dirname,'src/ui.html'),'utf8');
-for(const [key,file] of Object.entries({CSS:'style.css',DATA:'data.js',ENGINE:'engine.js',APP:'app.js'})){
+for(const [key,file] of Object.entries({CSS:'style.css',DATA:'data.js',TRANSLATIONS:'translations.js',I18N:'i18n.js',ENGINE:'engine.js',APP:'app.js'})){
   const marker=`/*__${key}__*/`;
   if(html.split(marker).length!==2)throw new Error('Invalid template marker: '+key);
   const source=fs.readFileSync(path.join(__dirname,'src',file),'utf8');

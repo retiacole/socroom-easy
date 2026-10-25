@@ -28,3 +28,5 @@ dialog{width:min(620px,calc(100% - 32px));max-height:85vh;padding:0;border:1px s
 /* The final graduation report remains readable as one paragraph. */
 .report-preview{padding:22px;border:1px solid var(--line);border-radius:12px;background:#fffefa;overflow-wrap:anywhere}
 .report-preview h3{font-size:14px;margin-bottom:12px}.report-preview-text{font-size:13px;line-height:2;white-space:pre-wrap}.report-preview .small{margin:12px 0;color:var(--muted)}
+
+.language-control{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}.language-control select{font:inherit;padding:7px;border:1px solid var(--line);border-radius:6px;background:var(--paper,#fff);color:var(--ink);min-height:36px}html[lang="en"] .topbar nav{flex-wrap:wrap}html[lang="en"] .mission-meta{min-width:110px}html[lang="en"] .mission-name,html[lang="en"] .level-card{overflow-wrap:anywhere}@media(max-width:700px){.topbar nav{flex-wrap:wrap}.language-control select{font-size:16px}.language-control span{display:none}html[lang="en"] .mission-meta{min-width:85px;font-size:11px}}

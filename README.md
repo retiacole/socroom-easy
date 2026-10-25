@@ -1,4 +1,4 @@
-# SOCroom-easy v0.2
+# SOCroom-easy v0.3
 
 ログに初めて触れる人が、個別の調査操作を練習しながらSOCroomへ進むための学習アプリです。短い説明を読み、自分で操作して答えを見つけるとフラグ（旗）を獲得します。SOCroomとは別のアプリです。
 
@@ -11,6 +11,14 @@
 5. 「答え合わせ」で理由を確認し、「次の課題へ」進みます。
 
 プレイ時のインストール、サーバー、アカウント、インターネット接続は不要です。教材・プログラム・見た目をHTML一つに含めています。JavaScriptとdialog要素に対応したブラウザを使用してください。
+
+## 日本語・English
+
+画面上部の **Language** メニューから日本語と英語を切り替えられます。全63問の説明・ミッション・3段階のヒント・解説・選択肢・資料・用語帳・採点メッセージ・卒業報告を英語で利用できます。選択した言語は同じブラウザに保存されます。自動保存が使えない環境でも、言語の切り替えと進捗JSONの保存は利用できます。
+
+言語を切り替えても、下書き・選択済みの回答・ヒントの利用履歴・卒業調査の段階・獲得済みフラグは変わりません。課題ID・回答ID・ログの元データ・採点条件と既存の進捗形式を維持しています。検索は日本語と英語の説明文の両方に対応し、言語切替後も検索語と保存済みの回答を復元できます。報告文のテキスト保存は表示中の言語で行います。
+
+Open **Language → English** in the HTML menu. All 63 missions, hints, solutions, evidence narratives, glossary entries, feedback, and graduation reports are available in English. The choice persists in your browser. Switch languages at any time without losing drafts or progress. The app stays fully offline; no translation service or external assets are used.
 
 ## 初級・中級・上級
 
@@ -56,7 +64,7 @@ Node.js 22以上があれば、外部パッケージなしでビルドできま�
 npm run build
 ```
 
-`content/` のJSONを教材の原本として、`assemble-data.js` が `src/data.js` を生成します。`build.js` はCSS・教材・エンジン・UIを単一HTMLにまとめます。
+`content/` のJSONを教材の原本として、`assemble-data.js` が `src/data.js` を生成します。`content/en-*.json` が英語の表示用辞書です。ビルド時に教材の翻訳漏れを検出します。`build.js` はCSS・教材・翻訳・エンジン・UIを単一HTMLにまとめます。
 
 テスト用の依存パッケージを初回に導入すると、採点エンジンとDOM操作のテストを実行できます。依存パッケージはプレイには不要です。
 
@@ -66,7 +74,7 @@ npm test
 SOCROOM_EASY_HTML=./socroom-easy.html npm test
 ```
 
-採点、各級の解放順、復習、旧版からの移行、保存復元、全63問の画面操作を検証します。DOMテストはブラウザの見た目や実際のfile URLでの動作を検証するものではありません。修正版ではローカルHTTP経由の実ブラウザでも、卒業調査の報告プレビューと正解後の保存ボタン表示を確認しています。file URLや全画面サイズの検証は含みません。
+採点、各級の解放順、復習、旧版からの移行、保存復元、日本語・英語それぞれの全63問の画面操作、全ヒント・解説、言語切替と保存、英語での卒業報告保存を検証します。DOMテストはブラウザの見た目や実際のfile URLでの動作を検証するものではありません。修正版ではローカルHTTP経由の実ブラウザでも、卒業調査の報告プレビューと正解後の保存ボタン表示を確認しています。file URLや全画面サイズの検証は含みません。
 
 全データを同梱する教材なので、ソースには正解も含まれます。サーバー認証付きCTFや資格試験の採点システムではありません。
 

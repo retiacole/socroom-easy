@@ -1,6 +1,6 @@
-# SOCroom-easy v0.2 data and state contract
+# SOCroom-easy v0.3 data and state contract
 
-Single offline HTML; no runtime server, package download, CDN or network. Japanese learning interface. Globals `EASY_DATA` and `EasyEngine`; the data and engine also export CommonJS for local tests.
+Single offline HTML; no runtime server, package download, CDN or network. Japanese and English learning interfaces. Globals `EASY_DATA` and `EasyEngine`; the data and engine also export CommonJS for local tests.
 
 ## Curriculum
 
@@ -62,3 +62,11 @@ SOCroom storage is never read or written. The optional handoff opens the relativ
 ## Graduation report
 
 Only the final investigation report shows a live preview of the three selected sentences in fact/limit/next order. It is explicitly a draft before grading; text export is enabled only for the current correctly submitted report. The plain-text download is separate from progress JSON export and performs no network operation.
+
+## Localization
+
+The header Language menu selects Japanese (`ja`, default) or English (`en`). The separate `socroom-easy.language.v1` storage key holds only the language preference; progress remains version 2 and keeps existing IDs, answers, drafts, help history, and proofs. An unavailable localStorage does not prevent switching or manual progress export. Language changes re-render the current screen without changing its mission, stage, selection, or grading status.
+
+`content/en-*.json` maps exact Japanese source strings to English display text. The build validates every Japanese curriculum string except canonical answer aliases, and emits `src/translations.js`. `EasyI18n` translates inert text and accessibility attributes, preserving canonical `EASY_DATA`. Dynamic DOM updates are localized immediately, and static text can be restored to Japanese. Both languages ship in the single HTML without network requests. Report text exports use the selected language with spaces between English sentences.
+
+Search indexes the canonical displayed source fields and their English translations in either locale, excluding internal IDs. This keeps English/Japanese text queries and saved grading proofs valid after language changes. Technical log values and answer IDs remain canonical.
