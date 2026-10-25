@@ -1,0 +1,17 @@
+{
+  "name": "socroom-easy",
+  "version": "0.2.0",
+  "private": true,
+  "description": "SOCroomの前に、一つずつの調査操作を学ぶオフラインCTF入門",
+  "license": "MIT",
+  "scripts": {
+    "build": "node assemble-data.js && node build.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}
