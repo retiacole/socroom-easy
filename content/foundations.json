@@ -1,0 +1,938 @@
+{
+  "chapters": [
+    {
+      "id": "read",
+      "title": "01 ログを 1 行読む",
+      "subtitle": "時刻・アカウント・結果・通信元を、ひとつずつ読む。"
+    },
+    {
+      "id": "find",
+      "title": "02 必要なログを見つける",
+      "subtitle": "検索し、選び、数える。調べる範囲を小さくする。"
+    },
+    {
+      "id": "connect",
+      "title": "03 記録をつなげて考える",
+      "subtitle": "順番と共通点を見つけ、分からないことも残す。"
+    }
+  ],
+  "missions": [
+    {
+      "id": "r1",
+      "chapter": "read",
+      "title": "時刻を見つける",
+      "skill": "1 行のログから時刻の欄を選ぶ",
+      "minutes": 2,
+      "brief": "ログは、コンピューターが「いつ、何をしたか」を残した記録です。まずは 1 行だけ、時刻を見つけてみましょう。",
+      "learn": [
+        "ログには複数の欄があります。今回は「時刻」「host」「event」の 3 つだけを見ます。",
+        "2026-10-20T08:30:00Z は、2026 年 10 月 20 日の 08:30:00 を表します。T は日付と時刻の区切りです。",
+        "末尾の Z は UTC という基準の時刻を使っている印です。この教材ではすべて UTC で読み、時差の計算はしません。",
+        "host は記録に登場する端末名、event は起きた操作の種類です。event=screen_lock は画面をロックした記録です。"
+      ],
+      "example": {
+        "title": "別のログで練習",
+        "text": "2026-10-19T07:15:10Z host=pc-demo event=screen_lock\nこのログの時刻の欄は「2026-10-19T07:15:10Z」です。端末名 pc-demo と取り違えないようにしましょう。"
+      },
+      "task": "表示されたログで、時刻を表す欄を 1 つクリックしてください。",
+      "kind": "token",
+      "sourceLabel": "端末操作ログ・1 行",
+      "rows": [
+        {
+          "id": "r1-log",
+          "time": "09:12:04",
+          "host": "pc-aki",
+          "event": "screen_lock",
+          "raw": "2026-10-20T09:12:04Z host=pc-aki event=screen_lock"
+        }
+      ],
+      "tokens": [
+        {
+          "id": "r1-time",
+          "label": "2026-10-20T09:12:04Z",
+          "meaning": "記録された時刻。末尾の Z は UTC。"
+        },
+        {
+          "id": "r1-host",
+          "label": "host=pc-aki",
+          "meaning": "端末名。"
+        },
+        {
+          "id": "r1-event",
+          "label": "event=screen_lock",
+          "meaning": "操作の種類。画面のロック。"
+        }
+      ],
+      "answer": {
+        "tokenId": "r1-time"
+      },
+      "answerExplanation": "2026-10-20T09:12:04Z が時刻の欄です。2026 年 10 月 20 日の 09:12:04 UTC に画面がロックされました。",
+      "hints": [
+        "まず、年・月・日が書かれている欄を探しましょう。",
+        "時刻の欄には 09:12:04 のように、コロンで区切った数字が入っています。",
+        "先頭が 2026-10-20 で、末尾が Z の欄をクリックします。"
+      ],
+      "solution": "「2026-10-20T09:12:04Z」をクリックして答え合わせします。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、出来事が起きた時刻を読む最初の一歩です。"
+      },
+      "flag": "EASY{READ_TIME}"
+    },
+    {
+      "id": "r2",
+      "chapter": "read",
+      "title": "アカウント名を読む",
+      "skill": "user の値を抜き出す",
+      "minutes": 2,
+      "brief": "同じ端末を複数人が使うこともあります。「端末の名前」と「使われたアカウントの名前」を分けて読みましょう。",
+      "learn": [
+        "host は端末名です。user は、その操作に記録されたアカウント名です。",
+        "キー=値 という書き方では、= の左が欄の名前、右が内容です。user=demo なら、アカウント名は demo です。",
+        "event=login はログインの操作を表します。この行には結果の欄がないため、成功したかどうかはこの行だけでは判断できません。",
+        "先頭の日時は UTC です。user に名前があっても、実際に操作した人が本人だと分かったわけではありません。"
+      ],
+      "example": {
+        "title": "別のアカウントの例",
+        "text": "2026-10-19T08:05:00Z host=pc-demo user=haru event=login\nこの場合、端末は pc-demo、アカウントは haru です。アカウント名を聞かれたら haru と入力します。"
+      },
+      "task": "表示されたログで使われたアカウント名を入力してください。user= は付けず、値だけを入力します。",
+      "kind": "text",
+      "sourceLabel": "認証操作ログ・1 行",
+      "rows": [
+        {
+          "id": "r2-log",
+          "time": "09:14:10",
+          "host": "pc-rin",
+          "user": "rin",
+          "event": "login",
+          "raw": "2026-10-20T09:14:10Z host=pc-rin user=rin event=login"
+        }
+      ],
+      "answer": {
+        "values": [
+          "rin"
+        ],
+        "caseSensitive": true
+      },
+      "answerExplanation": "user=rin なのでアカウント名は rin です。pc-rin は host に書かれた端末名です。",
+      "hints": [
+        "アカウントの欄は user です。",
+        "user= の右側を見てください。host= の右側ではありません。",
+        "user=rin の値だけを入力します。"
+      ],
+      "solution": "入力欄に「rin」と入力して答え合わせします。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、どのアカウントを調べるか決めるときに使います。"
+      },
+      "flag": "EASY{READ_USER}"
+    },
+    {
+      "id": "r3",
+      "chapter": "read",
+      "title": "成功と失敗を見分ける",
+      "skill": "result の値を読む",
+      "minutes": 2,
+      "brief": "ログインした記録があっても、その試行が成功したとは限りません。結果の欄を確認しましょう。",
+      "learn": [
+        "event=login はログインの試行です。result はその操作の結果を表します。",
+        "この教材では result=success は成功、result=failed は失敗です。失敗した理由は、この短い行には書かれていません。",
+        "user は使われたアカウント、先頭の日時は UTC の時刻です。",
+        "失敗はパスワードの打ち間違いでも攻撃でも起こり得ます。「失敗した」という事実と「攻撃だった」という判断は分けます。"
+      ],
+      "example": {
+        "title": "成功したログの例",
+        "text": "2026-10-19T08:10:00Z user=haru event=login result=success\nresult=success なので、ログインは成功です。今回は成功か失敗かだけを読みます。"
+      },
+      "task": "表示されたログで、「ログインが失敗した」と分かる欄を 1 つクリックしてください。",
+      "kind": "token",
+      "sourceLabel": "認証結果ログ・1 行",
+      "rows": [
+        {
+          "id": "r3-log",
+          "time": "09:15:20",
+          "user": "rin",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:15:20Z user=rin event=login result=failed"
+        }
+      ],
+      "tokens": [
+        {
+          "id": "r3-time",
+          "label": "2026-10-20T09:15:20Z",
+          "meaning": "UTC の時刻。"
+        },
+        {
+          "id": "r3-user",
+          "label": "user=rin",
+          "meaning": "使われたアカウント。"
+        },
+        {
+          "id": "r3-event",
+          "label": "event=login",
+          "meaning": "ログインの試行。"
+        },
+        {
+          "id": "r3-result",
+          "label": "result=failed",
+          "meaning": "操作の結果。失敗。"
+        }
+      ],
+      "answer": {
+        "tokenId": "r3-result"
+      },
+      "answerExplanation": "result=failed が失敗を示します。この行で確かめられるのはログインが失敗したことまでで、理由や攻撃者の存在はまだ分かりません。",
+      "hints": [
+        "操作の名前ではなく、結果の欄を探しましょう。",
+        "結果の欄の名前は result です。",
+        "failed は「失敗」を意味します。result=failed を選びます。"
+      ],
+      "solution": "「result=failed」をクリックして答え合わせします。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、認証失敗と認証成功を分けて調べるときに使います。"
+      },
+      "flag": "EASY{READ_RESULT}"
+    },
+    {
+      "id": "r4",
+      "chapter": "read",
+      "title": "通信の出発点を読む",
+      "skill": "src と dst を区別する",
+      "minutes": 3,
+      "brief": "通信には出発点と行き先があります。知らない IP アドレスが出ても、まずはどちら側のアドレスなのかを読みます。",
+      "learn": [
+        "IP アドレスは、通信する機器や接続先を区別するためのアドレスです。ここでは 198.51.100.24 のような数字をそのまま読みます。",
+        "src は送信元、つまりこの記録での通信の出発点です。dst は送信先、つまり行き先です。",
+        "event=connection は通信接続の記録です。先頭の日時は UTC です。",
+        "IP アドレスだけでは、操作した人や攻撃かどうかは決まりません。この教材の IP アドレスは説明用の架空の値です。"
+      ],
+      "example": {
+        "title": "出発点と行き先の例",
+        "text": "2026-10-19T08:20:00Z src=192.0.2.10 dst=203.0.113.70 event=connection\n送信元は 192.0.2.10、送信先は 203.0.113.70 です。src と dst の順番が変わってもキーを見て読みます。"
+      },
+      "task": "表示されたログの送信元 IP アドレスを入力してください。src= は付けず、数字とドットだけを入力します。",
+      "kind": "text",
+      "sourceLabel": "通信ログ・1 行",
+      "rows": [
+        {
+          "id": "r4-log",
+          "time": "09:18:00",
+          "src": "198.51.100.24",
+          "dst": "192.0.2.80",
+          "event": "connection",
+          "raw": "2026-10-20T09:18:00Z src=198.51.100.24 dst=192.0.2.80 event=connection"
+        }
+      ],
+      "answer": {
+        "values": [
+          "198.51.100.24"
+        ]
+      },
+      "answerExplanation": "src=198.51.100.24 なので、送信元は 198.51.100.24 です。192.0.2.80 は dst に書かれた送信先です。",
+      "hints": [
+        "送信元は src、送信先は dst です。",
+        "src= の直後に書かれた数字を、ドットも含めて読みます。",
+        "src=198.51.100.24 の値だけを入力します。"
+      ],
+      "solution": "「198.51.100.24」と入力して答え合わせします。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、通信元と通信先を取り違えずに調査するための読み方です。"
+      },
+      "flag": "EASY{READ_SOURCE}"
+    },
+    {
+      "id": "f1",
+      "chapter": "find",
+      "title": "1 台の端末を探す",
+      "skill": "端末名で検索して対象の行を選ぶ",
+      "minutes": 3,
+      "brief": "ログが増えたら、全部を一度に読もうとせず、調べたい端末の記録だけを探します。",
+      "learn": [
+        "host は端末名です。host=pc-kai は pc-kai という端末の記録を意味します。",
+        "検索欄に文字を入れると、その文字を含む行に絞り込めます。この教材は生ログに書かれた文字をそのまま検索します。",
+        "今回は host=pc-kai と入力します。検索できたら、残った行をクリックして回答に選びます。",
+        "user はアカウント、event=login はログインの試行、result=success は成功、result=failed は失敗です。時刻はすべて同じ日の UTC です。"
+      ],
+      "example": {
+        "title": "別の端末を検索する例",
+        "text": "端末 pc-demo を探す場合は「host=pc-demo」と検索します。\n2026-10-19T09:00:00Z host=pc-demo user=demo event=login result=success\nこの行が残ったら、行を選択します。検索と選択の両方で回答します。"
+      },
+      "task": "検索欄に「host=pc-kai」と入力し、pc-kai のログを選択してください。",
+      "kind": "filter",
+      "sourceLabel": "認証ログ・4 行",
+      "rows": [
+        {
+          "id": "f1-a",
+          "time": "09:20:00",
+          "host": "pc-emi",
+          "user": "emi",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:20:00Z host=pc-emi user=emi event=login result=success"
+        },
+        {
+          "id": "f1-b",
+          "time": "09:20:12",
+          "host": "pc-kai",
+          "user": "kai",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:20:12Z host=pc-kai user=kai event=login result=failed"
+        },
+        {
+          "id": "f1-c",
+          "time": "09:20:18",
+          "host": "pc-nao",
+          "user": "nao",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:20:18Z host=pc-nao user=nao event=login result=success"
+        },
+        {
+          "id": "f1-d",
+          "time": "09:20:30",
+          "host": "pc-ren",
+          "user": "ren",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:20:30Z host=pc-ren user=ren event=login result=success"
+        }
+      ],
+      "answer": {
+        "query": "host=pc-kai",
+        "rowIds": [
+          "f1-b"
+        ]
+      },
+      "answerExplanation": "host=pc-kai に一致するのは 09:20:12 の 1 行です。検索だけで終わらず、調べる対象の行を選べました。",
+      "hints": [
+        "検索欄に端末を表すキー host と端末名を入れましょう。",
+        "入力する文字列は host=pc-kai です。前後の引用符は不要です。",
+        "検索後に残る、09:20:12 の行を選択します。"
+      ],
+      "solution": "検索欄に「host=pc-kai」と入力し、09:20:12 の行を選んで答え合わせします。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom で対象端末のログを絞り、関係のない端末の記録をいったん外す操作につながります。"
+      },
+      "flag": "EASY{FIND_HOST}"
+    },
+    {
+      "id": "f2",
+      "chapter": "find",
+      "title": "同じアカウントを追う",
+      "skill": "user で検索して複数行を選ぶ",
+      "minutes": 3,
+      "brief": "同じアカウントの記録が、離れた位置や別の端末に現れることがあります。端末名ではなくアカウント名を軸に探してみましょう。",
+      "learn": [
+        "user はアカウント名、host は端末名です。同じ user が別々の host に登場する場合もあります。",
+        "検索欄に user=nao と入力すると、今回の資料でその文字を含むログが残ります。",
+        "今回は 1 行だけでなく、一致する行をすべて選びます。複数の行をクリックすると、まとめて選択できます。",
+        "event=login はログインの試行、result=success は成功、result=failed は失敗です。時刻は UTC です。"
+      ],
+      "example": {
+        "title": "別のアカウントを追う例",
+        "text": "user=haru で探すと、host=pc-demo user=haru と host=pc-sub user=haru の両方が対象です。host が違っても user が一致するため、両方の行を選びます。"
+      },
+      "task": "「user=nao」と検索し、nao のログをすべて選択してください。成功・失敗の両方を対象にします。",
+      "kind": "filter",
+      "sourceLabel": "認証ログ・5 行",
+      "rows": [
+        {
+          "id": "f2-a",
+          "time": "09:23:00",
+          "host": "pc-nao",
+          "user": "nao",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:23:00Z host=pc-nao user=nao event=login result=failed"
+        },
+        {
+          "id": "f2-b",
+          "time": "09:23:05",
+          "host": "pc-emi",
+          "user": "emi",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:23:05Z host=pc-emi user=emi event=login result=success"
+        },
+        {
+          "id": "f2-c",
+          "time": "09:23:10",
+          "host": "pc-kai",
+          "user": "kai",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:23:10Z host=pc-kai user=kai event=login result=failed"
+        },
+        {
+          "id": "f2-d",
+          "time": "09:23:20",
+          "host": "pc-shared",
+          "user": "nao",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:23:20Z host=pc-shared user=nao event=login result=success"
+        },
+        {
+          "id": "f2-e",
+          "time": "09:23:25",
+          "host": "pc-ren",
+          "user": "ren",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:23:25Z host=pc-ren user=ren event=login result=success"
+        }
+      ],
+      "answer": {
+        "query": "user=nao",
+        "rowIds": [
+          "f2-a",
+          "f2-d"
+        ]
+      },
+      "answerExplanation": "09:23:00 と 09:23:20 の user が nao です。端末と結果が違っていても、今回は同じアカウントの記録なので両方を選びます。",
+      "hints": [
+        "今回は端末ではなくアカウントの名前で探します。キーは user です。",
+        "検索欄には user=nao と入力します。一致する行は 2 行です。",
+        "09:23:00 と 09:23:20 の行を選択します。"
+      ],
+      "solution": "「user=nao」と検索して、09:23:00 と 09:23:20 の 2 行を選び、答え合わせします。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom で同じアカウントの前後の操作を調べるとき、端末が違う記録も見つけられるようになります。"
+      },
+      "flag": "EASY{FIND_USER}"
+    },
+    {
+      "id": "f3",
+      "chapter": "find",
+      "title": "失敗した行を拾う",
+      "skill": "条件に合うログだけを選ぶ",
+      "minutes": 3,
+      "brief": "色や順番に頼らず、結果の文字を読み比べてみます。選ぶ条件を先に決めると、ログを整理しやすくなります。",
+      "learn": [
+        "result=failed は失敗、result=success は成功です。この問いでは failed の行だけが対象です。",
+        "event=login はログインの試行、user はアカウント、host は端末名です。時刻は UTC です。",
+        "条件に合う行をすべて選びます。選びすぎたときは、同じ行をもう一度クリックして選択を外せます。",
+        "失敗があっても攻撃と決めつけません。ここでは「失敗した記録を集める」という作業だけを練習します。"
+      ],
+      "example": {
+        "title": "2 行を読み分ける例",
+        "text": "user=demo event=login result=success → 今回の条件では選びません。\nuser=sample event=login result=failed → 失敗した行なので選びます。\nuser の名前ではなく result の値で決めます。"
+      },
+      "task": "ログインに失敗した行だけを、すべて選択してください。",
+      "kind": "rows",
+      "sourceLabel": "認証ログ・4 行",
+      "rows": [
+        {
+          "id": "f3-a",
+          "time": "09:25:00",
+          "host": "pc-yui",
+          "user": "yui",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:25:00Z host=pc-yui user=yui event=login result=success"
+        },
+        {
+          "id": "f3-b",
+          "time": "09:25:07",
+          "host": "pc-ren",
+          "user": "ren",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:25:07Z host=pc-ren user=ren event=login result=failed"
+        },
+        {
+          "id": "f3-c",
+          "time": "09:25:12",
+          "host": "pc-yui",
+          "user": "yui",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:25:12Z host=pc-yui user=yui event=login result=failed"
+        },
+        {
+          "id": "f3-d",
+          "time": "09:25:22",
+          "host": "pc-ren",
+          "user": "ren",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:25:22Z host=pc-ren user=ren event=login result=success"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "f3-b",
+          "f3-c"
+        ]
+      },
+      "answerExplanation": "09:25:07 と 09:25:12 は result=failed です。残りの 2 行は success なので、今回は選びません。",
+      "hints": [
+        "各行の result= の右側を見比べましょう。",
+        "failed と書かれた行は 2 行あります。",
+        "09:25:07 と 09:25:12 の行を選び、success の 2 行は外します。"
+      ],
+      "solution": "09:25:07 と 09:25:12 の 2 行を選択して答え合わせします。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom で、調査したい条件に一致する記録を拾い、証拠候補を選ぶ作業につながります。"
+      },
+      "flag": "EASY{SELECT_FAILURES}"
+    },
+    {
+      "id": "f4",
+      "chapter": "find",
+      "title": "失敗の回数を数える",
+      "skill": "指定された範囲の件数を報告する",
+      "minutes": 3,
+      "brief": "「たくさん失敗した」だけでなく、どの範囲を見て何件あったかを伝えると正確です。表示された記録を実際に数えてみましょう。",
+      "learn": [
+        "1 行を 1 件のログとして数えます。この設問は、表示された 5 行だけを対象にします。",
+        "event=login はログインの試行です。result=failed の行だけを数え、success の行は数えません。",
+        "host は端末名、user はアカウントです。ここではすべて pc-aki 上の aki の記録です。時刻は UTC です。",
+        "見えている範囲の件数と、1 日全体の件数は別です。今回の資料から 1 日全体の失敗回数は分かりません。"
+      ],
+      "example": {
+        "title": "別の件数の例",
+        "text": "result=failed / result=success / result=failed の 3 行なら、失敗は 2 件です。「3 行ある」ことと「失敗が 2 件ある」ことを区別します。"
+      },
+      "task": "表示された 5 行の中で、ログインに失敗した記録は何件ありますか。件数を数字で入力してください。",
+      "kind": "text",
+      "sourceLabel": "認証ログ・表示範囲の 5 行",
+      "rows": [
+        {
+          "id": "f4-a",
+          "time": "09:28:00",
+          "host": "pc-aki",
+          "user": "aki",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:28:00Z host=pc-aki user=aki event=login result=failed"
+        },
+        {
+          "id": "f4-b",
+          "time": "09:28:08",
+          "host": "pc-aki",
+          "user": "aki",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:28:08Z host=pc-aki user=aki event=login result=failed"
+        },
+        {
+          "id": "f4-c",
+          "time": "09:28:20",
+          "host": "pc-aki",
+          "user": "aki",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:28:20Z host=pc-aki user=aki event=login result=success"
+        },
+        {
+          "id": "f4-d",
+          "time": "09:29:00",
+          "host": "pc-aki",
+          "user": "aki",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:29:00Z host=pc-aki user=aki event=login result=failed"
+        },
+        {
+          "id": "f4-e",
+          "time": "09:29:15",
+          "host": "pc-aki",
+          "user": "aki",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:29:15Z host=pc-aki user=aki event=login result=success"
+        }
+      ],
+      "answer": {
+        "values": [
+          "3",
+          "３",
+          "3件",
+          "３件"
+        ]
+      },
+      "answerExplanation": "failed は 09:28:00、09:28:08、09:29:00 の 3 件です。この 5 行の中での件数であり、表示されていない時間帯まで含む数ではありません。",
+      "hints": [
+        "5 行すべてではなく、result=failed の行だけ数えます。",
+        "最初の 2 行は failed、3 行目は success です。残りの 2 行も確認しましょう。",
+        "失敗は 09:28:00、09:28:08、09:29:00 の行です。この行数を入力します。"
+      ],
+      "solution": "「3」と入力して答え合わせします。",
+      "bridge": {
+        "tool": "対応記録",
+        "how": "SOCroom の「対応記録」で、確認した時間帯と件数を具体的に伝える基礎になります。"
+      },
+      "flag": "EASY{COUNT_EVENTS}"
+    },
+    {
+      "id": "c1",
+      "chapter": "connect",
+      "title": "出来事を時間順に並べる",
+      "skill": "ログを発生順に並べ直す",
+      "minutes": 4,
+      "brief": "記録が画面に届いた順番と、出来事が起きた順番は同じとは限りません。時刻を使って、操作の流れを作りましょう。",
+      "learn": [
+        "この 4 行は同じ日の UTC 時刻で記録されており、並び順だけが混ざっています。",
+        "host は端末、user はアカウント、event は操作の種類です。",
+        "event=login はログイン、file_open はファイルを開く、file_close はファイルを閉じる、logout はログアウトです。",
+        "上下のボタンで行を動かします。操作名から推測せず、時刻が早いものから並べてください。"
+      ],
+      "example": {
+        "title": "別の時刻を並べる例",
+        "text": "08:40:20、08:40:05、08:40:10 の順で表示されていても、時間順は 08:40:05 → 08:40:10 → 08:40:20 です。同じ分の中では秒の数字を比べます。"
+      },
+      "task": "4 行を、時刻が早いものから遅いものへ並べ替えてください。上下のボタンを使います。",
+      "kind": "order",
+      "sourceLabel": "操作ログ・順番が混ざった 4 行",
+      "rows": [
+        {
+          "id": "c1-close",
+          "time": "09:30:30",
+          "host": "pc-mei",
+          "user": "mei",
+          "event": "file_close",
+          "raw": "2026-10-20T09:30:30Z host=pc-mei user=mei event=file_close"
+        },
+        {
+          "id": "c1-login",
+          "time": "09:30:10",
+          "host": "pc-mei",
+          "user": "mei",
+          "event": "login",
+          "raw": "2026-10-20T09:30:10Z host=pc-mei user=mei event=login"
+        },
+        {
+          "id": "c1-logout",
+          "time": "09:30:40",
+          "host": "pc-mei",
+          "user": "mei",
+          "event": "logout",
+          "raw": "2026-10-20T09:30:40Z host=pc-mei user=mei event=logout"
+        },
+        {
+          "id": "c1-open",
+          "time": "09:30:20",
+          "host": "pc-mei",
+          "user": "mei",
+          "event": "file_open",
+          "raw": "2026-10-20T09:30:20Z host=pc-mei user=mei event=file_open"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "c1-login",
+          "c1-open",
+          "c1-close",
+          "c1-logout"
+        ]
+      },
+      "answerExplanation": "09:30:10 → 09:30:20 → 09:30:30 → 09:30:40 の順です。時刻を読むことで、ログイン、ファイルを開く、閉じる、ログアウトという流れを整理できました。",
+      "hints": [
+        "全行とも 09:30 なので、最後の秒の数字を比べましょう。",
+        "最初は 09:30:10、最後は 09:30:40 です。",
+        "上から 09:30:10、09:30:20、09:30:30、09:30:40 に並べます。"
+      ],
+      "solution": "login → file_open → file_close → logout の順になるよう、時刻 09:30:10、20、30、40 の順に並べて答え合わせします。",
+      "bridge": {
+        "tool": "時系列",
+        "how": "SOCroom の「時系列」で、怪しい操作の前に何があり、その後に何が起きたかを整理する練習です。"
+      },
+      "flag": "EASY{ORDER_EVENTS}"
+    },
+    {
+      "id": "c2",
+      "chapter": "connect",
+      "title": "同じセッションをつなぐ",
+      "skill": "共通の ID を使って関連する行を選ぶ",
+      "minutes": 4,
+      "brief": "時刻が近いだけでは、同じ操作の続きとは限りません。記録に共通の目印があれば、それを使って関連を調べます。",
+      "learn": [
+        "session は、ひと続きの接続や操作を区別するための ID です。この教材では同じ session の行を同じセッションの記録として扱います。",
+        "同じ user でも、session が違えば別セッションの記録です。今回は session=S72 が選ぶ条件です。",
+        "user はアカウント、event は操作の種類です。login はログイン、file_open はファイルを開く、logout はログアウトです。時刻は UTC です。",
+        "共通の session があっても、実際に操作した人が本人であるとは限りません。ここでは記録どうしのつながりだけを確かめます。"
+      ],
+      "example": {
+        "title": "別のセッションの例",
+        "text": "user=demo session=D10 event=login と user=demo session=D10 event=logout は、同じ session=D10 でつながります。user=demo でも session=D11 の行は別に扱います。"
+      },
+      "task": "session=S72 の行をすべて選択してください。同じ user でも、別の session の行は選びません。",
+      "kind": "rows",
+      "sourceLabel": "セッション付き操作ログ・5 行",
+      "rows": [
+        {
+          "id": "c2-a",
+          "time": "09:35:00",
+          "user": "sora",
+          "session": "S72",
+          "event": "login",
+          "raw": "2026-10-20T09:35:00Z user=sora session=S72 event=login"
+        },
+        {
+          "id": "c2-b",
+          "time": "09:35:03",
+          "user": "sora",
+          "session": "S73",
+          "event": "login",
+          "raw": "2026-10-20T09:35:03Z user=sora session=S73 event=login"
+        },
+        {
+          "id": "c2-c",
+          "time": "09:35:10",
+          "user": "sora",
+          "session": "S72",
+          "event": "file_open",
+          "raw": "2026-10-20T09:35:10Z user=sora session=S72 event=file_open"
+        },
+        {
+          "id": "c2-d",
+          "time": "09:35:15",
+          "user": "emi",
+          "session": "S74",
+          "event": "login",
+          "raw": "2026-10-20T09:35:15Z user=emi session=S74 event=login"
+        },
+        {
+          "id": "c2-e",
+          "time": "09:35:30",
+          "user": "sora",
+          "session": "S72",
+          "event": "logout",
+          "raw": "2026-10-20T09:35:30Z user=sora session=S72 event=logout"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "c2-a",
+          "c2-c",
+          "c2-e"
+        ]
+      },
+      "answerExplanation": "09:35:00、09:35:10、09:35:30 の 3 行が session=S72 です。09:35:03 は同じ sora ですが S73 のため、今回の対象には含めません。",
+      "hints": [
+        "user だけでなく、各行の session= の値を確認しましょう。",
+        "選ぶ ID は S72 です。S73 と S74 は外します。",
+        "09:35:00、09:35:10、09:35:30 の 3 行を選びます。"
+      ],
+      "solution": "session=S72 と書かれた 09:35:00、09:35:10、09:35:30 の 3 行を選んで答え合わせします。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom で共通のアカウントや接続の目印を使い、複数のログを照合する考え方につながります。"
+      },
+      "flag": "EASY{CONNECT_SESSION}"
+    },
+    {
+      "id": "c3",
+      "chapter": "connect",
+      "title": "成功していても、まだ分からない",
+      "skill": "記録された結果と安全性の判断を分ける",
+      "minutes": 4,
+      "brief": "ログから分かることを、分かる範囲で言葉にします。「成功」と「本人の正しい操作」は、同じ意味ではありません。",
+      "learn": [
+        "event=login はログインの試行、result=failed は失敗、result=success は成功を表します。",
+        "user は使われたアカウント名です。user に名前があるだけでは、その人が操作したと確認できたわけではありません。",
+        "src は通信の送信元 IP アドレスです。同じ src であっても、本人の操作かどうかをこの値だけで決めることはできません。時刻は UTC です。",
+        "資料にないことは「不明」と残します。本人や担当者への確認など、別の証拠が必要な場面です。"
+      ],
+      "example": {
+        "title": "記録と判断を分ける例",
+        "text": "user=demo event=login result=failed の 1 行から言えるのは「demo のログインが失敗した」です。「demo が打ち間違えた」か「誰かが侵入を試みた」かは、その行だけでは分かりません。"
+      },
+      "task": "表示された 2 行だけを見て、確実に言えることはどれですか。",
+      "kind": "choice",
+      "sourceLabel": "認証ログ・2 行。本人確認の資料はなし",
+      "rows": [
+        {
+          "id": "c3-a",
+          "time": "09:40:00",
+          "user": "mio",
+          "src": "192.0.2.44",
+          "event": "login",
+          "result": "failed",
+          "raw": "2026-10-20T09:40:00Z user=mio src=192.0.2.44 event=login result=failed"
+        },
+        {
+          "id": "c3-b",
+          "time": "09:40:15",
+          "user": "mio",
+          "src": "192.0.2.44",
+          "event": "login",
+          "result": "success",
+          "raw": "2026-10-20T09:40:15Z user=mio src=192.0.2.44 event=login result=success"
+        }
+      ],
+      "choices": [
+        {
+          "id": "c3-normal",
+          "label": "最後は成功しているので、mio 本人の正常な操作だった。",
+          "feedback": "success はログインが成功したことを表すだけです。本人の操作だったことを示す確認資料はありません。"
+        },
+        {
+          "id": "c3-unknown",
+          "label": "失敗の後にログインは成功した。本人の操作かは、この資料だけでは不明。",
+          "feedback": "2 行の時刻と result から、失敗の後に成功したと読めます。本人かどうかは別の確認が必要です。"
+        },
+        {
+          "id": "c3-attack",
+          "label": "失敗の後に成功しているので、攻撃者の侵入が確定した。",
+          "feedback": "失敗の後に成功する流れは、打ち間違いの後の再入力でも起こります。攻撃と断定できる追加証拠はありません。"
+        }
+      ],
+      "answer": {
+        "choiceId": "c3-unknown"
+      },
+      "answerExplanation": "09:40:00 に失敗し、09:40:15 に成功したことは確認できます。どちらも mio というアカウントと同じ送信元の記録ですが、本人の操作かどうかは確認できていません。",
+      "hints": [
+        "result は操作の結果です。操作した人の身元を保証する欄ではありません。",
+        "本人への確認や、操作が予定されていたことを示す資料はあるでしょうか。今回はありません。",
+        "「失敗の後に成功した」という事実と、「本人かは不明」という限界を両方含む答えを選びます。"
+      ],
+      "solution": "「失敗の後にログインは成功した。本人の操作かは、この資料だけでは不明。」を選んで答え合わせします。",
+      "bridge": {
+        "tool": "照会",
+        "how": "SOCroom の「照会」で関係者に確認し、ログだけでは不足している事実を集める理由が分かります。"
+      },
+      "flag": "EASY{SEPARATE_FACTS}"
+    },
+    {
+      "id": "c4",
+      "chapter": "connect",
+      "title": "記録がない理由を考える",
+      "skill": "証拠の欠落を判断に含める",
+      "minutes": 4,
+      "brief": "「ログに見つからない」と「起きていない」は同じではありません。そもそも必要な時間帯のログが集まっているかを確かめます。",
+      "learn": [
+        "ログ収集とは、各機器の記録を調査用の場所に集めることです。今回はその集約先にある資料だけを見ています。",
+        "host=collector-01 は収集装置の名前です。event=collection_stopped は収集が止まったこと、collection_started は収集が再開したことを表します。",
+        "この設問では、収集停止中の認証ログは集約先へ届いておらず、後から回収できたかも未確認です。時刻は UTC です。",
+        "欠けた時間帯の出来事を、記録がないことだけで否定できません。元の機器に残るログや別の記録で確かめる必要があります。"
+      ],
+      "example": {
+        "title": "資料の範囲が足りない例",
+        "text": "手元の資料が 08:00 から 08:30 までしかないとき、09:00 の操作が起きたかは、その資料だけでは判断できません。「見つからなかった」の前に、調べた範囲を確かめます。"
+      },
+      "task": "集約先では 10:05 から 10:15 のログイン記録が見つかりませんでした。収集装置の記録を踏まえると、どの説明が適切ですか。",
+      "kind": "choice",
+      "sourceLabel": "収集装置の状態ログ・2 行。停止中の認証ログは未回収",
+      "rows": [
+        {
+          "id": "c4-stop",
+          "time": "10:05:00",
+          "host": "collector-01",
+          "event": "collection_stopped",
+          "raw": "2026-10-20T10:05:00Z host=collector-01 event=collection_stopped"
+        },
+        {
+          "id": "c4-start",
+          "time": "10:15:00",
+          "host": "collector-01",
+          "event": "collection_started",
+          "raw": "2026-10-20T10:15:00Z host=collector-01 event=collection_started"
+        }
+      ],
+      "choices": [
+        {
+          "id": "c4-none",
+          "label": "ログイン記録がないので、その間にログインは一度もなかった。",
+          "feedback": "この時間帯はログ収集が止まっています。記録が届かなかった可能性があるため、ログインがなかったとは言い切れません。"
+        },
+        {
+          "id": "c4-deleted",
+          "label": "ログがないのは、攻撃者が証拠を削除したからだ。",
+          "feedback": "収集停止の記録はありますが、攻撃者による削除を示す資料はありません。原因を作り足さないようにします。"
+        },
+        {
+          "id": "c4-gap",
+          "label": "収集が止まっていたため、この資料だけではログインの有無は不明。元の機器の記録などを確認する。",
+          "feedback": "10:05 の収集停止から 10:15 の再開まで資料が欠けています。不明点を残し、別の記録を確認するのが適切です。"
+        }
+      ],
+      "answer": {
+        "choiceId": "c4-gap"
+      },
+      "answerExplanation": "10:05 から 10:15 は収集が停止していました。集約先のログがないことは確認できても、実際にログインがなかったとは判断できません。元の認証機器のログや収集状況を確認します。",
+      "hints": [
+        "ログインの記録だけでなく、収集装置の停止と再開の時刻を読みましょう。",
+        "探していた 10:05 から 10:15 は、ちょうど収集が止まっていた時間帯です。",
+        "「有無は不明」とし、別の記録を確認する選択肢を選びます。"
+      ],
+      "solution": "「収集が止まっていたため、この資料だけではログインの有無は不明。元の機器の記録などを確認する。」を選んで答え合わせします。",
+      "bridge": {
+        "tool": "対応記録",
+        "how": "SOCroom の「対応記録」で、調査できた範囲・分からない点・次に確認することを分けて書く練習です。"
+      },
+      "flag": "EASY{CHECK_COVERAGE}"
+    }
+  ],
+  "glossary": [
+    {
+      "term": "ログ",
+      "meaning": "コンピューターの操作や状態を記録したもの。1 行ごとに時刻や操作の内容などが書かれます。記録されていない情報までは分かりません。",
+      "example": "2026-10-20T08:00:00Z user=demo event=login result=success"
+    },
+    {
+      "term": "時刻",
+      "meaning": "その記録が示す出来事の時間。資料の時刻の基準と、調べたい時間帯を確認して読みます。",
+      "example": "2026-10-20T08:00:00Z は 2026 年 10 月 20 日 08:00:00 UTC。"
+    },
+    {
+      "term": "UTC",
+      "meaning": "世界で共通に使う時刻の基準。日本標準時より 9 時間遅い基準です。この教材ではすべて UTC で扱い、変換は不要です。",
+      "example": "日時の末尾の Z は UTC を表します。09:00 UTC は同じ日の 18:00 日本標準時です。"
+    },
+    {
+      "term": "host",
+      "meaning": "この教材のログでは、記録に関係する端末やサーバーの名前を表す欄。アカウント名とは別です。",
+      "example": "host=pc-demo → 端末名は pc-demo。"
+    },
+    {
+      "term": "user",
+      "meaning": "その操作に記録されたアカウント名の欄。この名前があるだけでは、本人が操作した証明にはなりません。",
+      "example": "user=haru → haru というアカウントの記録。"
+    },
+    {
+      "term": "src",
+      "meaning": "source の略。この教材の通信ログでは送信元、つまり通信の出発点を示します。",
+      "example": "src=192.0.2.10 → 送信元 IP アドレスは 192.0.2.10。"
+    },
+    {
+      "term": "dst",
+      "meaning": "destination の略。この教材の通信ログでは送信先、つまり通信の行き先を示します。",
+      "example": "dst=203.0.113.70 → 送信先 IP アドレスは 203.0.113.70。"
+    },
+    {
+      "term": "result",
+      "meaning": "操作の結果を示す欄。この教材では success が成功、failed が失敗です。成功だから安全とは限りません。",
+      "example": "event=login result=failed → ログインが失敗した。"
+    },
+    {
+      "term": "session",
+      "meaning": "一続きの接続や操作を区別する目印の ID。どの範囲をひと続きとするかは製品で異なるため、実務では記録元の仕様も確認します。",
+      "example": "session=D10 の行どうしを同じセッションの記録として照合する。"
+    },
+    {
+      "term": "IPアドレス",
+      "meaning": "通信する機器や接続先を区別するためのアドレス。アドレスだけで操作者の身元や悪意は判断できません。教材の値は説明用です。",
+      "example": "192.0.2.10。IP アドレスの各数字を暗記する必要はありません。"
+    },
+    {
+      "term": "認証",
+      "meaning": "アカウントなどを使って、利用者や機器を確かめる仕組み。ログイン時のパスワード確認などが含まれます。",
+      "example": "正しいパスワードを使ったログインが成功しても、本人が入力したかは別の確認事項です。"
+    },
+    {
+      "term": "アラート",
+      "meaning": "確認が必要な条件に当てはまったことを知らせる通知。攻撃の確定通知ではなく、調査の入り口です。",
+      "example": "「短時間に認証失敗が増えた」というアラートを受け、関連ログと業務の予定を確認する。"
+    }
+  ]
+}

@@ -1,0 +1,1855 @@
+{
+  "chapters": [
+    {
+      "id": "read",
+      "title": "01 通信と処理の欄を読む",
+      "subtitle": "HTTP・DNS・プロセス・追加認証を、短い記録で理解する。"
+    },
+    {
+      "id": "find",
+      "title": "02 条件を重ねて探す",
+      "subtitle": "要求番号・端末・結果を照合し、必要な行と件数を取り出す。"
+    },
+    {
+      "id": "connect",
+      "title": "03 複数の記録をつなぐ",
+      "subtitle": "要求から処理へ。同じ出来事を別の記録から確かめる。"
+    },
+    {
+      "id": "evidence",
+      "title": "04 資料で判断を支える",
+      "subtitle": "業務用途・承認の範囲・本人の回答・資料の日付を照合する。"
+    },
+    {
+      "id": "respond",
+      "title": "05 次の確認を伝える",
+      "subtitle": "事実と未確認事項を分け、担当者が動ける報告にする。"
+    },
+    {
+      "id": "graduate",
+      "title": "06 卒業調査：書き出しの範囲",
+      "subtitle": "関係するログを集め、承認と比較し、確認の限界まで報告する。"
+    }
+  ],
+  "glossary": [
+    {
+      "term": "HTTP",
+      "meaning": "ブラウザとWebサービスなどが、要求と応答をやり取りするための取り決め。ログの status は応答の状態を表します。",
+      "example": "status=403 は要求が拒否された応答。ログイン成功とは別に、操作できる権限が必要な場合がある。"
+    },
+    {
+      "term": "HTTPメソッド",
+      "meaning": "Webサービスへ何を求めるかを示す欄。GET や POST などがあります。具体的な処理内容は、そのサービスの設計も確認します。",
+      "example": "この教材の POST /api/export は、データ書き出しの要求。"
+    },
+    {
+      "term": "DNS",
+      "meaning": "名前に対応する情報を問い合わせる仕組み。問い合わせた名前と、問い合わせの結果は別の欄です。",
+      "example": "query=portal.office.example rcode=NXDOMAIN は、その問い合わせで名前が存在しないと応答された記録。"
+    },
+    {
+      "term": "プロセス",
+      "meaning": "端末で実行されているプログラムの単位。PID はプロセス番号、image は今回の教材では実行ファイルの名前です。",
+      "example": "pid=420 image=viewer.exe は、番号420で viewer.exe が実行された記録。"
+    },
+    {
+      "term": "MFA",
+      "meaning": "多要素認証。パスワードだけでなく、確認通知など別の要素も使って認証します。各要素の結果と、最終的なログイン結果を分けて読みます。",
+      "example": "password=accepted でも mfa=denied なら、パスワード通過だけでログイン完了とは言えない。"
+    },
+    {
+      "term": "要求ID",
+      "meaning": "1回の要求を区別する番号。この教材の同じサービス内では request_id を使ってWeb側とアプリ側の記録を照合できます。",
+      "example": "request_id=REQ-731 の要求と処理結果を集める。"
+    },
+    {
+      "term": "認証と認可",
+      "meaning": "認証は「どのアカウントとして扱うか」の確認、認可は「その操作を許すか」の判断です。認証できても操作が許可されるとは限りません。",
+      "example": "ログインできたアカウントでも、管理画面へのアクセスは拒否されることがある。"
+    },
+    {
+      "term": "プロキシ",
+      "meaning": "端末とサービスの間で通信を中継する機器や仕組み。中継機器のアドレスと、利用したサービスの名前は別の場合があります。",
+      "example": "proxy=10.40.0.5 target_host=archive.vendor.example なら、中継機器は10.40.0.5、要求先の名前は archive.vendor.example。"
+    },
+    {
+      "term": "重複記録",
+      "meaning": "同じ出来事が複数行記録されること。同じ試行番号を再記録した行を、別の試行として数えないようにします。",
+      "example": "attempt=A-12 の拒否ログが2行あっても、同じ試行を再記録したものなら1回。"
+    },
+    {
+      "term": "成果物",
+      "meaning": "処理によって作られたファイルなどの結果。作られたことと、利用者が受け取ったことは別の確認です。",
+      "example": "artifact=report.csv は生成されたファイルの名前。これだけではダウンロード完了を示さない。"
+    },
+    {
+      "term": "データセット",
+      "meaning": "用途に合わせてひとまとめにされたデータの集まり。どのデータを対象にした処理かを区別します。",
+      "example": "dataset=staff_directory は職員連絡先の一覧。"
+    },
+    {
+      "term": "エラー率",
+      "meaning": "対象となる要求のうち、エラーになった要求の割合。ここでは割合の計算はせず、複数の利用者にエラーがあることを確認します。",
+      "example": "3人の要求に status=500 がある場合、サービスの動作確認を担当者へ依頼する材料になる。"
+    }
+  ],
+  "missions": [
+    {
+      "id": "m-r1",
+      "level": "intermediate",
+      "chapter": "read",
+      "title": "応答の数字は何を表す？",
+      "skill": "HTTP の要求と応答結果を区別する",
+      "minutes": 4,
+      "brief": "Web の記録には、頼んだ操作と返ってきた結果が並びます。ログインの結果と混同せず、今回の応答を読みましょう。",
+      "learn": [
+        "HTTP はブラウザとWebサービスなどの間で要求と応答をやり取りする取り決めです。method は要求の種類、path はサービス内の宛先です。",
+        "このサービスの GET /admin/users は、管理画面の利用者一覧を求める操作です。request_id は1回の要求の番号です。",
+        "status は HTTP 応答の状態です。403 はその要求を拒否した応答、200 は成功を示す応答、500 はサーバー側のエラーを示す応答です。",
+        "403 だけでは拒否の具体的な理由や、操作した人の意図までは分かりません。user は記録されたアカウント名です。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "method=GET path=/help status=200 request_id=DEMO-12\nこの要求には status=200 という応答が返っています。path=/help は要求した宛先であり、結果ではありません。"
+      },
+      "task": "今回の要求が拒否されたと分かる欄を、1つ選んでください。",
+      "kind": "token",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-r1-log",
+          "time": "10:02:11",
+          "raw": "2026-10-23T10:02:11Z user=mina method=GET path=/admin/users status=403 request_id=REQ-410",
+          "note": "管理画面の利用者一覧を求めた要求の応答記録。"
+        }
+      ],
+      "answer": {
+        "tokenId": "m-r1-status"
+      },
+      "answerExplanation": "status=403 が今回の要求を拒否した応答を表します。GET は要求の種類、/admin/users は要求先、REQ-410 は照合用の番号です。拒否された理由や悪意の有無は、この行だけでは分かりません。",
+      "hints": [
+        "頼んだ操作ではなく、返ってきた応答の欄を探します。",
+        "応答の状態は status に書かれています。",
+        "status=403 を選びます。403 は要求を拒否した応答です。"
+      ],
+      "solution": "「status=403」を選んで答え合わせします。拒否の理由までは、この行に書かれていません。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、欄の意味を確かめてから必要な記録を選ぶときに使います。"
+      },
+      "flag": "EASY{MID_HTTP_RESPONSE}",
+      "tokens": [
+        {
+          "id": "m-r1-user",
+          "label": "user=mina",
+          "meaning": "記録されたアカウント名。"
+        },
+        {
+          "id": "m-r1-method",
+          "label": "method=GET",
+          "meaning": "HTTP の要求の種類。"
+        },
+        {
+          "id": "m-r1-path",
+          "label": "path=/admin/users",
+          "meaning": "サービス内で要求した宛先。"
+        },
+        {
+          "id": "m-r1-status",
+          "label": "status=403",
+          "meaning": "HTTP 応答の状態。403 は要求を拒否した応答。"
+        },
+        {
+          "id": "m-r1-request",
+          "label": "request_id=REQ-410",
+          "meaning": "1回の要求を識別する番号。"
+        }
+      ]
+    },
+    {
+      "id": "m-r2",
+      "level": "intermediate",
+      "chapter": "read",
+      "title": "DNS が調べた名前を読む",
+      "skill": "問い合わせ先の名前とDNS応答を分ける",
+      "minutes": 4,
+      "brief": "端末が名前を調べた記録です。IPアドレスや結果の数字に目を奪われず、何という名前を調べたのか取り出します。",
+      "learn": [
+        "DNS は、名前に対応する情報を問い合わせる仕組みです。query は問い合わせた名前、type は求めた情報の種類です。",
+        "type=A は IPv4 アドレスを求める問い合わせです。resolver は問い合わせを受けた DNS サーバーで、問い合わせた名前とは別です。",
+        "rcode は応答の種類です。NXDOMAIN は、その問い合わせに対して名前が存在しないという応答です。この記録だけで感染や攻撃とは決まりません。",
+        "host は端末名、src はこの記録での通信元IPアドレスです。ここでは query の値だけを取り出します。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "host=ws-demo resolver=10.40.0.53 query=calendar.office.example type=A rcode=NOERROR\n問い合わせた名前は calendar.office.example です。10.40.0.53 は応答を依頼した DNS サーバーです。"
+      },
+      "task": "端末が問い合わせた名前を入力してください。query= は付けず、名前だけを入力します。",
+      "kind": "text",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-r2-log",
+          "time": "10:05:20",
+          "raw": "2026-10-23T10:05:20Z host=ws-18 src=10.40.1.18 resolver=10.40.0.53 query=reports-old.office.example type=A rcode=NXDOMAIN",
+          "note": "type=A は IPv4 アドレスの問い合わせ。"
+        }
+      ],
+      "answer": {
+        "values": [
+          "reports-old.office.example"
+        ],
+        "caseSensitive": false
+      },
+      "answerExplanation": "query=reports-old.office.example なので、問い合わせた名前は reports-old.office.example です。resolver の 10.40.0.53 は DNS サーバー、NXDOMAIN は応答の種類です。",
+      "hints": [
+        "名前が入っている query の欄を探しましょう。",
+        "resolver は問い合わせを受けたサーバーです。query= の右側を読みます。",
+        "reports-old.office.example を入力します。"
+      ],
+      "solution": "「reports-old.office.example」と入力します。存在しないという応答と、問い合わせた名前を別々に読めました。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、欄の意味を確かめてから必要な記録を選ぶときに使います。"
+      },
+      "flag": "EASY{MID_DNS_NAME}"
+    },
+    {
+      "id": "m-r3",
+      "level": "intermediate",
+      "chapter": "read",
+      "title": "起動したプログラムを特定する",
+      "skill": "プロセス番号と実行ファイル名を区別する",
+      "minutes": 4,
+      "brief": "同じログに2つのプログラム名があっても、どちらも今起動したとは限りません。欄の役割を確認しましょう。",
+      "learn": [
+        "プロセスは端末で実行されるプログラムの単位です。この教材の event=process_started は新しいプロセスの起動記録です。",
+        "pid は新しく起動したプロセスの番号、image はその実行ファイル名です。数字の pid とファイル名の image を区別します。",
+        "ppid は起動元のプロセス番号、parent_image は起動元の実行ファイル名です。この行では起動元はすでに存在しています。",
+        "ファイル名だけでは安全性は判定できません。今回は何が起動したと記録されたかだけを読みます。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "event=process_started pid=214 image=notes.exe ppid=108 parent_image=desktop.exe\nこの行で新しく起動した実行ファイルは notes.exe です。desktop.exe は起動元です。"
+      },
+      "task": "今回、新しく起動したプログラムの実行ファイル名を示す欄を選んでください。",
+      "kind": "token",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-r3-log",
+          "time": "10:08:01",
+          "raw": "2026-10-23T10:08:01Z host=ws-22 user=mina event=process_started pid=582 image=sheet-viewer.exe ppid=310 parent_image=browser.exe",
+          "note": "pid と ppid はこの端末でのプロセス番号。"
+        }
+      ],
+      "answer": {
+        "tokenId": "m-r3-image"
+      },
+      "answerExplanation": "image=sheet-viewer.exe が新しく起動した実行ファイルです。parent_image=browser.exe は起動元、pid=582 は新しく起動したプロセスの番号です。この記録だけで悪意の有無は判断していません。",
+      "hints": [
+        "新しいプロセスのファイル名は image の欄です。",
+        "parent_image は起動元の名前なので、今回の答えではありません。",
+        "image=sheet-viewer.exe を選びます。"
+      ],
+      "solution": "「image=sheet-viewer.exe」を選びます。起動元と新しく起動したプログラムを分けて読みます。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、欄の意味を確かめてから必要な記録を選ぶときに使います。"
+      },
+      "flag": "EASY{MID_PROCESS_IMAGE}",
+      "tokens": [
+        {
+          "id": "m-r3-event",
+          "label": "event=process_started",
+          "meaning": "新しいプロセスが起動した記録。"
+        },
+        {
+          "id": "m-r3-pid",
+          "label": "pid=582",
+          "meaning": "新しく起動したプロセスの番号。"
+        },
+        {
+          "id": "m-r3-image",
+          "label": "image=sheet-viewer.exe",
+          "meaning": "新しく起動したプロセスの実行ファイル名。"
+        },
+        {
+          "id": "m-r3-ppid",
+          "label": "ppid=310",
+          "meaning": "起動元のプロセス番号。"
+        },
+        {
+          "id": "m-r3-parent",
+          "label": "parent_image=browser.exe",
+          "meaning": "起動元の実行ファイル名。"
+        }
+      ]
+    },
+    {
+      "id": "m-r4",
+      "level": "intermediate",
+      "chapter": "read",
+      "title": "追加認証まで通った？",
+      "skill": "認証の途中と最終結果を分ける",
+      "minutes": 4,
+      "brief": "パスワード確認の成功だけを見て「ログイン成功」と決めていませんか。追加の確認と最終結果まで追います。",
+      "learn": [
+        "MFA は多要素認証です。このサービスではパスワード確認に加えて、登録済み端末に届く確認通知への応答が必要です。",
+        "auth_id は1回の認証をまとめる番号。factor=password はパスワード確認、factor=push は確認通知への応答です。",
+        "accepted は要素の確認を通過、denied は拒否を表します。event=auth_finished が最終結果で、result=blocked はログイン完了を認めなかった記録です。",
+        "パスワードを通過した理由や誰が操作したかは別の調査です。今回の認証結果に限って答えます。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "auth_id=AUTH-DEMO factor=password result=accepted\nauth_id=AUTH-DEMO factor=push result=accepted\nauth_id=AUTH-DEMO event=auth_finished result=success\nこの別例では、2要素と最終結果を見て認証成功を確認できます。"
+      },
+      "task": "AUTH-62 の認証について、記録で確認できる結果を選んでください。",
+      "kind": "choice",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-r4-pass",
+          "time": "10:12:00",
+          "raw": "2026-10-23T10:12:00Z user=keito auth_id=AUTH-62 factor=password result=accepted",
+          "note": "パスワード要素の確認を通過。"
+        },
+        {
+          "id": "m-r4-push",
+          "time": "10:12:05",
+          "raw": "2026-10-23T10:12:05Z user=keito auth_id=AUTH-62 factor=push result=denied",
+          "note": "追加の確認通知は拒否。"
+        },
+        {
+          "id": "m-r4-final",
+          "time": "10:12:06",
+          "raw": "2026-10-23T10:12:06Z user=keito auth_id=AUTH-62 event=auth_finished result=blocked",
+          "note": "この認証ではログイン完了を認めなかった。"
+        }
+      ],
+      "answer": {
+        "choiceId": "m-r4-blocked"
+      },
+      "answerExplanation": "パスワード確認は accepted ですが、追加確認は denied、最終結果は blocked です。AUTH-62 ではログイン完了が認められていません。誰がパスワードを入力したかは、この記録だけでは決まりません。",
+      "hints": [
+        "最初の accepted だけで止まらず、同じ auth_id の最後の行まで読みます。",
+        "event=auth_finished が最終結果です。その result を確認します。",
+        "追加確認が拒否され、最終結果も blocked になっている選択肢です。"
+      ],
+      "solution": "「パスワード確認は通過したが、追加確認が拒否され、この認証はログイン完了を認められなかった。」を選びます。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、欄の意味を確かめてから必要な記録を選ぶときに使います。"
+      },
+      "flag": "EASY{MID_MFA_FINAL}",
+      "choices": [
+        {
+          "id": "m-r4-success",
+          "label": "パスワード確認が成功したので、ログインは完了した。",
+          "feedback": "accepted は1要素の結果です。追加確認と auth_finished の最終結果まで読みましょう。"
+        },
+        {
+          "id": "m-r4-blocked",
+          "label": "パスワード確認は通過したが、追加確認が拒否され、この認証はログイン完了を認められなかった。",
+          "feedback": "各要素と最終結果を区別して読めています。"
+        },
+        {
+          "id": "m-r4-owner",
+          "label": "本人が間違えて操作しただけだと確認できた。",
+          "feedback": "操作した人や拒否した理由は、この記録にありません。認証結果と操作の意図は分けます。"
+        }
+      ]
+    },
+    {
+      "id": "m-f1",
+      "level": "intermediate",
+      "chapter": "find",
+      "title": "1回の要求を検索する",
+      "skill": "要求IDで Web とアプリの記録を集める",
+      "minutes": 4,
+      "brief": "利用者が「予定表が開かなかった」と伝えてきました。似た時刻の別の要求を混ぜず、指定された要求を探します。",
+      "learn": [
+        "request_id は1回の要求の番号です。今回の予定表サービスは、Web側とアプリ側で同じ番号を記録します。",
+        "component=web は要求を受ける側、component=app は処理する側。event は出来事で、request_received は受付、permission_checked は権限確認、response_sent は応答です。",
+        "この検索欄は文字をそのまま探します。指定の文字列で絞った後、行の request_id が対象と一致するか確認します。",
+        "result=denied は権限確認の拒否です。この課題は拒否の原因調査ではなく、同じ要求の記録を揃える練習です。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "Web とアプリの双方に request_id=REQ-DEMO とあれば、同じサービスの同じ要求を調べる手がかりになります。user が同じだけでは、別の要求を混ぜる可能性があります。"
+      },
+      "task": "検索欄に request_id=REQ-731 と入力し、REQ-731 の記録を3行すべて選んでください。",
+      "kind": "filter",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-f1-web",
+          "time": "10:20:00",
+          "raw": "2026-10-23T10:20:00Z component=web user=rio request_id=REQ-731 event=request_received path=/calendar",
+          "note": "予定表への要求を受付。"
+        },
+        {
+          "id": "m-f1-other",
+          "time": "10:20:01",
+          "raw": "2026-10-23T10:20:01Z component=web user=rio request_id=REQ-732 event=request_received path=/help",
+          "note": "同じ利用者からの別の要求。"
+        },
+        {
+          "id": "m-f1-app",
+          "time": "10:20:02",
+          "raw": "2026-10-23T10:20:02Z component=app user=rio request_id=REQ-731 event=permission_checked result=denied",
+          "note": "要求に対する権限確認。"
+        },
+        {
+          "id": "m-f1-old",
+          "time": "10:20:03",
+          "raw": "2026-10-23T10:20:03Z component=app user=aya request_id=REQ-729 event=permission_checked result=allowed",
+          "note": "別の利用者・別の要求。"
+        },
+        {
+          "id": "m-f1-response",
+          "time": "10:20:04",
+          "raw": "2026-10-23T10:20:04Z component=web user=rio request_id=REQ-731 event=response_sent status=403",
+          "note": "拒否の応答。"
+        },
+        {
+          "id": "m-f1-other-response",
+          "time": "10:20:05",
+          "raw": "2026-10-23T10:20:05Z component=web user=rio request_id=REQ-732 event=response_sent status=200",
+          "note": "ヘルプへの別の要求の応答。"
+        }
+      ],
+      "answer": {
+        "query": "request_id=REQ-731",
+        "rowIds": [
+          "m-f1-web",
+          "m-f1-app",
+          "m-f1-response"
+        ]
+      },
+      "answerExplanation": "REQ-731 は10:20:00の受付、10:20:02の権限確認、10:20:04の応答の3行です。user=rio でも REQ-732 は別の要求です。検索で狭めた後、番号を確かめて記録を揃えられました。",
+      "hints": [
+        "検索欄に、指定の request_id=REQ-731 を入力します。",
+        "user=rio だけで集めると REQ-732 も含まれます。要求番号を照合しましょう。",
+        "10:20:00、10:20:02、10:20:04 の3行を選びます。"
+      ],
+      "solution": "検索欄に「request_id=REQ-731」と入力し、受付・権限確認・応答の3行を選びます。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、条件を絞り、選んだ記録が本当に対象かを照合するときに使います。"
+      },
+      "flag": "EASY{MID_REQUEST_SEARCH}"
+    },
+    {
+      "id": "m-f2",
+      "level": "intermediate",
+      "chapter": "find",
+      "title": "端末と応答を両方合わせる",
+      "skill": "DNS ログを2条件で選ぶ",
+      "minutes": 4,
+      "brief": "問い合わせ失敗の件数を調べる前に、どの端末のどの応答かを決めます。片方の条件だけでは別の記録が混ざります。",
+      "learn": [
+        "host は問い合わせ元の端末、query は問い合わせた名前、rcode は DNS の応答の種類です。",
+        "NXDOMAIN は名前が存在しないという応答です。NOERROR は応答コードとしてエラーがないことを表し、この教材の該当行にはアドレス回答もあります。",
+        "SERVFAIL は問い合わせを処理できなかった応答です。NXDOMAIN と同じ理由の失敗ではありません。",
+        "今回は host=ws-18 かつ rcode=NXDOMAIN の両方を満たす行だけを集めます。名前が怪しく見えるかどうかは条件にしません。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "host=ws-demo rcode=NXDOMAIN と host=ws-other rcode=NXDOMAIN があっても、ws-demo を調べるなら前者だけです。端末と結果の両方を読みます。"
+      },
+      "task": "host=ws-18 で、かつ rcode=NXDOMAIN の行をすべて選んでください。",
+      "kind": "rows",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-f2-a",
+          "time": "10:25:00",
+          "raw": "2026-10-23T10:25:00Z host=ws-18 query=reports-old.office.example type=A rcode=NXDOMAIN",
+          "note": "名前が存在しないという応答。"
+        },
+        {
+          "id": "m-f2-b",
+          "time": "10:25:01",
+          "raw": "2026-10-23T10:25:01Z host=ws-19 query=reports-old.office.example type=A rcode=NXDOMAIN",
+          "note": "別の端末からの問い合わせ。"
+        },
+        {
+          "id": "m-f2-c",
+          "time": "10:25:02",
+          "raw": "2026-10-23T10:25:02Z host=ws-18 query=reports.office.example type=A rcode=NOERROR answer=192.0.2.80",
+          "note": "アドレス回答のある問い合わせ。"
+        },
+        {
+          "id": "m-f2-d",
+          "time": "10:25:03",
+          "raw": "2026-10-23T10:25:03Z host=ws-18 query=calendar-old.office.example type=A rcode=NXDOMAIN",
+          "note": "名前が存在しないという応答。"
+        },
+        {
+          "id": "m-f2-e",
+          "time": "10:25:04",
+          "raw": "2026-10-23T10:25:04Z host=ws-18 query=calendar.office.example type=A rcode=SERVFAIL",
+          "note": "処理できなかった応答。名前不存在とは別。"
+        },
+        {
+          "id": "m-f2-f",
+          "time": "10:25:05",
+          "raw": "2026-10-23T10:25:05Z host=ws-19 query=calendar.office.example type=A rcode=NOERROR answer=192.0.2.81",
+          "note": "別の端末へのアドレス回答。"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "m-f2-a",
+          "m-f2-d"
+        ]
+      },
+      "answerExplanation": "10:25:00 と10:25:03 の2行だけが ws-18 と NXDOMAIN の両方に一致します。10:25:01 は別端末、10:25:04 は SERVFAIL です。問い合わせ先や失敗の見た目だけで選びません。",
+      "hints": [
+        "まず host=ws-18 の行を探し、その中から応答を確認します。",
+        "SERVFAIL は NXDOMAIN ではありません。同じ「うまくいかない」でも区別します。",
+        "10:25:00 と10:25:03 の2行を選びます。"
+      ],
+      "solution": "10:25:00 と10:25:03 の2行を選びます。端末と応答コードの2条件を満たしています。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、条件を絞り、選んだ記録が本当に対象かを照合するときに使います。"
+      },
+      "flag": "EASY{MID_DNS_TWO_CONDITIONS}"
+    },
+    {
+      "id": "m-f3",
+      "level": "intermediate",
+      "chapter": "find",
+      "title": "行数と試行回数は同じ？",
+      "skill": "同じ試行番号の重複を除いて数える",
+      "minutes": 4,
+      "brief": "拒否ログが何行もあります。ただし、集約側が同じ記録を再送した行が含まれています。試行回数を数え直しましょう。",
+      "learn": [
+        "このログの attempt は確認通知1回分の試行番号です。同じ attempt の再送は同じ試行で、別の試行として数えません。",
+        "result=denied は拒否、approved は承認、timeout は時間内に応答がなかった結果です。今回は denied だけを数えます。",
+        "copy=original は元の記録、copy=replayed は集約時に再送された記録です。この教材では同じ attempt の結果を再記録しています。",
+        "対象は表示された6行だけです。この時間帯の全試行や、その後のログイン成否まで分かったわけではありません。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "attempt=P-1 result=denied が元の記録と再送で2行、attempt=P-2 result=denied が1行なら、拒否された試行は2回です。ログの3行をそのまま3回とは数えません。"
+      },
+      "task": "表示された6行で result=denied になった試行は何回ですか。同じ attempt を1回として数え、数字だけで入力してください。",
+      "kind": "text",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-f3-a",
+          "time": "10:30:00",
+          "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied copy=original",
+          "note": "確認通知を拒否。"
+        },
+        {
+          "id": "m-f3-b",
+          "time": "10:30:01",
+          "raw": "2026-10-23T10:30:01Z user=mei attempt=M-11 event=mfa_result result=denied copy=replayed",
+          "note": "M-11 の結果を再送した同じ記録。"
+        },
+        {
+          "id": "m-f3-c",
+          "time": "10:30:10",
+          "raw": "2026-10-23T10:30:10Z user=mei attempt=M-12 event=mfa_result result=denied copy=original",
+          "note": "別の試行の拒否。"
+        },
+        {
+          "id": "m-f3-d",
+          "time": "10:30:20",
+          "raw": "2026-10-23T10:30:20Z user=mei attempt=M-13 event=mfa_result result=approved copy=original",
+          "note": "この試行の確認通知は承認。"
+        },
+        {
+          "id": "m-f3-e",
+          "time": "10:30:30",
+          "raw": "2026-10-23T10:30:30Z user=mei attempt=M-14 event=mfa_result result=timeout copy=original",
+          "note": "時間内の応答なし。"
+        },
+        {
+          "id": "m-f3-f",
+          "time": "10:30:40",
+          "raw": "2026-10-23T10:30:40Z user=mei attempt=M-15 event=mfa_result result=denied copy=original",
+          "note": "別の試行の拒否。"
+        }
+      ],
+      "answer": {
+        "values": [
+          "3",
+          "３",
+          "3回",
+          "３回"
+        ],
+        "caseSensitive": false
+      },
+      "answerExplanation": "拒否された試行番号は M-11・M-12・M-15 の3種類です。M-11 の2行は同じ試行です。M-13 の承認と M-14 の時間切れは、指定された denied の件数に含めません。",
+      "hints": [
+        "denied の行を見つけ、その attempt を書き出すつもりで読みます。",
+        "M-11 は2行ありますが、同じ試行です。approved と timeout は除きます。",
+        "残る試行番号は M-11・M-12・M-15 の3つです。"
+      ],
+      "solution": "「3」と入力します。拒否ログは4行ですが、拒否された試行番号は3種類です。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、条件を絞り、選んだ記録が本当に対象かを照合するときに使います。"
+      },
+      "flag": "EASY{MID_DEDUP_COUNT}"
+    },
+    {
+      "id": "m-f4",
+      "level": "intermediate",
+      "chapter": "find",
+      "title": "検索で出た行をもう一度読む",
+      "skill": "部分一致の検索結果から対象操作を選ぶ",
+      "minutes": 4,
+      "brief": "検索に出てきた行が、全部ほしい証拠とは限りません。文字の一致と、条件の一致を分けて選びます。",
+      "learn": [
+        "この検索は文字列の部分一致です。user=mina で探すと user=mina2 の行も表示されます。= の右の値全体を確かめてください。",
+        "host は端末、user は記録されたアカウント、event は操作です。file_read はファイルを読む操作、file_created は作成です。",
+        "path はファイルの場所です。今回は ws-22 上のアカウント mina による file_read の記録が対象です。",
+        "読んだ記録は、外部への送信記録ではありません。今は対象の読み取り操作を集めることに集中します。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "user=demo という検索は user=demo-old にも文字として一致します。アカウント demo だけを調べるなら、値全体が demo の行を選びます。"
+      },
+      "task": "検索欄に user=mina と入力し、host=ws-22・user=mina・event=file_read の3条件に一致する2行を選んでください。",
+      "kind": "filter",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-f4-a",
+          "time": "10:35:00",
+          "raw": "2026-10-23T10:35:00Z host=ws-22 user=mina event=file_read path=/team/plan.csv",
+          "note": "対象端末で計画表を読み取り。"
+        },
+        {
+          "id": "m-f4-b",
+          "time": "10:35:01",
+          "raw": "2026-10-23T10:35:01Z host=ws-22 user=mina2 event=file_read path=/team/plan.csv",
+          "note": "名前が似た別アカウント。"
+        },
+        {
+          "id": "m-f4-c",
+          "time": "10:35:02",
+          "raw": "2026-10-23T10:35:02Z host=ws-23 user=mina event=file_read path=/team/plan.csv",
+          "note": "同じアカウントだが別端末。"
+        },
+        {
+          "id": "m-f4-d",
+          "time": "10:35:03",
+          "raw": "2026-10-23T10:35:03Z host=ws-22 user=mina event=file_created path=/temp/notes.txt",
+          "note": "同じ端末・アカウントの作成操作。"
+        },
+        {
+          "id": "m-f4-e",
+          "time": "10:35:04",
+          "raw": "2026-10-23T10:35:04Z host=ws-22 user=mina event=file_read path=/team/budget.csv",
+          "note": "対象端末で予算表を読み取り。"
+        },
+        {
+          "id": "m-f4-f",
+          "time": "10:35:05",
+          "raw": "2026-10-23T10:35:05Z host=ws-22 user=hana event=file_read path=/team/plan.csv",
+          "note": "別のアカウント。"
+        }
+      ],
+      "answer": {
+        "query": "user=mina",
+        "rowIds": [
+          "m-f4-a",
+          "m-f4-e"
+        ]
+      },
+      "answerExplanation": "10:35:00 と10:35:04 の2行が、端末 ws-22・アカウント mina・読み取り操作 file_read の全条件に一致します。検索では mina2 や別端末、作成操作も表示されるため、表示されたという理由だけでは選べません。",
+      "hints": [
+        "指定の user=mina で検索してから、各行の3つの欄を照合します。",
+        "mina2、ws-23、file_created のいずれかに当たる行は今回の対象外です。",
+        "10:35:00 と10:35:04 の読み取り操作を選びます。"
+      ],
+      "solution": "「user=mina」で検索し、10:35:00 と10:35:04 の2行を選びます。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、条件を絞り、選んだ記録が本当に対象かを照合するときに使います。"
+      },
+      "flag": "EASY{MID_SEARCH_RECHECK}"
+    },
+    {
+      "id": "m-c1",
+      "level": "intermediate",
+      "chapter": "connect",
+      "title": "要求から応答までを並べる",
+      "skill": "異なる記録元の出来事を時系列にする",
+      "minutes": 4,
+      "brief": "Web側とアプリ側の記録が混ざっています。同じ要求の中で何が先だったか、時刻で整理しましょう。",
+      "learn": [
+        "4行とも、同じ予定表サービスの request_id=REQ-842 です。component=web は Web 側、component=app はアプリ側です。",
+        "job_queued は処理の受付、file_created は成果物の作成、response_sent は応答です。artifact は作られたファイル名です。",
+        "この4行は同じ基準の UTC 時刻で、時刻ずれはないという条件です。画面の上下ではなく、記録された時刻で並べます。",
+        "順番が分かっても、ブラウザがファイルを保存したことまでは分かりません。応答後の操作は別の記録が必要です。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "同じ基準の時計で 11:00:01 の要求受付、11:00:03 の処理、11:00:05 の応答なら、その順に並べます。記録元が違うだけで、順番を変える必要はありません。"
+      },
+      "task": "4枚を、記録された時刻が早い順に並べてください。",
+      "kind": "order",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-c1-file",
+          "time": "11:02:04",
+          "raw": "2026-10-23T11:02:04Z component=app request_id=REQ-842 event=file_created artifact=calendar-842.csv",
+          "note": "予定表ファイルを作成。"
+        },
+        {
+          "id": "m-c1-response",
+          "time": "11:02:05",
+          "raw": "2026-10-23T11:02:05Z component=web request_id=REQ-842 event=response_sent status=200 response_kind=job_metadata",
+          "note": "処理情報を返した応答。ファイル本体ではない。"
+        },
+        {
+          "id": "m-c1-request",
+          "time": "11:02:00",
+          "raw": "2026-10-23T11:02:00Z component=web request_id=REQ-842 event=request_received method=POST path=/api/calendar-export",
+          "note": "書き出し要求の受付。"
+        },
+        {
+          "id": "m-c1-queue",
+          "time": "11:02:01",
+          "raw": "2026-10-23T11:02:01Z component=app request_id=REQ-842 event=job_queued job=CAL-842",
+          "note": "書き出し処理を受け付け。"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "m-c1-request",
+          "m-c1-queue",
+          "m-c1-file",
+          "m-c1-response"
+        ]
+      },
+      "answerExplanation": "11:02:00 の要求受付→11:02:01 の処理受付→11:02:04 のファイル作成→11:02:05 の応答です。応答は処理情報であり、利用者のファイル受取完了までは示していません。",
+      "hints": [
+        "時刻の秒まで比べます。この課題では時計の補正は不要です。",
+        "00秒の要求受付が最初、05秒の応答が最後です。",
+        "00秒→01秒→04秒→05秒の順にします。"
+      ],
+      "solution": "要求受付、処理受付、ファイル作成、応答の順に並べます。",
+      "bridge": {
+        "tool": "時系列",
+        "how": "SOCroom の「時系列」で、複数の記録元から集めた出来事を順に整理するときに使います。"
+      },
+      "flag": "EASY{MID_REQUEST_TIMELINE}"
+    },
+    {
+      "id": "m-c2",
+      "level": "intermediate",
+      "chapter": "connect",
+      "title": "要求番号から処理番号へつなぐ",
+      "skill": "2種類の番号を照合して成果物を追う",
+      "minutes": 4,
+      "brief": "Webの要求番号と、処理担当の番号が違います。両方の番号が書かれた橋渡しの記録を使いましょう。",
+      "learn": [
+        "request_id は利用者の要求、job はアプリが実行する仕事の番号です。番号の名前が違っても、対応を記録した行からたどれます。",
+        "このサービスでは event=job_assigned の行に、要求とジョブの対応が書かれています。job_started は開始、artifact_created は成果物作成です。",
+        "今回は要求 REQ-712 から割り当てられたジョブの3行を選びます。同じ user の別要求は含めません。",
+        "artifact は作られたファイル名です。この照合は「どの要求の処理で作ったか」を確かめるもので、ファイルを受け取った人の特定ではありません。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "request_id=DEMO-1 job=J-9 event=job_assigned があれば、次に job=J-9 の開始や作成記録をたどれます。要求IDが後の行に省略されていても、対応記録が手がかりです。"
+      },
+      "task": "REQ-712 に対応するジョブの「割当・開始・成果物作成」を、3行選んでください。まず要求と job の対応を確認します。",
+      "kind": "rows",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-c2-map",
+          "time": "11:10:00",
+          "raw": "2026-10-23T11:10:00Z user=mia request_id=REQ-712 job=JOB-38 event=job_assigned",
+          "note": "要求と処理番号の対応。"
+        },
+        {
+          "id": "m-c2-other-map",
+          "time": "11:10:01",
+          "raw": "2026-10-23T11:10:01Z user=mia request_id=REQ-713 job=JOB-39 event=job_assigned",
+          "note": "同じアカウントの別要求。"
+        },
+        {
+          "id": "m-c2-start",
+          "time": "11:10:02",
+          "raw": "2026-10-23T11:10:02Z job=JOB-38 event=job_started dataset=room_list",
+          "note": "JOB-38 の処理開始。room_list は会議室一覧。"
+        },
+        {
+          "id": "m-c2-other-start",
+          "time": "11:10:03",
+          "raw": "2026-10-23T11:10:03Z job=JOB-39 event=job_started dataset=room_list",
+          "note": "JOB-39 の処理開始。"
+        },
+        {
+          "id": "m-c2-output",
+          "time": "11:10:05",
+          "raw": "2026-10-23T11:10:05Z job=JOB-38 event=artifact_created artifact=rooms-38.csv",
+          "note": "JOB-38 の成果物作成。"
+        },
+        {
+          "id": "m-c2-other-output",
+          "time": "11:10:06",
+          "raw": "2026-10-23T11:10:06Z job=JOB-39 event=artifact_created artifact=rooms-39.csv",
+          "note": "別のジョブの成果物。"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "m-c2-map",
+          "m-c2-start",
+          "m-c2-output"
+        ]
+      },
+      "answerExplanation": "REQ-712 に割り当てられたのは JOB-38 です。その割当、11:10:02 の開始、11:10:05 の成果物作成をつなぎます。JOB-39 は同じアカウントの要求でも REQ-713 の処理です。",
+      "hints": [
+        "最初に request_id=REQ-712 がある行の job を読みます。",
+        "対応する番号は JOB-38 です。その番号の開始と成果物作成を探します。",
+        "11:10:00、11:10:02、11:10:05 の3行を選びます。"
+      ],
+      "solution": "REQ-712 / JOB-38 の割当、JOB-38 の開始、rooms-38.csv の作成を選びます。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、条件を絞り、選んだ記録が本当に対象かを照合するときに使います。"
+      },
+      "flag": "EASY{MID_JOIN_JOB}"
+    },
+    {
+      "id": "m-c3",
+      "level": "intermediate",
+      "chapter": "connect",
+      "title": "ログインできても操作できない",
+      "skill": "認証と操作権限の結果を照合する",
+      "minutes": 4,
+      "brief": "ログイン成功の直後に拒否が出ています。矛盾しているのか、それとも別の確認なのか、記録を分けて考えます。",
+      "learn": [
+        "認証は、どのアカウントとして扱うかを確認することです。認可は、そのアカウントに特定の操作を許すかの判断です。",
+        "session はログイン後の操作をまとめる番号です。このサービスの同じ session を使って、認証結果と後の要求を照合できます。",
+        "event=login_finished result=success は認証成功。event=permission_checked result=denied は操作権限の確認で拒否した記録です。",
+        "今回は権限不足の理由が reason=missing_role と記録されています。role は操作できる範囲をまとめた役割で、admin が必要だったと明記されています。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "入館証の確認を通っても、すべての部屋に入れるとは限りません。同じように、ログインできても管理者用操作の権限があるとは限りません。"
+      },
+      "task": "session=S-225 の記録から確認できることを選んでください。",
+      "kind": "choice",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-c3-auth",
+          "time": "11:20:00",
+          "raw": "2026-10-23T11:20:00Z user=ren session=S-225 event=login_finished result=success",
+          "note": "このセッションの認証に成功。"
+        },
+        {
+          "id": "m-c3-check",
+          "time": "11:20:10",
+          "raw": "2026-10-23T11:20:10Z user=ren session=S-225 request_id=REQ-225 event=permission_checked result=denied reason=missing_role required_role=admin",
+          "note": "管理者の役割がないため操作を拒否。"
+        },
+        {
+          "id": "m-c3-web",
+          "time": "11:20:11",
+          "raw": "2026-10-23T11:20:11Z user=ren session=S-225 request_id=REQ-225 method=GET path=/admin/settings status=403",
+          "note": "管理設定ページの要求に拒否の応答。"
+        }
+      ],
+      "answer": {
+        "choiceId": "m-c3-split"
+      },
+      "answerExplanation": "S-225 の認証は成功していますが、管理設定への操作は必要な admin の役割がなく拒否されました。認証と認可は別なので、両方の結果は矛盾しません。この操作が拒否されたことと、他の操作まで拒否されたことも別です。",
+      "hints": [
+        "login_finished と permission_checked は違う確認です。",
+        "最初の成功は認証。後の拒否は管理設定への操作権限です。",
+        "認証は成功し、管理設定への操作は権限不足で拒否された、という選択肢です。"
+      ],
+      "solution": "「認証は成功したが、管理設定への操作は必要な権限がなく拒否された。」を選びます。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、条件を絞り、選んだ記録が本当に対象かを照合するときに使います。"
+      },
+      "flag": "EASY{MID_AUTH_VS_PERMISSION}",
+      "choices": [
+        {
+          "id": "m-c3-contradiction",
+          "label": "成功と拒否があるので、どちらかのログは必ず誤りだ。",
+          "feedback": "認証と操作権限は別の確認です。同じセッションでも両方の結果は成立します。"
+        },
+        {
+          "id": "m-c3-split",
+          "label": "認証は成功したが、管理設定への操作は必要な権限がなく拒否された。",
+          "feedback": "認証成功と、その後の操作権限の拒否を分けて読めています。"
+        },
+        {
+          "id": "m-c3-all",
+          "label": "管理設定が拒否されたので、すべての操作が不可能だった。",
+          "feedback": "ここで拒否を確認したのは REQ-225 の管理設定要求です。他の操作までは確認していません。"
+        }
+      ]
+    },
+    {
+      "id": "m-c4",
+      "level": "intermediate",
+      "chapter": "connect",
+      "title": "存在しない名前は攻撃の証拠？",
+      "skill": "DNS の応答と原因の推測を分ける",
+      "minutes": 4,
+      "brief": "同じ端末から、古そうな名前への問い合わせが繰り返されています。見た目の印象だけで結論を広げない練習です。",
+      "learn": [
+        "query は問い合わせた名前、rcode=NXDOMAIN は名前が存在しないという DNS の応答です。この課題ではその応答が3回記録されています。",
+        "入力間違い、古い設定、望ましくないプログラムなど、似た記録を生む原因は複数考えられます。どれかはログと追加資料で確かめます。",
+        "この資料には、問い合わせたプログラムや設定変更の記録はありません。名前の印象や繰り返し回数だけで原因を決めません。"
+      ],
+      "example": {
+        "title": "別の記録で練習",
+        "text": "古い社内ブックマークへの問い合わせでも、名前が廃止されていれば存在しないという応答になり得ます。ただし、似た名前なら必ず古いブックマークが原因、という意味ではありません。"
+      },
+      "task": "この3行だけから言える、最も適切な判断を選んでください。",
+      "kind": "choice",
+      "sourceLabel": "学習用の架空ログ・時刻は UTC",
+      "rows": [
+        {
+          "id": "m-c4-a",
+          "time": "11:30:00",
+          "raw": "2026-10-23T11:30:00Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
+          "note": "問い合わせの記録1。"
+        },
+        {
+          "id": "m-c4-b",
+          "time": "11:30:30",
+          "raw": "2026-10-23T11:30:30Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
+          "note": "問い合わせの記録2。"
+        },
+        {
+          "id": "m-c4-c",
+          "time": "11:31:00",
+          "raw": "2026-10-23T11:31:00Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
+          "note": "問い合わせの記録3。"
+        }
+      ],
+      "answer": {
+        "choiceId": "m-c4-limited"
+      },
+      "answerExplanation": "同じ端末から同じ名前への問い合わせが3回あり、いずれも NXDOMAIN でした。問い合わせ元のプログラムや設定は未確認なので、感染とも単なる古い設定とも断定できません。次に確認する材料を残す判断です。",
+      "hints": [
+        "応答から直接分かることと、原因の推測を分けます。",
+        "プログラムや設定の記録がないので、感染や古い設定の断定はできません。",
+        "3回の NXDOMAIN は確認できるが、原因は未確認、とする選択肢です。"
+      ],
+      "solution": "「3回とも名前が存在しないという応答だった。原因の確認には、問い合わせたプログラムや設定の調査が必要。」を選びます。",
+      "bridge": {
+        "tool": "ログ検索",
+        "how": "SOCroom の「ログ検索」で、条件を絞り、選んだ記録が本当に対象かを照合するときに使います。"
+      },
+      "flag": "EASY{MID_DNS_LIMIT}",
+      "choices": [
+        {
+          "id": "m-c4-malware",
+          "label": "NXDOMAIN が繰り返されているので、端末の感染が確定した。",
+          "feedback": "NXDOMAIN は DNS 応答の種類です。感染を示すプログラムなどの証拠はまだありません。"
+        },
+        {
+          "id": "m-c4-old",
+          "label": "名前に legacy とあるので、必ず古い設定の問題だ。",
+          "feedback": "名前は手がかりですが、設定を確認していないため原因とは断定できません。"
+        },
+        {
+          "id": "m-c4-limited",
+          "label": "3回とも名前が存在しないという応答だった。原因の確認には、問い合わせたプログラムや設定の調査が必要。",
+          "feedback": "記録から分かる結果と、未確認の原因を分けられています。"
+        }
+      ]
+    },
+    {
+      "id": "m-e1",
+      "level": "intermediate",
+      "chapter": "evidence",
+      "title": "中継先と利用サービスを区別する",
+      "skill": "プロキシの記録をサービス台帳と照合する",
+      "minutes": 5,
+      "brief": "通信先に社内の機器のIPが出ています。それは最終的に利用したサービスでしょうか。中継の役割を調べます。",
+      "learn": [
+        "プロキシは、端末とサービスの間で通信を中継する仕組みです。この教材の proxy は中継機器、target_host は要求したサービスの名前です。",
+        "src は端末側のIPアドレス、method と path は要求の種類とサービス内の宛先です。アカウントや操作した人は、この行には記録されていません。",
+        "サービス台帳は、組織が利用するサービス名と業務用途をまとめた資料です。target_host と台帳の名前を照合します。",
+        "業務用途を確認できても、今回の要求すべてが承認されたとは限りません。ここでは要求先の用途だけを確かめます。"
+      ],
+      "example": {
+        "title": "別の資料で練習",
+        "text": "proxy=10.40.0.7 target_host=booking.vendor.example とあり、台帳で booking.vendor.example が会議予約なら、要求先の用途は会議予約です。10.40.0.7 の中継機能と取り違えません。"
+      },
+      "task": "「記録された要求先は、契約書類を保管する業務サービスである」と説明する根拠を2枚選んでください。",
+      "kind": "evidence",
+      "sourceLabel": "今回の調査で提供された架空の記録・資料",
+      "rows": [
+        {
+          "id": "m-e1-log",
+          "sourceType": "log",
+          "title": "今回の通信記録",
+          "body": "2026-10-23T12:00:00Z src=10.40.1.22 proxy=10.40.0.5 target_host=archive.vendor.example method=GET path=/documents\nproxy は中継機器、target_host は要求先の名前。"
+        },
+        {
+          "id": "m-e1-service",
+          "sourceType": "document",
+          "title": "業務サービス台帳",
+          "body": "archive.vendor.example：契約書類の保管・閲覧。管理担当：法務システム係。\nbooking.vendor.example：会議室の予約。管理担当：総務設備係。"
+        },
+        {
+          "id": "m-e1-proxy",
+          "sourceType": "document",
+          "title": "中継機器の台帳",
+          "body": "10.40.0.5：社内のWeb通信を中継するプロキシ。端末の要求を受け、指定されたサービスへ中継する。契約書類の保管サービスそのものではない。"
+        },
+        {
+          "id": "m-e1-guess",
+          "sourceType": "reply",
+          "title": "未確認のコメント",
+          "body": "社内IPへの通信なので、社内の機器だけで完結していると思います。target_host の意味と今回の宛先は確認していません。"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "m-e1-log",
+          "m-e1-service"
+        ]
+      },
+      "answerExplanation": "通信記録の target_host=archive.vendor.example と、同じ名前の業務サービス台帳を組み合わせると、要求先の用途が契約書類の保管・閲覧だと分かります。中継機器の台帳は役割の補足ですが、それだけでは今回要求したサービスの用途を確定できません。",
+      "hints": [
+        "今回の要求先を示す資料と、その名前の業務用途を示す資料が必要です。",
+        "中継機器の proxy ではなく、target_host と台帳の名前を照合します。",
+        "「今回の通信記録」と「業務サービス台帳」の2枚を選びます。"
+      ],
+      "solution": "「今回の通信記録」と「業務サービス台帳」を選びます。中継機器と要求先のサービスを区別した証拠です。",
+      "bridge": {
+        "tool": "資産・資料",
+        "how": "SOCroom の「資産・資料」で、ログの対象や業務上の根拠を照合するときに使います。"
+      },
+      "flag": "EASY{MID_PROXY_SERVICE}"
+    },
+    {
+      "id": "m-e2",
+      "level": "intermediate",
+      "chapter": "evidence",
+      "title": "時間が一致すれば承認済み？",
+      "skill": "承認された対象データまで比較する",
+      "minutes": 5,
+      "brief": "作業の時間とアカウントは予定どおりでした。しかし、それだけで作業全体を承認範囲内と判断してよいでしょうか。",
+      "learn": [
+        "dataset は処理対象のデータの集まりです。attendance_summary は勤怠の集計、salary_summary は給与の集計を表します。",
+        "承認票は、誰が・いつ・何をしてよいかを定めた資料です。時間やアカウントの一致だけでなく、対象データも照合します。",
+        "event=export_completed は、このアプリで書き出しファイルの生成が完了した記録です。利用者による受け取りまでは示しません。",
+        "以下の時刻はすべて2026-10-23の UTC です。承認と異なる点を、資料に基づいて示します。"
+      ],
+      "example": {
+        "title": "別の資料で練習",
+        "text": "承認票が「在庫一覧の書き出し」で、実行記録が「商品説明一覧の書き出し」なら、時間と担当者が同じでも対象の違いを報告します。名前の似ているデータも同一とは限りません。"
+      },
+      "task": "「作業時刻とアカウントは承認内だが、実際の対象データは承認票と異なる」を裏付ける2枚を選んでください。",
+      "kind": "evidence",
+      "sourceLabel": "今回の調査で提供された架空の記録・資料",
+      "rows": [
+        {
+          "id": "m-e2-log",
+          "sourceType": "log",
+          "title": "実際の書き出し記録",
+          "body": "2026-10-23T12:10:03Z user=svc-report request_id=REQ-550 event=export_completed dataset=salary_summary artifact=salary-550.csv\n給与集計のファイルを生成。"
+        },
+        {
+          "id": "m-e2-approval",
+          "sourceType": "document",
+          "title": "承認済み作業票 AP-550",
+          "body": "実施日：2026-10-23 UTC 12:10〜12:20。アカウント：svc-report。許可する作業：attendance_summary（勤怠集計）の書き出し。salary_summary（給与集計）はこの承認の対象外。"
+        },
+        {
+          "id": "m-e2-asset",
+          "sourceType": "document",
+          "title": "サービスの説明",
+          "body": "勤怠・給与サービスは勤怠集計と給与集計の両方を処理できる。処理できる機能があることと、個別作業の承認は別。"
+        },
+        {
+          "id": "m-e2-comment",
+          "sourceType": "reply",
+          "title": "担当者の一次コメント",
+          "body": "いつもの時間に処理が動いたのは確認しました。今回の dataset はまだ見ていません。"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "m-e2-log",
+          "m-e2-approval"
+        ]
+      },
+      "answerExplanation": "実行ログは user=svc-report、12:10:03、dataset=salary_summary。承認票は同じアカウントと時間帯ですが、対象は attendance_summary です。機能が存在することや時刻だけの確認では、この対象の違いを解消できません。",
+      "hints": [
+        "予定と実際の2枚をそろえ、アカウント・時刻・対象データを比べます。",
+        "実行ログの salary_summary と、承認された attendance_summary は別のデータです。",
+        "「実際の書き出し記録」と「承認済み作業票 AP-550」を選びます。"
+      ],
+      "solution": "実行記録と AP-550 の2枚を選びます。時間の一致だけで、対象データの不一致を見落とさない練習です。",
+      "bridge": {
+        "tool": "資産・資料",
+        "how": "SOCroom の「資産・資料」で、ログの対象や業務上の根拠を照合するときに使います。"
+      },
+      "flag": "EASY{MID_APPROVAL_SCOPE}"
+    },
+    {
+      "id": "m-e3",
+      "level": "intermediate",
+      "chapter": "evidence",
+      "title": "本人の回答とログを合わせる",
+      "skill": "回答で分かったことと認証結果を区別する",
+      "minutes": 5,
+      "brief": "確認通知に心当たりがないという回答が届きました。回答を尊重しつつ、ログから言える範囲と分けて記録します。",
+      "learn": [
+        "照会は、利用者や担当者に状況を問い合わせることです。回答は「本人がどう説明したか」の証拠になり、操作の全容を自動的に証明するものではありません。",
+        "auth_id は1回の認証番号、factor=push は追加の確認通知、result=denied はその通知の拒否を表します。",
+        "今回の資料には最終的な認証結果や、その後のセッションの記録はありません。拒否の1行と回答から、全ログインの成否までは広げません。"
+      ],
+      "example": {
+        "title": "別の資料で練習",
+        "text": "利用者が「端末を再起動していない」と回答した場合、回答内容はそのまま残します。実際に誰が再起動したかや原因を決めるには、操作ログなど別の証拠も確認します。"
+      },
+      "task": "「AUTH-78 の追加確認は拒否され、利用者はその認証要求に心当たりがないと回答した」を直接支える2枚を選んでください。",
+      "kind": "evidence",
+      "sourceLabel": "今回の調査で提供された架空の記録・資料",
+      "rows": [
+        {
+          "id": "m-e3-log",
+          "sourceType": "log",
+          "title": "AUTH-78 の追加確認ログ",
+          "body": "2026-10-23T12:20:08Z user=tomoe auth_id=AUTH-78 factor=push result=denied\nこの資料に含まれるのは追加確認の結果だけ。"
+        },
+        {
+          "id": "m-e3-reply",
+          "sourceType": "reply",
+          "title": "tomoe への確認結果",
+          "body": "2026-10-23 UTC 12:25、登録済みの社内連絡先で確認。「12:20の AUTH-78 に該当するログインは試していません。届いた確認通知は拒否しました」と回答。"
+        },
+        {
+          "id": "m-e3-guide",
+          "sourceType": "document",
+          "title": "認証サービスの利用案内",
+          "body": "このサービスはパスワードと確認通知を使う。確認通知の結果と、認証全体の最終結果は別々に記録する。"
+        },
+        {
+          "id": "m-e3-other",
+          "sourceType": "log",
+          "title": "前日の別の認証",
+          "body": "2026-10-22T08:00:00Z user=tomoe auth_id=AUTH-10 event=auth_finished result=success\n前日の別の認証で成功した記録。"
+        }
+      ],
+      "answer": {
+        "rowIds": [
+          "m-e3-log",
+          "m-e3-reply"
+        ]
+      },
+      "answerExplanation": "AUTH-78 の追加確認ログは拒否を、tomoe の回答はその認証要求に心当たりがないという説明を支えます。前日の成功は別の認証です。AUTH-78 の最終結果はこの資料では未確認として残します。",
+      "hints": [
+        "ログの結果と、本人が述べたことを1枚ずつ選びます。",
+        "前日の AUTH-10 の成功は、今回の AUTH-78 の最終結果ではありません。",
+        "「AUTH-78 の追加確認ログ」と「tomoe への確認結果」の2枚です。"
+      ],
+      "solution": "「AUTH-78 の追加確認ログ」と「tomoe への確認結果」を選びます。今回の最終認証結果は別途確認が必要です。",
+      "bridge": {
+        "tool": "照会",
+        "how": "SOCroom の「照会」で得た回答を、ログの対象番号・時刻と合わせて記録するときに使います。"
+      },
+      "flag": "EASY{MID_REPLY_AND_LOG}"
+    },
+    {
+      "id": "m-e4",
+      "level": "intermediate",
+      "chapter": "evidence",
+      "title": "その資料はいつ有効？",
+      "skill": "台帳の適用日から当時の担当者を選ぶ",
+      "minutes": 5,
+      "brief": "機器の担当者が変わっています。現在手元にある資料をすべて同じ扱いにせず、調べる日の担当を確認します。",
+      "learn": [
+        "資産台帳は機器の用途や管理担当をまとめた資料です。改訂で担当者が変わることがあるため、適用開始日と終了日を確認します。",
+        "今回は2026-10-23 UTC 12:40の出来事を、その時点の担当に照会します。資料の「適用開始〜終了」にその日が含まれるかを見ます。",
+        "未来の担当者や過去の担当者の記載が正しくても、対象時点にそのまま当てはめることはできません。"
+      ],
+      "example": {
+        "title": "別の資料で練習",
+        "text": "10月1日〜15日の担当がA係、10月16日以降がB係なら、10月20日の出来事はB係へ照会します。資料を作った日ではなく、担当の適用期間で決めます。"
+      },
+      "task": "2026-10-23 の files-gw-02 の出来事は、台帳上どの担当へ照会しますか。適用期間で選んでください。",
+      "kind": "choice",
+      "sourceLabel": "今回の調査で提供された架空の記録・資料",
+      "rows": [
+        {
+          "id": "m-e4-log",
+          "sourceType": "log",
+          "title": "照会したい出来事",
+          "body": "2026-10-23T12:40:00Z host=files-gw-02 event=service_error\nfiles-gw-02 でサービスエラーが記録された。原因は未確認。"
+        },
+        {
+          "id": "m-e4-old",
+          "sourceType": "document",
+          "title": "台帳 第1版",
+          "body": "機器：files-gw-02。用途：社内ファイル中継。担当：総務設備係。適用：2026-10-01〜2026-10-20。"
+        },
+        {
+          "id": "m-e4-current",
+          "sourceType": "document",
+          "title": "台帳 第2版",
+          "body": "機器：files-gw-02。用途：社内ファイル中継。担当：業務基盤係。適用：2026-10-21〜2026-10-31。"
+        },
+        {
+          "id": "m-e4-future",
+          "sourceType": "document",
+          "title": "移管予定・第3版",
+          "body": "機器：files-gw-02。用途：社内ファイル中継。担当：情報運用係。適用開始：2026-11-01。10月中はまだ移管しない。"
+        }
+      ],
+      "answer": {
+        "choiceId": "m-e4-current-owner"
+      },
+      "answerExplanation": "2026-10-23 は第2版の適用期間である10月21日〜31日に含まれるため、担当は業務基盤係です。総務設備係は前の担当、情報運用係は11月からの担当です。",
+      "hints": [
+        "調べる日付は10月23日です。機器名に加えて適用期間を見ます。",
+        "第3版は11月1日からで、10月23日にはまだ適用されません。",
+        "10月21日〜31日の第2版にある業務基盤係を選びます。"
+      ],
+      "solution": "「業務基盤係」を選びます。対象の日時に有効な台帳を使います。",
+      "bridge": {
+        "tool": "資産・資料",
+        "how": "SOCroom の「資産・資料」で、ログの対象や業務上の根拠を照合するときに使います。"
+      },
+      "flag": "EASY{MID_DOCUMENT_DATE}",
+      "choices": [
+        {
+          "id": "m-e4-old-owner",
+          "label": "総務設備係",
+          "feedback": "第1版の担当ですが、適用は10月20日までです。10月23日は第2版を使います。"
+        },
+        {
+          "id": "m-e4-current-owner",
+          "label": "業務基盤係",
+          "feedback": "10月23日を含む第2版の担当です。"
+        },
+        {
+          "id": "m-e4-future-owner",
+          "label": "情報運用係",
+          "feedback": "移管は11月1日からです。最も新しい予定が対象時点に適用されるとは限りません。"
+        }
+      ]
+    },
+    {
+      "id": "m-d1",
+      "level": "intermediate",
+      "chapter": "respond",
+      "title": "障害の可能性を先に共有する",
+      "skill": "Web エラーを業務影響と手順に照らす",
+      "minutes": 5,
+      "brief": "複数の利用者からエラーの連絡が来ました。攻撃と断定せず、担当者がまず確認できる情報を伝えます。",
+      "learn": [
+        "HTTP の status=500 はサーバー側のエラーを示す応答です。原因が攻撃、設定、プログラム不具合のどれかは、数字だけでは分かりません。",
+        "この演習の手順は、複数の利用者が使えない場合、サービス担当へ時刻・要求番号・利用者からの影響を伝える、というものです。",
+        "変更作業は動作が変わる手がかりですが、同じ時間にあっただけで原因確定ではありません。原因調査に役立つ資料として添えます。"
+      ],
+      "example": {
+        "title": "別の資料で練習",
+        "text": "画面を開けないという連絡と同時刻のエラーがあれば、対象画面・時刻・要求番号をサービス担当へ共有します。「必ず攻撃」とするには別の根拠が必要です。"
+      },
+      "task": "提示された対応手順に沿って、最初に行うことを選んでください。",
+      "kind": "choice",
+      "sourceLabel": "今回の調査で提供された架空の記録・資料",
+      "rows": [
+        {
+          "id": "m-d1-logs",
+          "sourceType": "log",
+          "title": "画面表示の応答記録",
+          "body": "2026-10-23 UTC 13:00:01 user=ami request_id=WEB-301 path=/schedule status=500\n13:00:04 user=ko request_id=WEB-302 path=/schedule status=500\n13:00:09 user=sei request_id=WEB-303 path=/schedule status=500"
+        },
+        {
+          "id": "m-d1-impact",
+          "sourceType": "reply",
+          "title": "利用者の連絡",
+          "body": "ami・ko・sei の3人から「予定表が開かず、会議の確認ができない」と連絡。ほかの機能の影響は未確認。"
+        },
+        {
+          "id": "m-d1-change",
+          "sourceType": "document",
+          "title": "変更作業票 CH-18",
+          "body": "2026-10-23 UTC 12:50〜13:10、予定表サービスの表示部品を更新。承認済み。今回のエラーとの因果関係は未確認。"
+        },
+        {
+          "id": "m-d1-rule",
+          "sourceType": "document",
+          "title": "この演習の初動手順",
+          "body": "複数利用者の業務停止が確認されたら、サービス担当へ時刻・対象画面・要求番号・影響を共有する。関連する変更情報も添える。エラーコードだけで攻撃と断定しない。"
+        }
+      ],
+      "answer": {
+        "choiceId": "m-d1-contact"
+      },
+      "answerExplanation": "3人の業務影響と /schedule の500応答があるため、手順に従って時刻・WEB-301〜303・影響・CH-18 を担当へ共有します。変更との関係は確認依頼とし、攻撃とも変更ミスとも断定しません。",
+      "hints": [
+        "エラーの原因と、利用者が使えないという影響は分けます。",
+        "この演習の初動手順には、複数利用者の業務停止時に共有する情報が書かれています。",
+        "サービス担当へ時刻・要求番号・影響・変更情報を共有する選択肢です。"
+      ],
+      "solution": "「サービス担当へ時刻・要求番号・3人の業務影響・変更作業票を共有し、原因の確認を依頼する。」を選びます。",
+      "bridge": {
+        "tool": "対応記録",
+        "how": "SOCroom の「対応記録」で、業務影響と調査の引き継ぎ先を具体的に残すときに使います。"
+      },
+      "flag": "EASY{MID_ERROR_TRIAGE}",
+      "choices": [
+        {
+          "id": "m-d1-attack",
+          "label": "500が3回あるので、攻撃が確定したと全社へ報告する。",
+          "feedback": "500だけでは原因は分かりません。提示された手順で、確認した影響と記録を担当へ共有します。"
+        },
+        {
+          "id": "m-d1-contact",
+          "label": "サービス担当へ時刻・要求番号・3人の業務影響・変更作業票を共有し、原因の確認を依頼する。",
+          "feedback": "影響を伝えつつ、変更との関係は未確認として適切に引き継げています。"
+        },
+        {
+          "id": "m-d1-ignore",
+          "label": "変更が承認済みなので、エラーは調べずに終了する。",
+          "feedback": "変更の承認は、サービスが正常に動いている証明ではありません。3人の業務影響が報告されています。"
+        }
+      ]
+    },
+    {
+      "id": "m-d2",
+      "level": "intermediate",
+      "chapter": "respond",
+      "title": "次に欲しいログを具体的に頼む",
+      "skill": "未確認の件数を確かめる照会を組み立てる",
+      "minutes": 5,
+      "brief": "書き出し要求に200応答が返りました。しかし、実際に何件処理されたかは書かれていません。必要な追加資料を絞って依頼します。",
+      "learn": [
+        "HTTP の200応答は、対応する要求への成功を示す応答です。このサービスの response_kind=job_metadata は、仕事の番号などの情報を返したことを表します。",
+        "データを何件書き出したかは、このサービスのアプリ監査ログに記録されます。監査ログは、調査できるように処理内容を残した記録です。",
+        "request_id で Web の要求とアプリの記録を照合できます。問いと番号を具体的にすると、担当者が必要な範囲を調べやすくなります。"
+      ],
+      "example": {
+        "title": "別の資料で練習",
+        "text": "「何かログをください」より「REQ-DEMO のアプリ監査ログで、対象データと処理件数を確認したい」と依頼すると、必要な資料と目的が伝わります。"
+      },
+      "task": "REQ-902 が実際に何件のデータを生成したか確認するため、最も直接的な追加依頼を選んでください。",
+      "kind": "choice",
+      "sourceLabel": "今回の調査で提供された架空の記録・資料",
+      "rows": [
+        {
+          "id": "m-d2-web",
+          "sourceType": "log",
+          "title": "現在ある Web 応答ログ",
+          "body": "2026-10-23T13:15:00Z user=ao request_id=REQ-902 method=POST path=/api/export status=200 response_kind=job_metadata\nこの応答には処理番号などが含まれ、ファイル本体や生成件数の記録ではない。"
+        },
+        {
+          "id": "m-d2-format",
+          "sourceType": "document",
+          "title": "このサービスのログ仕様",
+          "body": "Webログ：要求番号と応答状態を記録。アプリ監査ログ：同じ request_id と、dataset・生成した records 件数・artifact を記録。ブラウザの保存完了は別の確認が必要。"
+        }
+      ],
+      "answer": {
+        "choiceId": "m-d2-audit"
+      },
+      "answerExplanation": "実際の生成件数を知るには、同じ REQ-902 のアプリ監査ログを依頼します。Webの200応答だけでは件数は分かりません。会社全体の全ログを集めるより、対象番号と確認したい欄を指定した方が、この問いに直接答えられます。",
+      "hints": [
+        "知りたいことは「生成した件数」です。どのログにその欄があるか仕様を確認します。",
+        "アプリ監査ログの records が件数です。同じ request_id で照合できます。",
+        "REQ-902 のアプリ監査ログを、dataset・records・artifact が分かる形で依頼します。"
+      ],
+      "solution": "「REQ-902 のアプリ監査ログを依頼し、dataset・records・artifact を確認する。」を選びます。",
+      "bridge": {
+        "tool": "照会",
+        "how": "SOCroom の「照会」で、対象の番号と確認目的を添えて追加資料を依頼するときに使います。"
+      },
+      "flag": "EASY{MID_TARGETED_QUERY}",
+      "choices": [
+        {
+          "id": "m-d2-status",
+          "label": "200応答があるので、件数の確認は不要とする。",
+          "feedback": "成功応答の有無と、生成した件数は別の問いです。このWebログには件数がありません。"
+        },
+        {
+          "id": "m-d2-audit",
+          "label": "REQ-902 のアプリ監査ログを依頼し、dataset・records・artifact を確認する。",
+          "feedback": "知りたい件数が記録される資料を、照合できる要求番号付きで指定しています。"
+        },
+        {
+          "id": "m-d2-dns",
+          "label": "全端末のDNSログを集め、問い合わせた名前の数を数える。",
+          "feedback": "DNSの問い合わせ数では、REQ-902 でアプリが生成したデータ件数は分かりません。"
+        }
+      ]
+    },
+    {
+      "id": "m-d3",
+      "level": "intermediate",
+      "chapter": "respond",
+      "title": "拒否された要求を報告する",
+      "skill": "確認した拒否と未確認の別操作を分ける",
+      "minutes": 5,
+      "brief": "管理画面への要求を3件調べました。「今回拒否された」と「過去も含めて何も起きていない」は同じではありません。短い報告にまとめます。",
+      "learn": [
+        "今回の対象は user=hina が行った3つの要求だけです。permission=denied と status=403 により、この3要求が拒否されたことを確認しました。",
+        "報告の事実には対象のアカウント・要求番号・結果を含めます。未確認事項には、今回調べていない時間や操作を残します。",
+        "この演習の手順では、操作の意図が不明なため、拒否ログを保存したうえでアカウント管理担当へ心当たりの確認を依頼します。"
+      ],
+      "example": {
+        "title": "別の資料で練習",
+        "text": "「印刷要求 P-1 は拒否された。別の要求は未調査。対象ログを保存し担当者に操作の意図を確認する」のように、事実・限界・次の行動を分けて書けます。"
+      },
+      "task": "今回の3要求について、「確認した事実」「確認の限界」「次の行動」を1つずつ選んでください。",
+      "kind": "report",
+      "sourceLabel": "今回の調査で提供された架空の記録・資料",
+      "rows": [
+        {
+          "id": "m-d3-logs",
+          "sourceType": "log",
+          "title": "調べた3要求",
+          "body": "2026-10-23 UTC 13:30:00 user=hina request_id=ADM-51 path=/admin/users permission=denied status=403\n13:30:05 user=hina request_id=ADM-52 path=/admin/settings permission=denied status=403\n13:30:10 user=hina request_id=ADM-53 path=/admin/export permission=denied status=403"
+        },
+        {
+          "id": "m-d3-scope",
+          "sourceType": "document",
+          "title": "今回の確認範囲と手順",
+          "body": "確認対象は上記3要求。ほかの時間・要求・アカウントは未調査。操作の意図は未確認なので、拒否ログを保存し、アカウント管理担当へ今回の操作の心当たりを確認する。"
+        }
+      ],
+      "answer": {
+        "parts": {
+          "fact": "m-d3-fact-ok",
+          "limit": "m-d3-limit-ok",
+          "next": "m-d3-next-ok"
+        }
+      },
+      "answerExplanation": "事実は hina の ADM-51〜53 が拒否されたこと、限界は他の要求や時間が未調査であること、次の行動は対象ログを保存し操作の心当たりを確認することです。今回の拒否から、過去を含む安全や本人の意図まで言い切りません。",
+      "hints": [
+        "「今回の3要求」と明記された事実を選びます。",
+        "調べていない操作や時間を「未確認」と残す文を選びます。",
+        "3要求の拒否、他の要求は未調査、保存して担当者へ心当たりを確認、の3文です。"
+      ],
+      "solution": "事実は「hina の ADM-51〜53 は拒否」、限界は「他の要求・時間は未調査」、次の行動は「ログ保存と心当たりの確認」を選びます。",
+      "bridge": {
+        "tool": "対応記録",
+        "how": "SOCroom の「対応記録」で、確認した事実・判断の理由と、未確認事項・引き継ぎを分ける練習です。"
+      },
+      "flag": "EASY{MID_DENIAL_REPORT}",
+      "choices": [
+        {
+          "id": "m-d3-fact-ok",
+          "group": "fact",
+          "label": "hina の ADM-51〜53 は、権限確認で拒否され403応答だった。",
+          "feedback": "対象番号と、ログで確認した結果を示しています。"
+        },
+        {
+          "id": "m-d3-fact-no",
+          "group": "fact",
+          "label": "hina は管理者情報の持ち出しに成功した。",
+          "feedback": "提示された3要求は拒否です。持ち出し成功の証拠はありません。"
+        },
+        {
+          "id": "m-d3-limit-ok",
+          "group": "limit",
+          "label": "ほかの要求・時間・アカウントは調べておらず、その結果は未確認。",
+          "feedback": "調査した範囲の外を、未確認として残しています。"
+        },
+        {
+          "id": "m-d3-limit-no",
+          "group": "limit",
+          "label": "3要求が拒否されたため、過去も含めて不正なアクセスは一度もない。",
+          "feedback": "今回の3要求から、未調査の時間や要求の結果までは分かりません。"
+        },
+        {
+          "id": "m-d3-next-ok",
+          "group": "next",
+          "label": "ADM-51〜53 のログを保存し、アカウント管理担当へ今回の操作の心当たりを確認する。",
+          "feedback": "示された手順に沿って、証拠と確認対象を指定しています。"
+        },
+        {
+          "id": "m-d3-next-no",
+          "group": "next",
+          "label": "拒否できたので記録を消し、未確認事項は残さず終了する。",
+          "feedback": "手順ではログ保存と心当たりの確認が必要です。拒否できたことだけで意図は分かりません。"
+        }
+      ]
+    },
+    {
+      "id": "m-d4",
+      "level": "intermediate",
+      "chapter": "respond",
+      "title": "心当たりのない成功を引き継ぐ",
+      "skill": "成功ログと本人の否認を過不足なく報告する",
+      "minutes": 5,
+      "brief": "今度は認証完了の記録があり、本人は心当たりがないと答えています。確定していない犯人像を加えず、確認が必要な状態として引き継ぎます。",
+      "learn": [
+        "auth_id は認証の番号、session は認証後の操作をまとめる番号です。session_created は、このサービスがセッションを作成した記録です。",
+        "確認通知の承認は factor=push result=approved に記録されています。誰がどのような事情で承認したかまでは、このログだけでは決まりません。",
+        "本人の回答がログの見た目と合わない場合、どちらかを勝手に捨てません。「成功の記録がある」「本人は心当たりなしと回答」を並べます。",
+        "この演習の手順では、不正利用の疑いとして認証管理担当に引き継ぎ、該当セッションの操作と認証の経緯の確認を依頼します。"
+      ],
+      "example": {
+        "title": "別の資料で練習",
+        "text": "ファイル変更ログがあり、担当者が「変更していない」と答えたときは、記録と回答を併記して調査します。それだけで特定の人物の不正と断定しません。"
+      },
+      "task": "提示された証拠と手順に基づき、事実・限界・次の行動を1つずつ選んでください。",
+      "kind": "report",
+      "sourceLabel": "今回の調査で提供された架空の記録・資料",
+      "rows": [
+        {
+          "id": "m-d4-logs",
+          "sourceType": "log",
+          "title": "認証とセッションの記録",
+          "body": "2026-10-23 UTC 13:40:00 user=yui auth_id=AUTH-95 factor=push result=approved\n13:40:01 user=yui auth_id=AUTH-95 event=auth_finished result=success\n13:40:02 user=yui auth_id=AUTH-95 session=S-995 event=session_created"
+        },
+        {
+          "id": "m-d4-reply",
+          "sourceType": "reply",
+          "title": "yui への確認結果",
+          "body": "登録済みの社内連絡先で13:45に確認。「13:40のログインにも、確認通知の承認にも心当たりがありません」と回答。"
+        },
+        {
+          "id": "m-d4-rule",
+          "sourceType": "document",
+          "title": "今回の調査範囲と対応手順",
+          "body": "S-995 の操作内容は未調査。認証成功と本人の心当たりなしが揃った場合は、不正利用の疑いとして記録と回答を保存し、認証管理担当へ認証経緯と該当セッションの操作確認を依頼する。"
+        }
+      ],
+      "answer": {
+        "parts": {
+          "fact": "m-d4-fact-ok",
+          "limit": "m-d4-limit-ok",
+          "next": "m-d4-next-ok"
+        }
+      },
+      "answerExplanation": "AUTH-95 は成功し S-995 が作成された記録があります。一方、yui は認証と承認に心当たりがないと回答しています。操作した人とセッション内の行動は未確認なので、不正利用の疑いとして証拠を添えて担当へ引き継ぎます。",
+      "hints": [
+        "成功記録と本人の回答の両方を含む事実の文を選びます。",
+        "誰が操作したかや、S-995 で何をしたかはまだ分かっていません。",
+        "両方の証拠を保存し、不正利用の疑いとして認証管理担当に確認を依頼します。"
+      ],
+      "solution": "成功と本人の心当たりなしを併記し、操作した人・内容は未確認とし、証拠を添えて認証管理担当に引き継ぐ3文を選びます。",
+      "bridge": {
+        "tool": "対応記録",
+        "how": "SOCroom の「対応記録」で、ログと照会結果を合わせ、不正利用の疑いと次に確かめる対象を伝える練習です。"
+      },
+      "flag": "EASY{MID_UNRECOGNIZED_SUCCESS}",
+      "choices": [
+        {
+          "id": "m-d4-fact-ok",
+          "group": "fact",
+          "label": "AUTH-95 の認証成功と S-995 作成が記録され、yui は心当たりがないと回答した。",
+          "feedback": "ログと本人の回答を、どちらも事実として残しています。"
+        },
+        {
+          "id": "m-d4-fact-no",
+          "group": "fact",
+          "label": "確認通知が承認されているので、yui 本人の正規操作だと確定した。",
+          "feedback": "承認の記録はありますが、操作した人や事情は未確認です。本人の回答も無視できません。"
+        },
+        {
+          "id": "m-d4-limit-ok",
+          "group": "limit",
+          "label": "実際に認証を操作した人と、S-995 で行われた操作は未確認。",
+          "feedback": "この資料だけで分からない範囲を具体的に残しています。"
+        },
+        {
+          "id": "m-d4-limit-no",
+          "group": "limit",
+          "label": "外部の攻撃者がデータを盗んだことまで証明された。",
+          "feedback": "操作した人も、S-995 の操作内容もまだ確認していません。"
+        },
+        {
+          "id": "m-d4-next-ok",
+          "group": "next",
+          "label": "記録と回答を保存し、不正利用の疑いとして認証管理担当へ認証経緯と S-995 の操作確認を依頼する。",
+          "feedback": "提示された手順に沿い、疑いと確認対象を具体的に伝えています。"
+        },
+        {
+          "id": "m-d4-next-no",
+          "group": "next",
+          "label": "本人が忘れているだけと決め、成功ログも回答も残さず終了する。",
+          "feedback": "忘れているという証拠はなく、今回の手順でも調査が必要な組み合わせです。"
+        }
+      ]
+    },
+    {
+      "id": "m-g1",
+      "level": "intermediate",
+      "chapter": "graduate",
+      "title": "卒業調査：書き出されたのは何件？",
+      "skill": "要求の照合から、承認範囲との比較と引き継ぎまでをつなぐ",
+      "minutes": 10,
+      "brief": "職員連絡先の書き出しが検知されました。担当者は「少量の確認作業の予定だった」と話しています。Webの応答だけで判断せず、実際の生成件数と承認された上限を確かめます。",
+      "learn": [
+        "対象は user=kei の request_id=REQ-880 です。このサービスでは、同じ要求番号をWebログとアプリ監査ログの両方に記録します。時刻はすべて UTC です。",
+        "dataset=staff_directory は職員連絡先の一覧。records は生成したデータの件数、artifact は生成されたファイル名です。すべて架空の教材データです。",
+        "このサービスの response_kind=job_metadata は、生成したファイルの名前などの処理情報を返す応答で、ファイル本体の受取完了を示しません。",
+        "調査は4段階です。関係するログを集める→実際と承認を照合する→分かる範囲で判断する→次の確認を引き継ぐ、の順に進めます。"
+      ],
+      "example": {
+        "title": "別の書き出しを調べる例",
+        "text": "REQ-DEMO のWeb要求とアプリ監査ログをつなぐと、会議室一覧20件の生成が分かった。承認票の上限30件以内なので、確認した生成件数は承認範囲に入る。ただし、その後の受け取りは別の確認。このように、処理内容・承認・確認できない範囲を分けます。"
+      },
+      "task": "4段階を進めて、REQ-880 の書き出しを調べてください。",
+      "kind": "investigation",
+      "sourceLabel": "卒業調査のログと資料",
+      "rows": [],
+      "answer": {},
+      "answerExplanation": "REQ-880 では staff_directory の400件を生成し、処理情報の200応答を返した記録があります。提示された承認票 AP-880 は同じデータの50件以内なので、生成件数はその範囲を超えています。ブラウザでの受取や外部送信、ほかの承認の有無は未確認として担当へ引き継ぎます。",
+      "hints": [
+        "まず同じ request_id のログを3行集め、アプリが記録した records を読みます。",
+        "実行の400件と、AP-880 の上限50件を比べます。HTTPの200応答はこのサービスでは処理情報の応答です。",
+        "確認した承認上限を超える生成が記録されたことと、受取や外部送信などの未確認事項を分けて報告します。"
+      ],
+      "solution": "REQ-880 の要求・アプリ生成・Web応答の3行を集め、生成記録と AP-880 を照合します。400件は承認上限50件を超えると判断し、受取と外部送信などは未確認として証拠とともに担当へ引き継ぎます。",
+      "bridge": {
+        "tool": "ログ検索・資産・資料・照会・対応記録",
+        "how": "SOCroom で行う、関係する要求の検索、承認範囲の照合、追加照会、根拠と未確認事項の報告を、ひと続きに練習しています。"
+      },
+      "flag": "EASY{MID_READY_FOR_SOCROOM}",
+      "steps": [
+        {
+          "id": "m-g1-find",
+          "title": "1 / 4 同じ要求の記録を集める",
+          "task": "対象の request_id=REQ-880 に関係する「Web要求・アプリ生成・Web応答」を3行選んでください。同じ user だけでまとめないようにします。",
+          "kind": "rows",
+          "rows": [
+            {
+              "id": "m-g1-request",
+              "time": "14:10:00",
+              "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-880 event=request_received method=POST path=/api/export",
+              "note": "書き出し要求を受付。"
+            },
+            {
+              "id": "m-g1-other-request",
+              "time": "14:10:00",
+              "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-881 event=request_received method=GET path=/health",
+              "note": "同じ利用者とセッションからの状態確認要求。"
+            },
+            {
+              "id": "m-g1-generated",
+              "time": "14:10:01",
+              "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv",
+              "note": "職員連絡先400件のファイル生成が完了。"
+            },
+            {
+              "id": "m-g1-other-generated",
+              "time": "14:10:01",
+              "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-879 job=EX-89 event=export_completed dataset=public_agenda records=50 artifact=agenda-89.csv",
+              "note": "別要求で公開行事予定を50件生成。"
+            },
+            {
+              "id": "m-g1-response",
+              "time": "14:10:02",
+              "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-880 event=response_sent status=200 response_kind=job_metadata bytes=128",
+              "note": "128バイトの処理情報を応答。ファイル本体の受取完了ではない。"
+            },
+            {
+              "id": "m-g1-other-response",
+              "time": "14:10:02",
+              "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-881 event=response_sent status=200 response_kind=health_status bytes=16",
+              "note": "別要求のサービス状態確認への応答。"
+            }
+          ],
+          "answer": {
+            "rowIds": [
+              "m-g1-request",
+              "m-g1-generated",
+              "m-g1-response"
+            ]
+          },
+          "answerExplanation": "REQ-880 は14:10:00の書き出し要求、14:10:01の400件生成、14:10:02の処理情報の応答です。同じ kei・S-880 でも REQ-881 は別要求であり、50件を生成した REQ-879 も対象外です。",
+          "hints": [
+            "request_id の値全体を照合します。同じアカウントやセッションでも複数の要求があります。",
+            "REQ-880 の3行には、要求、records=400 の生成、response_kind=job_metadata の応答があります。",
+            "REQ-880 の14:10:00、14:10:01、14:10:02 の3行を選びます。"
+          ],
+          "solution": "REQ-880 のWeb要求、staff_directory 400件を生成したアプリ記録、処理情報を返したWeb応答を選びます。"
+        },
+        {
+          "id": "m-g1-evidence",
+          "title": "2 / 4 生成した件数と承認上限を比べる",
+          "task": "「REQ-880 で生成されたデータの件数は、今回提示された承認票の上限を超える」を裏付ける2枚を選んでください。",
+          "kind": "evidence",
+          "rows": [
+            {
+              "id": "m-g1-evidence-actual",
+              "sourceType": "log",
+              "title": "REQ-880 のアプリ生成記録",
+              "body": "2026-10-23T14:10:01Z user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv\n職員連絡先400件のファイルを生成。前の段階で選んだ実際の記録。"
+            },
+            {
+              "id": "m-g1-evidence-approval",
+              "sourceType": "document",
+              "title": "今回の承認票 AP-880",
+              "body": "承認済み。実施日：2026-10-23 UTC 14:00〜14:30。対象アカウント：kei。対象：staff_directory。目的：項目表示の確認。許可する書き出しは1回あたり50件以内。現時点で提示されている今回の承認票はこの1枚。"
+            },
+            {
+              "id": "m-g1-evidence-old",
+              "sourceType": "document",
+              "title": "前月の承認票 AP-810",
+              "body": "実施日：2026-09-20 UTC 09:00〜10:00。対象アカウント：kei。staff_directory の400件を移行確認のため書き出すことを許可。この承認は当日のみ有効。"
+            },
+            {
+              "id": "m-g1-evidence-web",
+              "sourceType": "log",
+              "title": "REQ-880 の Web 応答",
+              "body": "2026-10-23T14:10:02Z request_id=REQ-880 status=200 response_kind=job_metadata bytes=128\n処理情報に対する成功応答。生成したデータ件数や業務上の承認を表す欄ではない。"
+            }
+          ],
+          "answer": {
+            "rowIds": [
+              "m-g1-evidence-actual",
+              "m-g1-evidence-approval"
+            ]
+          },
+          "answerExplanation": "実際のアプリ記録では400件、今回の AP-880 の上限は50件です。対象・日付・アカウントを合わせたうえで件数が上限を超えていると説明できます。前月のみ有効な400件の承認を今回へ流用しません。",
+          "hints": [
+            "実際の生成件数を示すものと、今回有効な許可範囲を示すものが必要です。",
+            "records=400 のアプリ記録と、2026-10-23 の50件以内の承認票を比べます。",
+            "「REQ-880 のアプリ生成記録」と「今回の承認票 AP-880」を選びます。"
+          ],
+          "solution": "「REQ-880 のアプリ生成記録」と「今回の承認票 AP-880」の2枚を選びます。前月の承認は今回の作業には適用できません。"
+        },
+        {
+          "id": "m-g1-judge",
+          "title": "3 / 4 分かったことだけで判断する",
+          "task": "これまでの記録で支えられる判断を選んでください。生成・HTTP応答・受け取り・外部送信を混同しないようにします。",
+          "kind": "choice",
+          "rows": [
+            {
+              "id": "m-g1-judge-facts",
+              "sourceType": "document",
+              "title": "照合して分かったこと",
+              "body": "REQ-880 は2026-10-23 UTC 14:10に、kei で staff_directory 400件を生成した記録。AP-880 は同日の同じ対象・アカウントについて50件以内を許可している。"
+            },
+            {
+              "id": "m-g1-judge-response",
+              "sourceType": "document",
+              "title": "このサービスの応答仕様",
+              "body": "response_kind=job_metadata の200応答は、生成ファイル名などの処理情報を返すもの。今回のWebログには、ファイル本体をダウンロードした記録は含まれない。"
+            },
+            {
+              "id": "m-g1-judge-limits",
+              "sourceType": "document",
+              "title": "まだ確認していないこと",
+              "body": "ブラウザがファイルを受け取ったか、外部へ送信したか、AP-880 以外に今回有効な承認があるか、実際の操作の経緯は未確認。"
+            }
+          ],
+          "choices": [
+            {
+              "id": "m-g1-judge-outside",
+              "label": "提示された承認上限50件を超える400件の生成が記録されている。受取・外部送信・追加承認などは未確認。",
+              "feedback": "生成件数と今回の承認を比較し、未確認の範囲も残しています。"
+            },
+            {
+              "id": "m-g1-judge-leak",
+              "label": "200応答があるので、職員連絡先400件が外部へ流出したと確定する。",
+              "feedback": "今回の200は処理情報の応答です。ファイル本体の受取や外部送信の記録は提供されていません。"
+            },
+            {
+              "id": "m-g1-judge-safe",
+              "label": "前月に400件の承認があるので、今回の400件も承認済みと判断する。",
+              "feedback": "前月の承認は当日のみ有効です。今回有効な AP-880 は50件以内であり、別の承認の有無は未確認です。"
+            }
+          ],
+          "answer": {
+            "choiceId": "m-g1-judge-outside"
+          },
+          "answerExplanation": "確認できた問題は、今回提示された承認上限50件に対して、400件生成されたと記録されている点です。追加承認の有無や実際の経緯は調査が必要です。処理情報の200応答だけで、ファイル受取や外部流出とは断定しません。",
+          "hints": [
+            "400件の生成という事実と、50件以内という承認範囲を使います。",
+            "200応答の中身は処理情報です。外部送信や追加承認はまだ確認されていません。",
+            "承認上限を超える生成が記録され、受取・外部送信・追加承認は未確認、とする選択肢です。"
+          ],
+          "solution": "「提示された承認上限50件を超える400件の生成が記録されている。受取・外部送信・追加承認などは未確認。」を選びます。"
+        },
+        {
+          "id": "m-g1-report",
+          "title": "4 / 4 証拠と未確認事項を引き継ぐ",
+          "task": "今回の調査報告として、「確認した事実」「確認の限界」「次の行動」を1つずつ選んでください。",
+          "kind": "report",
+          "rows": [
+            {
+              "id": "m-g1-report-summary",
+              "sourceType": "document",
+              "title": "引き継ぐ調査結果",
+              "body": "対象：2026-10-23 UTC 14:10、kei の REQ-880、生成ジョブ EX-90。staff_directory 400件を directory-90.csv として生成した記録。今回提示された承認票 AP-880 の上限は50件。Web応答は処理情報。"
+            },
+            {
+              "id": "m-g1-report-rule",
+              "sourceType": "document",
+              "title": "この演習の対応手順",
+              "body": "提示された承認範囲と実行記録が異なる場合、関連ログと承認票を保存し、業務責任者とサービス担当へ対象番号・差異を共有する。追加承認と作業の経緯、および対象成果物のダウンロード・送信記録を確認する。未確認の流出を断定しない。"
+            }
+          ],
+          "choices": [
+            {
+              "id": "m-g1-report-fact-ok",
+              "group": "fact",
+              "label": "REQ-880 は職員連絡先400件を生成した記録があり、提示された AP-880 の上限50件を超える。",
+              "feedback": "要求番号・実行内容・照合した承認の差異を具体的に示しています。"
+            },
+            {
+              "id": "m-g1-report-fact-no",
+              "group": "fact",
+              "label": "kei が職員連絡先400件を外部へ不正送信したことが確定した。",
+              "feedback": "外部送信の記録や、実際に操作した人の確認はまだありません。生成の事実から広げすぎています。"
+            },
+            {
+              "id": "m-g1-report-limit-ok",
+              "group": "limit",
+              "label": "ファイルの受取・外部送信・追加承認の有無と、実際の操作の経緯は未確認。",
+              "feedback": "次の担当者が調べるべき範囲を、確認済みの生成と分けています。"
+            },
+            {
+              "id": "m-g1-report-limit-no",
+              "group": "limit",
+              "label": "200応答があるので、未確認事項は残っていない。",
+              "feedback": "今回の200は処理情報の応答です。受取や送信、業務上の承認は別の確認です。"
+            },
+            {
+              "id": "m-g1-report-next-ok",
+              "group": "next",
+              "label": "REQ-880 のログと AP-880 を保存して担当へ差異を共有し、追加承認・経緯・directory-90.csv の受取と送信記録を確認する。",
+              "feedback": "手順に沿い、証拠・照会先・確認対象を具体的にしています。"
+            },
+            {
+              "id": "m-g1-report-next-no",
+              "group": "next",
+              "label": "前月の承認票を今回にも使い、REQ-880 の記録を消して終了する。",
+              "feedback": "前月の承認は今回に適用できません。今回の差異と未確認事項は、証拠を残して引き継ぐ必要があります。"
+            }
+          ],
+          "answer": {
+            "parts": {
+              "fact": "m-g1-report-fact-ok",
+              "limit": "m-g1-report-limit-ok",
+              "next": "m-g1-report-next-ok"
+            }
+          },
+          "answerExplanation": "事実は400件の生成と50件上限の差異、限界は受取・送信・追加承認・経緯が未確認であることです。証拠を保存し、対象の REQ-880 と directory-90.csv を指定して担当へ引き継ぎます。部分的なログを集める練習から、根拠のある調査報告までつなげられました。",
+          "hints": [
+            "事実の文には、REQ-880 の400件と AP-880 の上限50件を含めます。",
+            "限界には、受取・外部送信・追加承認・経緯がまだ分からないと残します。",
+            "証拠を保存し、差異を担当に共有して、対象成果物について追加確認する行動を選びます。"
+          ],
+          "solution": "400件と50件上限の差異を事実として選び、受取・送信などは未確認とし、REQ-880 と AP-880 を保存して担当へ具体的な追加確認を依頼する3文を選びます。"
+        }
+      ]
+    }
+  ]
+}
