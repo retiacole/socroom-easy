@@ -1,0 +1,1083 @@
+{
+  "format": "socroom-easy-save",
+  "version": 1,
+  "progress": {
+    "version": "socroom-easy-1",
+    "currentId": "g1",
+    "records": {
+      "r1": {
+        "input": {
+          "tokenId": "r1-time"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 1,
+        "hintCounts": [
+          1
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": true,
+        "feedback": {
+          "passed": true,
+          "message": "2026-10-20T09:12:04Z が時刻の欄です。2026 年 10 月 20 日の 09:12:04 UTC に画面がロックされました。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "tokenId": "r1-time"
+            },
+            "message": "2026-10-20T09:12:04Z が時刻の欄です。2026 年 10 月 20 日の 09:12:04 UTC に画面がロックされました。",
+            "assisted": true
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "tokenId": "r1-time"
+            },
+            "assisted": true
+          }
+        ]
+      },
+      "r2": {
+        "input": {
+          "text": "rin"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "user=rin なのでアカウント名は rin です。pc-rin は host に書かれた端末名です。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "text": "rin"
+            },
+            "message": "user=rin なのでアカウント名は rin です。pc-rin は host に書かれた端末名です。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "text": "rin"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "r3": {
+        "input": {
+          "tokenId": "r3-result"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "result=failed が失敗を示します。この行で確かめられるのはログインが失敗したことまでで、理由や攻撃者の存在はまだ分かりません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "tokenId": "r3-result"
+            },
+            "message": "result=failed が失敗を示します。この行で確かめられるのはログインが失敗したことまでで、理由や攻撃者の存在はまだ分かりません。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "tokenId": "r3-result"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "r4": {
+        "input": {
+          "text": "198.51.100.24"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "src=198.51.100.24 なので、送信元は 198.51.100.24 です。192.0.2.80 は dst に書かれた送信先です。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "text": "198.51.100.24"
+            },
+            "message": "src=198.51.100.24 なので、送信元は 198.51.100.24 です。192.0.2.80 は dst に書かれた送信先です。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "text": "198.51.100.24"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "f1": {
+        "input": {
+          "query": "host=pc-kai",
+          "rowIds": [
+            "f1-b"
+          ]
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": true,
+        "revealedStages": [
+          0
+        ],
+        "assisted": true,
+        "feedback": {
+          "passed": true,
+          "message": "host=pc-kai に一致するのは 09:20:12 の 1 行です。検索だけで終わらず、調べる対象の行を選べました。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "query": "host=pc-kai",
+              "rowIds": [
+                "f1-b"
+              ]
+            },
+            "message": "host=pc-kai に一致するのは 09:20:12 の 1 行です。検索だけで終わらず、調べる対象の行を選べました。",
+            "assisted": true
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "query": "host=pc-kai",
+              "rowIds": [
+                "f1-b"
+              ]
+            },
+            "assisted": true
+          }
+        ]
+      },
+      "f2": {
+        "input": {
+          "query": "user=nao",
+          "rowIds": [
+            "f2-a",
+            "f2-d"
+          ]
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "09:23:00 と 09:23:20 の user が nao です。端末と結果が違っていても、今回は同じアカウントの記録なので両方を選びます。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "query": "user=nao",
+              "rowIds": [
+                "f2-a",
+                "f2-d"
+              ]
+            },
+            "message": "09:23:00 と 09:23:20 の user が nao です。端末と結果が違っていても、今回は同じアカウントの記録なので両方を選びます。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "query": "user=nao",
+              "rowIds": [
+                "f2-a",
+                "f2-d"
+              ]
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "f3": {
+        "input": {
+          "rowIds": [
+            "f3-b",
+            "f3-c"
+          ]
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "09:25:07 と 09:25:12 は result=failed です。残りの 2 行は success なので、今回は選びません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "rowIds": [
+                "f3-b",
+                "f3-c"
+              ]
+            },
+            "message": "09:25:07 と 09:25:12 は result=failed です。残りの 2 行は success なので、今回は選びません。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "rowIds": [
+                "f3-b",
+                "f3-c"
+              ]
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "f4": {
+        "input": {
+          "text": "3"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "failed は 09:28:00、09:28:08、09:29:00 の 3 件です。この 5 行の中での件数であり、表示されていない時間帯まで含む数ではありません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "text": "3"
+            },
+            "message": "failed は 09:28:00、09:28:08、09:29:00 の 3 件です。この 5 行の中での件数であり、表示されていない時間帯まで含む数ではありません。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "text": "3"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "c1": {
+        "input": {
+          "orderIds": [
+            "c1-login",
+            "c1-open",
+            "c1-close",
+            "c1-logout"
+          ]
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "09:30:10 → 09:30:20 → 09:30:30 → 09:30:40 の順です。時刻を読むことで、ログイン、ファイルを開く、閉じる、ログアウトという流れを整理できました。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "orderIds": [
+                "c1-login",
+                "c1-open",
+                "c1-close",
+                "c1-logout"
+              ]
+            },
+            "message": "09:30:10 → 09:30:20 → 09:30:30 → 09:30:40 の順です。時刻を読むことで、ログイン、ファイルを開く、閉じる、ログアウトという流れを整理できました。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "orderIds": [
+                "c1-login",
+                "c1-open",
+                "c1-close",
+                "c1-logout"
+              ]
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "c2": {
+        "input": {
+          "rowIds": [
+            "c2-a",
+            "c2-c",
+            "c2-e"
+          ]
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "09:35:00、09:35:10、09:35:30 の 3 行が session=S72 です。09:35:03 は同じ sora ですが S73 のため、今回の対象には含めません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "rowIds": [
+                "c2-a",
+                "c2-c",
+                "c2-e"
+              ]
+            },
+            "message": "09:35:00、09:35:10、09:35:30 の 3 行が session=S72 です。09:35:03 は同じ sora ですが S73 のため、今回の対象には含めません。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "rowIds": [
+                "c2-a",
+                "c2-c",
+                "c2-e"
+              ]
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "c3": {
+        "input": {
+          "choiceId": "c3-unknown"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "09:40:00 に失敗し、09:40:15 に成功したことは確認できます。どちらも mio というアカウントと同じ送信元の記録ですが、本人の操作かどうかは確認できていません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "choiceId": "c3-unknown"
+            },
+            "message": "09:40:00 に失敗し、09:40:15 に成功したことは確認できます。どちらも mio というアカウントと同じ送信元の記録ですが、本人の操作かどうかは確認できていません。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "choiceId": "c3-unknown"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "c4": {
+        "input": {
+          "choiceId": "c4-gap"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "10:05 から 10:15 は収集が停止していました。集約先のログがないことは確認できても、実際にログインがなかったとは判断できません。元の認証機器のログや収集状況を確認します。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "choiceId": "c4-gap"
+            },
+            "message": "10:05 から 10:15 は収集が停止していました。集約先のログがないことは確認できても、実際にログインがなかったとは判断できません。元の認証機器のログや収集状況を確認します。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "choiceId": "c4-gap"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "e1": {
+        "input": {
+          "choiceId": "e1-video"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 2,
+        "hintCounts": [
+          2
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": true,
+        "feedback": {
+          "passed": true,
+          "message": "ログの host=meeting-gw-01 と、台帳の meeting-gw-01 が一致します。用途は会議室の映像・音声の接続です。これは機器の役割が分かった段階で、接続が安全かどうかはまだ判定していません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "choiceId": "e1-video"
+            },
+            "message": "ログの host=meeting-gw-01 と、台帳の meeting-gw-01 が一致します。用途は会議室の映像・音声の接続です。これは機器の役割が分かった段階で、接続が安全かどうかはまだ判定していません。",
+            "assisted": true
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "choiceId": "e1-video"
+            },
+            "assisted": true
+          }
+        ]
+      },
+      "e2": {
+        "input": {
+          "rowIds": [
+            "e2-log",
+            "e2-approved"
+          ]
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "実行ログが実際の機器・時刻・再起動を示し、CHG-72 が同じ機器で22:00〜22:10に再起動してよいと示します。22:04はその範囲内です。CHG-73 は別の機器・別の作業なので今回の根拠にはなりません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "rowIds": [
+                "e2-log",
+                "e2-approved"
+              ]
+            },
+            "message": "実行ログが実際の機器・時刻・再起動を示し、CHG-72 が同じ機器で22:00〜22:10に再起動してよいと示します。22:04はその範囲内です。CHG-73 は別の機器・別の作業なので今回の根拠にはなりません。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "rowIds": [
+                "e2-log",
+                "e2-approved"
+              ]
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "e3": {
+        "input": {
+          "choiceId": "e3-specific"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "ログには時刻・フォルダー・追加された利用者があり、資料からは事前承認が必要と分かります。その具体的な操作について、承認の記録を尋ねると不足する事実を補えます。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "choiceId": "e3-specific"
+            },
+            "message": "ログには時刻・フォルダー・追加された利用者があり、資料からは事前承認が必要と分かります。その具体的な操作について、承認の記録を尋ねると不足する事実を補えます。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "choiceId": "e3-specific"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "e4": {
+        "input": {
+          "rowIds": [
+            "e4-log",
+            "e4-doc",
+            "e4-reply"
+          ]
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "操作ログが class-guest-8 の無効化と16:05を示し、TR-88 が対象と16:00〜16:15の予定を示し、研修係の回答が同じ承認票・対象・時刻での実施を確認しています。別の設備担当者の回答は今回の根拠になりません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "rowIds": [
+                "e4-log",
+                "e4-doc",
+                "e4-reply"
+              ]
+            },
+            "message": "操作ログが class-guest-8 の無効化と16:05を示し、TR-88 が対象と16:00〜16:15の予定を示し、研修係の回答が同じ承認票・対象・時刻での実施を確認しています。別の設備担当者の回答は今回の根拠になりません。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "rowIds": [
+                "e4-log",
+                "e4-doc",
+                "e4-reply"
+              ]
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "d1": {
+        "input": {
+          "choiceId": "d1-fact"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "ログで確認できるのは、UTC 08:18 に desk-east-04 で yano アカウントのログインが成功したことです。本人の操作か、アカウントが盗まれたかは、この資料だけでは分かりません。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "choiceId": "d1-fact"
+            },
+            "message": "ログで確認できるのは、UTC 08:18 に desk-east-04 で yano アカウントのログインが成功したことです。本人の操作か、アカウントが盗まれたかは、この資料だけでは分かりません。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "choiceId": "d1-fact"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "d2": {
+        "input": {
+          "choiceId": "d2-a"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "案件Aは、利用中の業務が停止し、代替手段も使えないと確認できています。今回の当番ルールでは案件Aを先に扱います。案件Bを無視してよいという意味ではなく、その後に確認します。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "choiceId": "d2-a"
+            },
+            "message": "案件Aは、利用中の業務が停止し、代替手段も使えないと確認できています。今回の当番ルールでは案件Aを先に扱います。案件Bを無視してよいという意味ではなく、その後に確認します。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "choiceId": "d2-a"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "d3": {
+        "input": {
+          "choiceId": "d3-check"
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "確認できているのは、room-display-06 の記録が UTC 12:30 を最後に届かないことです。手順どおりこの事実を残し、設備担当者に電源・通信・利用への影響を確認します。原因を断定せず、次の判断に必要な情報を集める対応です。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "choiceId": "d3-check"
+            },
+            "message": "確認できているのは、room-display-06 の記録が UTC 12:30 を最後に届かないことです。手順どおりこの事実を残し、設備担当者に電源・通信・利用への影響を確認します。原因を断定せず、次の判断に必要な情報を集める対応です。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "choiceId": "d3-check"
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "d4": {
+        "input": {
+          "parts": {
+            "fact": "d4-fact-ok",
+            "limit": "d4-limit-ok",
+            "next": "d4-next-ok"
+          }
+        },
+        "stage": 0,
+        "completed": true,
+        "attempts": 1,
+        "hints": 0,
+        "hintCounts": [
+          0
+        ],
+        "revealed": false,
+        "revealedStages": [],
+        "assisted": false,
+        "feedback": {
+          "passed": true,
+          "message": "事実は「読み取り要求が拒否された」です。その1件以外や利用理由・必要な権限は分かっていないため、資料管理担当者に確認する、とつなげます。短くても、根拠と不明点と次の行動が伝わる報告です。"
+        },
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "parts": {
+                "fact": "d4-fact-ok",
+                "limit": "d4-limit-ok",
+                "next": "d4-next-ok"
+              }
+            },
+            "message": "事実は「読み取り要求が拒否された」です。その1件以外や利用理由・必要な権限は分かっていないため、資料管理担当者に確認する、とつなげます。短くても、根拠と不明点と次の行動が伝わる報告です。",
+            "assisted": false
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "parts": {
+                "fact": "d4-fact-ok",
+                "limit": "d4-limit-ok",
+                "next": "d4-next-ok"
+              }
+            },
+            "assisted": false
+          }
+        ]
+      },
+      "g1": {
+        "input": {
+          "choiceId": "g1-judge-approved"
+        },
+        "stage": 2,
+        "completed": false,
+        "attempts": 2,
+        "hints": 1,
+        "hintCounts": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "revealed": true,
+        "revealedStages": [
+          1
+        ],
+        "assisted": true,
+        "feedback": null,
+        "stageResults": [
+          {
+            "passed": true,
+            "input": {
+              "rowIds": [
+                "g1-log-a",
+                "g1-log-b",
+                "g1-log-c"
+              ]
+            },
+            "message": "host=render-kiosk-02 と job=R-204 の両方が一致するのは、21:00:00の開始、21:00:04のPDF作成、21:00:06の完了の3行です。同じ端末でも job=R-203 の行は別の仕事です。",
+            "assisted": true
+          },
+          {
+            "passed": true,
+            "input": {
+              "rowIds": [
+                "g1-evidence-log",
+                "g1-evidence-doc"
+              ]
+            },
+            "message": "R-204 の実行記録が実際の動きを、RQ-204 が許可された範囲を示しています。端末・アカウント・ジョブ・時間・作成内容が一致します。別の日の予定や未確認の感想は、今回の一致を裏付けません。",
+            "assisted": true
+          }
+        ],
+        "solved": [
+          {
+            "input": {
+              "rowIds": [
+                "g1-log-a",
+                "g1-log-b",
+                "g1-log-c"
+              ]
+            },
+            "assisted": true
+          },
+          {
+            "input": {
+              "rowIds": [
+                "g1-evidence-log",
+                "g1-evidence-doc"
+              ]
+            },
+            "assisted": true
+          }
+        ]
+      }
+    },
+    "history": [
+      {
+        "type": "hint",
+        "id": "r1",
+        "stage": 0
+      },
+      {
+        "type": "submit",
+        "id": "r1",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "r2",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "r3",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "r4",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "solution",
+        "id": "f1",
+        "stage": 0
+      },
+      {
+        "type": "submit",
+        "id": "f1",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "f2",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "f3",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "f4",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "c1",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "c2",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "c3",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "c4",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "hint",
+        "id": "e1",
+        "stage": 0
+      },
+      {
+        "type": "hint",
+        "id": "e1",
+        "stage": 0
+      },
+      {
+        "type": "submit",
+        "id": "e1",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "e2",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "e3",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "e4",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "d1",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "d2",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "d3",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "submit",
+        "id": "d4",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "hint",
+        "id": "g1",
+        "stage": 0
+      },
+      {
+        "type": "submit",
+        "id": "g1",
+        "stage": 0,
+        "passed": true
+      },
+      {
+        "type": "advance",
+        "id": "g1",
+        "stage": 1
+      },
+      {
+        "type": "solution",
+        "id": "g1",
+        "stage": 1
+      },
+      {
+        "type": "submit",
+        "id": "g1",
+        "stage": 1,
+        "passed": true
+      },
+      {
+        "type": "advance",
+        "id": "g1",
+        "stage": 2
+      }
+    ]
+  }
+}
