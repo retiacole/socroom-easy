@@ -1,6 +1,17 @@
+<p align="center">
+  <img src="docs/images/socroom-easy-banner.png" width="960" alt="道場で稽古するSOCroom-easyのキャラクターを描いたピクセルアート">
+</p>
+
 # SOCroom-easy v0.3
 
+<img src="docs/images/socroom-easy-character.png" align="right" width="120" alt="オレンジ色の道着を着たSOCroom-easyのキャラクター">
+
+**ログの読み方から、一歩ずつ。**<br>
+*Learn to read logs, one step at a time.*
+
 ログに初めて触れる人が、個別の調査操作を練習しながらSOCroomへ進むための学習アプリです。短い説明を読み、自分で操作して答えを見つけるとフラグ（旗）を獲得します。SOCroomとは別のアプリです。
+
+<br clear="right">
 
 ## はじめ方
 
