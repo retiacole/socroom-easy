@@ -4,6 +4,8 @@
 
 # SOCroom-easy v0.3
 
+[すぐにやってみる / Play Now](https://retiacole.github.io/socroom-easy/) · [オフライン用HTML / Offline HTML](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html)
+
 <img src="docs/images/socroom-easy-character.png" align="right" width="120" alt="オレンジ色の道着を着たSOCroom-easyのキャラクター">
 
 **ログの読み方から、一歩ずつ。**<br>
@@ -15,13 +17,19 @@
 
 ## はじめ方
 
-1. [socroom-easy.html](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html) を開き、右上の「Download raw file」で保存して、ブラウザで開きます。リポジトリ全体を「Code → Download ZIP」で保存し、展開してからHTMLを開く方法も使えます。
+1. **オンライン**なら [Play Now](https://retiacole.github.io/socroom-easy/) を開くと、そのまま練習できます。**オフライン**で使う場合は [socroom-easy.html](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html) を開き、右上の「Download raw file」で保存して、ブラウザで開きます。リポジトリ全体を「Code → Download ZIP」で保存し、展開してからHTMLを開く方法も使えます。
 2. 初級・中級・上級から、取り組む級を選びます。初めてなら初級がおすすめです。
 3. 「練習を始める」または学習マップの最初の課題を押します。
 4. 説明と今回のミッションを読み、ログのクリック・検索・入力・並べ替えなどを試します。
 5. 「答え合わせ」で理由を確認し、「次の課題へ」進みます。
 
-プレイ時のインストール、サーバー、アカウント、インターネット接続は不要です。教材・プログラム・見た目をHTML一つに含めています。JavaScriptとdialog要素に対応したブラウザを使用してください。
+インストール、ローカルサーバー、アカウントは不要です。オンライン版を開くときにはインターネット接続が必要ですが、ダウンロードしたHTMLはオフラインで使えます。教材・プログラム・見た目をHTML一つに含めています。JavaScriptとdialog要素に対応したブラウザを使用してください。
+
+Choose **Play Now** to start in your browser, or download the HTML file with **Download raw file** for offline use.
+
+オンライン版と保存したHTMLでは、自動保存の領域が異なります。進捗を移すときは、元の画面で「保存」からJSONを書き出し、移動先の「読込」で読み込んでください。
+
+Online and local files use separate browser saves. To transfer progress, export a JSON save in the original app and import it in the other one.
 
 ## 日本語・English
 
@@ -65,6 +73,8 @@ Open **Language → English** in the HTML menu. All 63 missions, hints, solution
 
 ## SOCroomへ進む
 
+オンラインでは [SOCroomをブラウザで開く](https://retiacole.github.io/socroom/) から進めます。
+
 各級の卒業調査を終えると、次の級への案内と「SOCroomを開く」が表示されます。全63問を終える前でもSOCroomへ進めます。`socroom-easy.html` と既存の `socroom.html` を同じフォルダに置き、SOCroomのチュートリアルから一連の調査に挑戦してください。SOCroom本体はこのリポジトリには含まれていません。
 
 ## ソースからの再ビルド
@@ -74,6 +84,8 @@ Node.js 22以上があれば、外部パッケージなしでビルドできま�
 ```sh
 npm run build
 ```
+
+通常のビルドはルートの配布HTMLと、GitHub Pages用の `docs/index.html`・`docs/socroom-easy.html` を同じ内容で生成します。公開元は `main` ブランチの `/docs` です。
 
 `content/` のJSONを教材の原本として、`assemble-data.js` が `src/data.js` を生成します。`content/en-*.json` が英語の表示用辞書です。ビルド時に教材の翻訳漏れを検出します。`build.js` はCSS・教材・翻訳・エンジン・UIを単一HTMLにまとめます。
 
