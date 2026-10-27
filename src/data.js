@@ -1,7 +1,7 @@
 /* Fictional teaching data, bundled for offline use. */
 globalThis.EASY_DATA = {
   "version": "socroom-easy-2",
-  "releaseVersion": "0.3.1",
+  "releaseVersion": "0.4.0",
   "levels": [
     {
       "id": "beginner",

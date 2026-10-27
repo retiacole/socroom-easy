@@ -35,8 +35,9 @@ function harness(t, saved = null, options = {}) {
   virtualConsole.on('jsdomError', error => errors.push(error));
   const markup = options.transformHTML ? options.transformHTML(assembledHTML()) : assembledHTML();
   const dom = new JSDOM(markup, {
+    url: options.url,
     runScripts: 'dangerously', // The locally assembled scripts above only.
-    // Do not add resources or url: this harness performs no page navigation.
+    // A URL only selects online/file link behavior; resources remain disabled.
     virtualConsole,
     beforeParse(window) {
       if(options.noSegmenter)window.Intl.Segmenter=undefined;
@@ -260,7 +261,9 @@ test('all 63 missions and twelve graduation stages complete through visible DOM 
     assert.match(h.get('.points').textContent, /2100/);
     assert.equal(h.get('.flag-score strong').textContent, '21');
     assert.equal(h.get('.top-flags b').textContent, String((levelIndex + 1) * 21));
-    assert.equal(h.get('.bridge-card.ready a').getAttribute('href'), 'socroom.html');
+    assert.equal(h.document.querySelectorAll('.graduation-reflection li').length, 3);
+    if(level.id==='intermediate') assert.equal(h.document.querySelector('.optional-recommendation'), null);
+    else assert.equal(h.get('.optional-recommendation a').getAttribute('href'), 'https://retiacole.github.io/' + (level.id==='beginner'?'linuxroom':'logroom') + '/');
     h.click('[data-action="collection"]');
     assert.equal(h.document.querySelectorAll('.flag-collection article').length, 21);
     assert.deepEqual([...h.document.querySelectorAll('.flag-collection code')].map(node => node.textContent), missions.map(mission => mission.flag));
@@ -1012,4 +1015,42 @@ test('question titles retain their punctuation in Japanese and English announcem
   assert.match(title, /\?$/);
   assert.equal(h.get('#announcement').textContent, title + ' ' + task);
   assert.doesNotMatch(h.get('#announcement').textContent, /[?!]\./);
+});
+
+test('optional graduation guidance preserves assisted completion and same-room continuation offline', t => {
+  const fresh = harness(t);
+  assert.equal(fresh.document.querySelector('.optional-recommendation'), null);
+  assert.equal(fresh.get('.topbar .brand-version').textContent, 'v' + require('../package.json').version);
+  for (const [levelId, target, nextLevel] of [['beginner','linuxroom.html','intermediate'], ['advanced','logroom.html',null]]) {
+    const mission = D.missions.filter(m => m.level === levelId).at(-1);
+    const progress = E.hydrate(saveBefore(mission.id));
+    E.revealHint(progress, mission.id);
+    for (let index = 0; index < mission.steps.length; index++) {
+      E.setInput(progress, mission.id, answerInput(E.currentStep(progress, mission.id)));
+      assert.equal(E.submit(progress, mission.id).passed, true);
+      if (index < mission.steps.length - 1) E.advanceStep(progress, mission.id);
+    }
+    const h = harness(t, E.exportProgress(progress), {url:'file:///training/socroom-easy.html'});
+    const link = h.get('.optional-recommendation a');
+    assert.equal(link.getAttribute('href'), target);
+    assert.equal(link.getAttribute('target'), '_blank');
+    assert.match(h.get('.optional-recommendation small').textContent, /同じフォルダ/);
+    const before = h.snapshot().progress.records;
+    h.input('#language-select', 'en', 'change');
+    assert.equal(h.get('.topbar .brand-version').textContent, 'v' + require('../package.json').version);
+    assert.doesNotMatch(h.get('.bridge-card').textContent, /[\u3040-\u30ff\u3400-\u9fff]/u);
+    h.get('.graduation-reflection').open = true;
+    assert.deepEqual(h.snapshot().progress.records, before);
+    assert.equal(E.stats(E.hydrate(h.snapshot()), levelId).points, 2100);
+    assert.equal(E.stats(E.hydrate(h.snapshot()), levelId).assisted, 1);
+    h.click('.graduation-reflection [data-open]');
+    assert.equal(h.document.querySelector('.lesson-title') !== null, true);
+    assert.equal(E.stats(E.hydrate(h.snapshot()), levelId).completed, 21);
+    h.click('[data-action="map"]');
+    if (nextLevel) {
+      h.click(`.bridge-card [data-level="${nextLevel}"]`);
+      assert.equal(h.get('.level-card.active').dataset.level, nextLevel);
+      assert.equal(E.stats(E.hydrate(h.snapshot()), nextLevel).completed, 0);
+    } else assert.equal(h.document.querySelector('.bridge-card [data-level]'), null);
+  }
 });

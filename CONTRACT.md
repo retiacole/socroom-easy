@@ -37,6 +37,10 @@ Investigation STEP: `{id,title,task,kind,rows,choices?,answer,answerExplanation,
 
 Filter is a literal substring search, not a query language. Search uses only displayed source content (raw/body, title, event and note); internal row IDs are excluded. A default filter task specifies its required query. A `searchMode:'evidence'` task accepts any nonempty normalized query that leaves every answer row visible and hides at least one source row. The answer query remains a valid example, and exact row selection is still required. Engine `filterRows` and `searchableRow` are shared with the UI. Correct rows must be visible under the query; unrelated visible rows may intentionally require further reading. Query changes clear selections so hidden selected rows cannot cause an unexplained failure. Input normalization uses NFKC, trimmed/collapsed whitespace and case folding where appropriate. All current filter lessons use evidence-preserving search, including beginner f1/f2. Only text answers marked numericCount allow optional 件/回 suffixes; technical identifiers and other text answers are not loosened.
 
+## Optional graduation guidance
+
+Graduation cards retain same-room continuation and review. Three reflection prompts link to completed skills; they do not record scores or change unlock conditions. Separate optional recommendations lead beginner graduates to Linuxroom and advanced graduates to Logroom. Online links open another tab; file URLs use sibling HTML with a download/placement note. No cross-room progress is read or shared.
+
 ## State
 
 `createProgress()` returns `{version:'socroom-easy-2',currentLevel,currentId,currentByLevel,records,history}`. `currentByLevel` remembers the last opened mission in each level. `records` contains all 63 missions:

@@ -717,3 +717,8 @@ small { font-size: 12px; }
   .topbar nav { flex-wrap: wrap; margin-left: auto; }
   .section-heading .small { white-space: normal; }
 }
+
+/* Optional graduation reflection stays separate from mission completion. */
+.graduation-reflection,.optional-recommendation{margin-top:20px;padding-top:18px;border-top:1px solid var(--line,#d9e1dd)}.graduation-reflection summary{cursor:pointer;font-weight:700;line-height:1.7}.graduation-reflection ul{padding-left:18px}.graduation-reflection li{margin:12px 0;line-height:1.8}.graduation-reflection .text-button{display:block}.optional-recommendation h3{font-size:16px;line-height:1.7}.optional-recommendation small{display:block;line-height:1.8;margin-top:10px}
+
+.brand .brand-version{display:block;font-size:11px;line-height:1.5;letter-spacing:.04em;color:var(--muted,#60746b);font-weight:600;text-align:left}

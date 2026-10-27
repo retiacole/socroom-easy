@@ -2,7 +2,7 @@
   <img src="docs/images/socroom-easy-banner.png" width="960" alt="道場で稽古するSOCroom-easyのキャラクターを描いたピクセルアート">
 </p>
 
-# SOCroom-easy v0.3.1
+# SOCroom-easy v0.4.0
 
 [すぐにやってみる / Play Now](https://retiacole.github.io/socroom-easy/) · [オフライン用HTML / Offline HTML](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html)
 
@@ -75,11 +75,15 @@ Open **Language → English** in the HTML menu. All 63 missions, hints, solution
 
 ローカルHTMLに対する自動保存の扱いはブラウザにより異なります。自動保存が使えない場合は画面に表示するので、「保存」でJSONを残してください。HTMLの移動やブラウザ変更で自動保存が見つからない場合も、JSONから再開できます。
 
-## SOCroomへ進む
+## 卒業後のおすすめと振り返り
 
-オンラインでは [SOCroomをブラウザで開く](https://retiacole.github.io/socroom/) から進めます。
+各級を卒業すると卒業調査の復習ボタンが使え、初級・中級ではそのまま次の級へ進むボタンも使えます。「できることを振り返る」には3つの自己チェックと対応する復習課題があります。ヒント・用語帳を使ってよく、点数や課題の解放には影響しません。
 
-各級の卒業調査を終えると、次の級への案内と「SOCroomを開く」が表示されます。全63問を終える前でもSOCroomへ進めます。`socroom-easy.html` と既存の `socroom.html` を同じフォルダに置き、SOCroomのチュートリアルから一連の調査に挑戦してください。SOCroom本体はこのリポジトリには含まれていません。
+別の教材も試したい場合は、初級の後に [Linuxroom初級](https://retiacole.github.io/linuxroom/)、上級の後に [Logroom](https://retiacole.github.io/logroom/) を任意のおすすめとして表示します。このroomの中級・上級を続けたり、同じ問題を復習したりする操作も保っています。自動移動、他教材の完了チェック、進捗の共有はありません。
+
+オンラインではおすすめを別タブで開きます。オフラインでは、別途入手した `linuxroom.html` または `logroom.html` を同じフォルダへ置くと、対応するローカルHTMLを開けます。ほかの教材はこの配布物には含まれません。SOCroomへ進みたい方は [SOCroom](https://retiacole.github.io/socroom/) のチュートリアルから始められます。
+
+After graduation, continue to the next level, review the investigation, or use the three optional reflection prompts and their review links. Hints are welcome; reflection does not affect points or unlocking. Optional suggestions link beginner graduates to Linuxroom and advanced graduates to Logroom. They never navigate automatically or share progress. For offline use, place the separately downloaded HTML beside this tool.
 
 ## ソースからの再ビルド
 
