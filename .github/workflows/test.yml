@@ -1,0 +1,24 @@
+name: Validate curriculum and application
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check:i18n
+      - run: npm test
+      - run: npm test
+        env:
+          SOCROOM_EASY_HTML: ./socroom-easy.html
+      - name: Check committed distribution files
+        run: git diff --exit-code -- src/data.js src/translations.js socroom-easy.html docs/index.html docs/socroom-easy.html

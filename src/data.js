@@ -1,6 +1,7 @@
 /* Fictional teaching data, bundled for offline use. */
 globalThis.EASY_DATA = {
   "version": "socroom-easy-2",
+  "releaseVersion": "0.3.1",
   "levels": [
     {
       "id": "beginner",
@@ -50,32 +51,32 @@ globalThis.EASY_DATA = {
       "chapters": [
         {
           "id": "read",
-          "title": "01 通信と処理の欄を読む",
+          "title": "通信と処理の欄を読む",
           "subtitle": "HTTP・DNS・プロセス・追加認証を、短い記録で理解する。"
         },
         {
           "id": "find",
-          "title": "02 条件を重ねて探す",
+          "title": "条件を重ねて探す",
           "subtitle": "要求番号・端末・結果を照合し、必要な行と件数を取り出す。"
         },
         {
           "id": "connect",
-          "title": "03 複数の記録をつなぐ",
+          "title": "複数の記録をつなぐ",
           "subtitle": "要求から処理へ。同じ出来事を別の記録から確かめる。"
         },
         {
           "id": "evidence",
-          "title": "04 資料で判断を支える",
+          "title": "資料で判断を支える",
           "subtitle": "業務用途・承認の範囲・本人の回答・資料の日付を照合する。"
         },
         {
           "id": "respond",
-          "title": "05 次の確認を伝える",
+          "title": "次の確認を伝える",
           "subtitle": "事実と未確認事項を分け、担当者が動ける報告にする。"
         },
         {
           "id": "graduate",
-          "title": "06 卒業調査：書き出しの範囲",
+          "title": "卒業調査：書き出しの範囲",
           "subtitle": "関係するログを集め、承認と比較し、確認の限界まで報告する。"
         }
       ]
@@ -120,38 +121,6 @@ globalThis.EASY_DATA = {
       ]
     }
   ],
-  "chapters": [
-    {
-      "id": "read",
-      "title": "ログを 1 行読む",
-      "subtitle": "時刻・アカウント・結果・通信元を、ひとつずつ読む。"
-    },
-    {
-      "id": "find",
-      "title": "必要なログを見つける",
-      "subtitle": "検索し、選び、数える。調べる範囲を小さくする。"
-    },
-    {
-      "id": "connect",
-      "title": "記録をつなげて考える",
-      "subtitle": "順番と共通点を見つけ、分からないことも残す。"
-    },
-    {
-      "id": "evidence",
-      "title": "根拠を集めて確かめる",
-      "subtitle": "端末の役割、作業の予定、担当者の回答を照合する。"
-    },
-    {
-      "id": "respond",
-      "title": "判断して、短く伝える",
-      "subtitle": "事実と推測を分け、次の対応と報告を考える。"
-    },
-    {
-      "id": "graduate",
-      "title": "小さな調査をやり遂げる",
-      "subtitle": "これまでの操作をつないで、1件の調査に挑戦。"
-    }
-  ],
   "glossary": [
     {
       "term": "ログ",
@@ -165,7 +134,7 @@ globalThis.EASY_DATA = {
     },
     {
       "term": "UTC",
-      "meaning": "世界で共通に使う時刻の基準。日本標準時より 9 時間遅い基準です。この教材ではすべて UTC で扱い、変換は不要です。",
+      "meaning": "世界で共通に使う時刻の基準。日本標準時より 9 時間遅い基準です。初級・中級ではすべて UTC で扱い、変換は不要です。上級では時差の換算も練習します。",
       "example": "日時の末尾の Z は UTC を表します。09:00 UTC は同じ日の 18:00 日本標準時です。"
     },
     {
@@ -365,7 +334,7 @@ globalThis.EASY_DATA = {
       "learn": [
         "ログには複数の欄があります。今回は「時刻」「host」「event」の 3 つだけを見ます。",
         "2026-10-20T08:30:00Z は、2026 年 10 月 20 日の 08:30:00 を表します。T は日付と時刻の区切りです。",
-        "末尾の Z は UTC という基準の時刻を使っている印です。この教材ではすべて UTC で読み、時差の計算はしません。",
+        "末尾の Z は UTC という基準の時刻を使っている印です。初級・中級ではすべて UTC で読み、時差の計算はしません。",
         "host は記録に登場する端末名、event は起きた操作の種類です。event=screen_lock は画面をロックした記録です。"
       ],
       "example": {
@@ -378,8 +347,6 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "r1-log",
-          "time": "09:12:04",
-          "host": "pc-aki",
           "event": "screen_lock",
           "raw": "2026-10-20T09:12:04Z host=pc-aki event=screen_lock"
         }
@@ -441,9 +408,6 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "r2-log",
-          "time": "09:14:10",
-          "host": "pc-rin",
-          "user": "rin",
           "event": "login",
           "raw": "2026-10-20T09:14:10Z host=pc-rin user=rin event=login"
         }
@@ -491,10 +455,7 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "r3-log",
-          "time": "09:15:20",
-          "user": "rin",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:15:20Z user=rin event=login result=failed"
         }
       ],
@@ -560,9 +521,6 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "r4-log",
-          "time": "09:18:00",
-          "src": "198.51.100.24",
-          "dst": "192.0.2.80",
           "event": "connection",
           "raw": "2026-10-20T09:18:00Z src=198.51.100.24 dst=192.0.2.80 event=connection"
         }
@@ -596,51 +554,35 @@ globalThis.EASY_DATA = {
       "learn": [
         "host は端末名です。host=pc-kai は pc-kai という端末の記録を意味します。",
         "検索欄に文字を入れると、その文字を含む行に絞り込めます。この教材は生ログに書かれた文字をそのまま検索します。",
-        "今回は host=pc-kai と入力します。検索できたら、残った行をクリックして回答に選びます。",
+        "例えば host=pc-kai と入力します。pc-kai のように短い語でも、対象を残して関係のない行を除ければ使えます。検索できたら、対象の行をクリックして回答に選びます。",
         "user はアカウント、event=login はログインの試行、result=success は成功、result=failed は失敗です。時刻はすべて同じ日の UTC です。"
       ],
       "example": {
         "title": "別の端末を検索する例",
         "text": "端末 pc-demo を探す場合は「host=pc-demo」と検索します。\n2026-10-19T09:00:00Z host=pc-demo user=demo event=login result=success\nこの行が残ったら、行を選択します。検索と選択の両方で回答します。"
       },
-      "task": "検索欄に「host=pc-kai」と入力し、pc-kai のログを選択してください。",
+      "task": "検索で行を絞り込み、pc-kai のログを選択してください。検索語の例は「host=pc-kai」です。対象を残し、少なくとも 1 行を除いてください。",
       "kind": "filter",
       "sourceLabel": "認証ログ・4 行",
       "rows": [
         {
           "id": "f1-a",
-          "time": "09:20:00",
-          "host": "pc-emi",
-          "user": "emi",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:20:00Z host=pc-emi user=emi event=login result=success"
         },
         {
           "id": "f1-b",
-          "time": "09:20:12",
-          "host": "pc-kai",
-          "user": "kai",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:20:12Z host=pc-kai user=kai event=login result=failed"
         },
         {
           "id": "f1-c",
-          "time": "09:20:18",
-          "host": "pc-nao",
-          "user": "nao",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:20:18Z host=pc-nao user=nao event=login result=success"
         },
         {
           "id": "f1-d",
-          "time": "09:20:30",
-          "host": "pc-ren",
-          "user": "ren",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:20:30Z host=pc-ren user=ren event=login result=success"
         }
       ],
@@ -652,8 +594,8 @@ globalThis.EASY_DATA = {
       },
       "answerExplanation": "host=pc-kai に一致するのは 09:20:12 の 1 行です。検索だけで終わらず、調べる対象の行を選べました。",
       "hints": [
-        "検索欄に端末を表すキー host と端末名を入れましょう。",
-        "入力する文字列は host=pc-kai です。前後の引用符は不要です。",
+        "端末名で検索し、pc-kai の記録を残しながら関係のない行を減らしましょう。",
+        "検索語の例は host=pc-kai です。pc-kai でも絞り込めます。前後の引用符は不要です。",
         "検索後に残る、09:20:12 の行を選択します。"
       ],
       "solution": "検索欄に「host=pc-kai」と入力し、09:20:12 の行を選んで答え合わせします。",
@@ -662,6 +604,7 @@ globalThis.EASY_DATA = {
         "how": "SOCroom で対象端末のログを絞り、関係のない端末の記録をいったん外す操作につながります。"
       },
       "flag": "EASY{FIND_HOST}",
+      "searchMode": "evidence",
       "level": "beginner"
     },
     {
@@ -673,7 +616,7 @@ globalThis.EASY_DATA = {
       "brief": "同じアカウントの記録が、離れた位置や別の端末に現れることがあります。端末名ではなくアカウント名を軸に探してみましょう。",
       "learn": [
         "user はアカウント名、host は端末名です。同じ user が別々の host に登場する場合もあります。",
-        "検索欄に user=nao と入力すると、今回の資料でその文字を含むログが残ります。",
+        "例えば user=nao と検索すると、その文字を含むログが残ります。nao のように短い語でも、対象の行をすべて残して関係のない行を除ければ使えます。",
         "今回は 1 行だけでなく、一致する行をすべて選びます。複数の行をクリックすると、まとめて選択できます。",
         "event=login はログインの試行、result=success は成功、result=failed は失敗です。時刻は UTC です。"
       ],
@@ -681,53 +624,33 @@ globalThis.EASY_DATA = {
         "title": "別のアカウントを追う例",
         "text": "user=haru で探すと、host=pc-demo user=haru と host=pc-sub user=haru の両方が対象です。host が違っても user が一致するため、両方の行を選びます。"
       },
-      "task": "「user=nao」と検索し、nao のログをすべて選択してください。成功・失敗の両方を対象にします。",
+      "task": "検索で行を絞り込み、nao のログをすべて選択してください。検索語の例は「user=nao」です。成功・失敗の両方を残し、少なくとも 1 行を除いてください。",
       "kind": "filter",
       "sourceLabel": "認証ログ・5 行",
       "rows": [
         {
           "id": "f2-a",
-          "time": "09:23:00",
-          "host": "pc-nao",
-          "user": "nao",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:23:00Z host=pc-nao user=nao event=login result=failed"
         },
         {
           "id": "f2-b",
-          "time": "09:23:05",
-          "host": "pc-emi",
-          "user": "emi",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:23:05Z host=pc-emi user=emi event=login result=success"
         },
         {
           "id": "f2-c",
-          "time": "09:23:10",
-          "host": "pc-kai",
-          "user": "kai",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:23:10Z host=pc-kai user=kai event=login result=failed"
         },
         {
           "id": "f2-d",
-          "time": "09:23:20",
-          "host": "pc-shared",
-          "user": "nao",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:23:20Z host=pc-shared user=nao event=login result=success"
         },
         {
           "id": "f2-e",
-          "time": "09:23:25",
-          "host": "pc-ren",
-          "user": "ren",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:23:25Z host=pc-ren user=ren event=login result=success"
         }
       ],
@@ -750,6 +673,7 @@ globalThis.EASY_DATA = {
         "how": "SOCroom で同じアカウントの前後の操作を調べるとき、端末が違う記録も見つけられるようになります。"
       },
       "flag": "EASY{FIND_USER}",
+      "searchMode": "evidence",
       "level": "beginner"
     },
     {
@@ -775,38 +699,22 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "f3-a",
-          "time": "09:25:00",
-          "host": "pc-yui",
-          "user": "yui",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:25:00Z host=pc-yui user=yui event=login result=success"
         },
         {
           "id": "f3-b",
-          "time": "09:25:07",
-          "host": "pc-ren",
-          "user": "ren",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:25:07Z host=pc-ren user=ren event=login result=failed"
         },
         {
           "id": "f3-c",
-          "time": "09:25:12",
-          "host": "pc-yui",
-          "user": "yui",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:25:12Z host=pc-yui user=yui event=login result=failed"
         },
         {
           "id": "f3-d",
-          "time": "09:25:22",
-          "host": "pc-ren",
-          "user": "ren",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:25:22Z host=pc-ren user=ren event=login result=success"
         }
       ],
@@ -853,57 +761,35 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "f4-a",
-          "time": "09:28:00",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:28:00Z host=pc-aki user=aki event=login result=failed"
         },
         {
           "id": "f4-b",
-          "time": "09:28:08",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:28:08Z host=pc-aki user=aki event=login result=failed"
         },
         {
           "id": "f4-c",
-          "time": "09:28:20",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:28:20Z host=pc-aki user=aki event=login result=success"
         },
         {
           "id": "f4-d",
-          "time": "09:29:00",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:29:00Z host=pc-aki user=aki event=login result=failed"
         },
         {
           "id": "f4-e",
-          "time": "09:29:15",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:29:15Z host=pc-aki user=aki event=login result=success"
         }
       ],
       "answer": {
         "values": [
-          "3",
-          "３",
-          "3件",
-          "３件"
-        ]
+          "3"
+        ],
+        "numericCount": true
       },
       "answerExplanation": "failed は 09:28:00、09:28:08、09:29:00 の 3 件です。この 5 行の中での件数であり、表示されていない時間帯まで含む数ではありません。",
       "hints": [
@@ -942,33 +828,21 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "c1-close",
-          "time": "09:30:30",
-          "host": "pc-mei",
-          "user": "mei",
           "event": "file_close",
           "raw": "2026-10-20T09:30:30Z host=pc-mei user=mei event=file_close"
         },
         {
           "id": "c1-login",
-          "time": "09:30:10",
-          "host": "pc-mei",
-          "user": "mei",
           "event": "login",
           "raw": "2026-10-20T09:30:10Z host=pc-mei user=mei event=login"
         },
         {
           "id": "c1-logout",
-          "time": "09:30:40",
-          "host": "pc-mei",
-          "user": "mei",
           "event": "logout",
           "raw": "2026-10-20T09:30:40Z host=pc-mei user=mei event=logout"
         },
         {
           "id": "c1-open",
-          "time": "09:30:20",
-          "host": "pc-mei",
-          "user": "mei",
           "event": "file_open",
           "raw": "2026-10-20T09:30:20Z host=pc-mei user=mei event=file_open"
         }
@@ -1018,41 +892,26 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "c2-a",
-          "time": "09:35:00",
-          "user": "sora",
-          "session": "S72",
           "event": "login",
           "raw": "2026-10-20T09:35:00Z user=sora session=S72 event=login"
         },
         {
           "id": "c2-b",
-          "time": "09:35:03",
-          "user": "sora",
-          "session": "S73",
           "event": "login",
           "raw": "2026-10-20T09:35:03Z user=sora session=S73 event=login"
         },
         {
           "id": "c2-c",
-          "time": "09:35:10",
-          "user": "sora",
-          "session": "S72",
           "event": "file_open",
           "raw": "2026-10-20T09:35:10Z user=sora session=S72 event=file_open"
         },
         {
           "id": "c2-d",
-          "time": "09:35:15",
-          "user": "emi",
-          "session": "S74",
           "event": "login",
           "raw": "2026-10-20T09:35:15Z user=emi session=S74 event=login"
         },
         {
           "id": "c2-e",
-          "time": "09:35:30",
-          "user": "sora",
-          "session": "S72",
           "event": "logout",
           "raw": "2026-10-20T09:35:30Z user=sora session=S72 event=logout"
         }
@@ -1101,20 +960,12 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "c3-a",
-          "time": "09:40:00",
-          "user": "mio",
-          "src": "192.0.2.44",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:40:00Z user=mio src=192.0.2.44 event=login result=failed"
         },
         {
           "id": "c3-b",
-          "time": "09:40:15",
-          "user": "mio",
-          "src": "192.0.2.44",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:40:15Z user=mio src=192.0.2.44 event=login result=success"
         }
       ],
@@ -1175,15 +1026,11 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "c4-stop",
-          "time": "10:05:00",
-          "host": "collector-01",
           "event": "collection_stopped",
           "raw": "2026-10-20T10:05:00Z host=collector-01 event=collection_stopped"
         },
         {
           "id": "c4-start",
-          "time": "10:15:00",
-          "host": "collector-01",
           "event": "collection_started",
           "raw": "2026-10-20T10:15:00Z host=collector-01 event=collection_started"
         }
@@ -1817,73 +1664,43 @@ globalThis.EASY_DATA = {
       "steps": [
         {
           "id": "g1-find",
-          "title": "1 / 4 関係するログを集める",
+          "title": "関係するログを集める",
           "task": "render-kiosk-02 の job=R-204 に関するログを、3行すべて選んでください。host は端末名、job は1回分の仕事の番号です。",
           "kind": "rows",
           "rows": [
             {
               "id": "g1-log-a",
-              "time": "21:00:00",
-              "host": "render-kiosk-02",
-              "user": "svc-render",
               "event": "render_started",
-              "result": "started",
-              "session": "R-204",
               "raw": "2026-10-21T21:00:00Z host=render-kiosk-02 user=svc-render job=R-204 event=render_started input=lobby-map.svg",
               "note": "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。svc-render は自動処理用アカウント。"
             },
             {
               "id": "g1-noise-a",
-              "time": "21:00:01",
-              "host": "render-kiosk-03",
-              "user": "svc-render",
               "event": "render_started",
-              "result": "started",
-              "session": "R-205",
               "raw": "2026-10-21T21:00:01Z host=render-kiosk-03 user=svc-render job=R-205 event=render_started input=cafe-menu.svg",
               "note": "別の端末・別のジョブで、メニューのPDF生成を開始。"
             },
             {
               "id": "g1-log-b",
-              "time": "21:00:04",
-              "host": "render-kiosk-02",
-              "user": "svc-render",
               "event": "pdf_created",
-              "result": "success",
-              "session": "R-204",
               "raw": "2026-10-21T21:00:04Z host=render-kiosk-02 user=svc-render job=R-204 event=pdf_created output=/srv/maps/lobby-map.pdf",
               "note": "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。"
             },
             {
               "id": "g1-noise-b",
-              "time": "21:00:05",
-              "host": "render-kiosk-02",
-              "user": "svc-render",
               "event": "cleanup_completed",
-              "result": "success",
-              "session": "R-203",
               "raw": "2026-10-21T21:00:05Z host=render-kiosk-02 user=svc-render job=R-203 event=cleanup_completed",
               "note": "同じ端末だが、別のジョブ R-203 の片付け処理。"
             },
             {
               "id": "g1-log-c",
-              "time": "21:00:06",
-              "host": "render-kiosk-02",
-              "user": "svc-render",
               "event": "render_completed",
-              "result": "success",
-              "session": "R-204",
               "raw": "2026-10-21T21:00:06Z host=render-kiosk-02 user=svc-render job=R-204 event=render_completed result=success",
               "note": "ジョブ R-204 のPDF生成処理が完了。"
             },
             {
               "id": "g1-noise-c",
-              "time": "21:00:07",
-              "host": "lobby-screen-01",
-              "user": "svc-display",
               "event": "display_refreshed",
-              "result": "success",
-              "session": "D-81",
               "raw": "2026-10-21T21:00:07Z host=lobby-screen-01 user=svc-display job=D-81 event=display_refreshed",
               "note": "別の端末で画面表示を更新。"
             }
@@ -1905,7 +1722,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "g1-evidence",
-          "title": "2 / 4 実際の動きと承認を照合する",
+          "title": "実際の動きと承認を照合する",
           "task": "「R-204 の端末・アカウント・実施時間・作成内容は、承認された作業に一致する」を裏付ける資料を2枚選んでください。",
           "kind": "evidence",
           "rows": [
@@ -1950,7 +1767,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "g1-judge",
-          "title": "3 / 4 確認した範囲で判断する",
+          "title": "確認した範囲で判断する",
           "task": "これまでの証拠から、今回の通知に対する最も適切な判断を選んでください。",
           "kind": "choice",
           "rows": [
@@ -1997,7 +1814,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "g1-report",
-          "title": "4 / 4 調査を短く報告する",
+          "title": "調査を短く報告する",
           "task": "今回の調査を終える報告として、「確認した事実」「確認の限界」「次の行動」を1つずつ選んでください。",
           "kind": "report",
           "rows": [
@@ -2094,7 +1911,6 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-r1-log",
-          "time": "10:02:11",
           "raw": "192.0.2.44 - mina [23/Oct/2026:10:02:11 +0000] \"GET /admin/users HTTP/1.1\" 403 162 \"-\" \"TrainingBrowser/1.0\"",
           "note": "管理画面の利用者一覧を求めた要求の応答記録。"
         }
@@ -2167,7 +1983,6 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-r2-log",
-          "time": "10:05:20",
           "raw": "{\"timestamp\":\"2026-10-23T10:05:20Z\",\"host\":\"ws-18\",\"src\":\"10.40.1.18\",\"resolver\":\"10.40.0.53\",\"query\":\"reports-old.office.example\",\"type\":\"A\",\"rcode\":\"NXDOMAIN\"}",
           "note": "type=A は IPv4 アドレスの問い合わせ。"
         }
@@ -2215,7 +2030,6 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-r3-log",
-          "time": "10:08:01",
           "raw": "2026-10-23T10:08:01Z host=ws-22 user=mina event=process_started pid=582 image=sheet-viewer.exe ppid=310 parent_image=browser.exe",
           "note": "pid と ppid はこの端末でのプロセス番号。"
         }
@@ -2287,19 +2101,16 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-r4-pass",
-          "time": "10:12:00",
           "raw": "2026-10-23T10:12:00Z user=keito auth_id=AUTH-62 factor=password result=accepted",
           "note": "パスワード要素の確認を通過。"
         },
         {
           "id": "m-r4-push",
-          "time": "10:12:05",
           "raw": "2026-10-23T10:12:05Z user=keito auth_id=AUTH-62 factor=push result=denied",
           "note": "追加の確認通知は拒否。"
         },
         {
           "id": "m-r4-final",
-          "time": "10:12:06",
           "raw": "2026-10-23T10:12:06Z user=keito auth_id=AUTH-62 event=auth_finished result=blocked",
           "note": "この認証ではログイン完了を認めなかった。"
         }
@@ -2361,37 +2172,31 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-f1-web",
-          "time": "10:20:00",
           "raw": "2026-10-23T10:20:00Z component=web user=rio request_id=REQ-731 event=request_received path=/calendar",
           "note": "予定表への要求を受付。"
         },
         {
           "id": "m-f1-other",
-          "time": "10:20:01",
           "raw": "2026-10-23T10:20:01Z component=web user=rio request_id=REQ-732 event=request_received path=/help",
           "note": "同じ利用者からの別の要求。"
         },
         {
           "id": "m-f1-app",
-          "time": "10:20:02",
           "raw": "2026-10-23T10:20:02Z component=app user=rio request_id=REQ-731 event=permission_checked result=denied",
           "note": "要求に対する権限確認。"
         },
         {
           "id": "m-f1-old",
-          "time": "10:20:03",
           "raw": "2026-10-23T10:20:03Z component=app user=aya request_id=REQ-729 event=permission_checked result=allowed",
           "note": "別の利用者・別の要求。"
         },
         {
           "id": "m-f1-response",
-          "time": "10:20:04",
           "raw": "2026-10-23T10:20:04Z component=web user=rio request_id=REQ-731 event=response_sent status=403",
           "note": "拒否の応答。"
         },
         {
           "id": "m-f1-other-response",
-          "time": "10:20:05",
           "raw": "2026-10-23T10:20:05Z component=web user=rio request_id=REQ-732 event=response_sent status=200",
           "note": "ヘルプへの別の要求の応答。"
         }
@@ -2442,37 +2247,31 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-f2-a",
-          "time": "10:25:00",
           "raw": "2026-10-23T10:25:00Z host=ws-18 query=reports-old.office.example type=A rcode=NXDOMAIN",
           "note": "名前が存在しないという応答。"
         },
         {
           "id": "m-f2-b",
-          "time": "10:25:01",
           "raw": "2026-10-23T10:25:01Z host=ws-19 query=reports-old.office.example type=A rcode=NXDOMAIN",
           "note": "別の端末からの問い合わせ。"
         },
         {
           "id": "m-f2-c",
-          "time": "10:25:02",
           "raw": "2026-10-23T10:25:02Z host=ws-18 query=reports.office.example type=A rcode=NOERROR answer=192.0.2.80",
           "note": "アドレス回答のある問い合わせ。"
         },
         {
           "id": "m-f2-d",
-          "time": "10:25:03",
           "raw": "2026-10-23T10:25:03Z host=ws-18 query=calendar-old.office.example type=A rcode=NXDOMAIN",
           "note": "名前が存在しないという応答。"
         },
         {
           "id": "m-f2-e",
-          "time": "10:25:04",
           "raw": "2026-10-23T10:25:04Z host=ws-18 query=calendar.office.example type=A rcode=SERVFAIL",
           "note": "処理できなかった応答。名前不存在とは別。"
         },
         {
           "id": "m-f2-f",
-          "time": "10:25:05",
           "raw": "2026-10-23T10:25:05Z host=ws-19 query=calendar.office.example type=A rcode=NOERROR answer=192.0.2.81",
           "note": "別の端末へのアドレス回答。"
         }
@@ -2520,49 +2319,41 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-f3-a",
-          "time": "10:30:00",
           "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-b",
-          "time": "10:30:00",
           "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-c",
-          "time": "10:30:10",
           "raw": "2026-10-23T10:30:10Z user=mei attempt=M-12 event=mfa_result result=denied",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-d",
-          "time": "10:30:20",
           "raw": "2026-10-23T10:30:20Z user=mei attempt=M-13 event=mfa_result result=approved",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-e",
-          "time": "10:30:30",
           "raw": "2026-10-23T10:30:30Z user=mei attempt=M-14 event=mfa_result result=timeout",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-f",
-          "time": "10:30:40",
           "raw": "2026-10-23T10:30:40Z user=mei attempt=M-15 event=mfa_result result=denied",
           "note": "確認通知への応答記録。"
         }
       ],
       "answer": {
         "values": [
-          "3",
-          "３",
-          "3回",
-          "３回"
+          "3"
         ],
-        "caseSensitive": false
+        "caseSensitive": false,
+        "numericCount": true
       },
       "answerExplanation": "拒否された試行番号は M-11・M-12・M-15 の3種類です。M-11 の2行は同じ試行です。M-13 の承認と M-14 の時間切れは、指定された denied の件数に含めません。",
       "hints": [
@@ -2601,37 +2392,31 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-f4-a",
-          "time": "10:35:00",
           "raw": "2026-10-23T10:35:00Z host=ws-22 user=mina event=file_read path=/team/plan.csv",
           "note": "対象端末で計画表を読み取り。"
         },
         {
           "id": "m-f4-b",
-          "time": "10:35:01",
           "raw": "2026-10-23T10:35:01Z host=ws-22 user=mina2 event=file_read path=/team/plan.csv",
           "note": "名前が似た別アカウント。"
         },
         {
           "id": "m-f4-c",
-          "time": "10:35:02",
           "raw": "2026-10-23T10:35:02Z host=ws-23 user=mina event=file_read path=/team/plan.csv",
           "note": "同じアカウントだが別端末。"
         },
         {
           "id": "m-f4-d",
-          "time": "10:35:03",
           "raw": "2026-10-23T10:35:03Z host=ws-22 user=mina event=file_created path=/temp/notes.txt",
           "note": "同じ端末・アカウントの作成操作。"
         },
         {
           "id": "m-f4-e",
-          "time": "10:35:04",
           "raw": "2026-10-23T10:35:04Z host=ws-22 user=mina event=file_read path=/team/budget.csv",
           "note": "対象端末で予算表を読み取り。"
         },
         {
           "id": "m-f4-f",
-          "time": "10:35:05",
           "raw": "2026-10-23T10:35:05Z host=ws-22 user=hana event=file_read path=/team/plan.csv",
           "note": "別のアカウント。"
         }
@@ -2681,25 +2466,21 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-c1-file",
-          "time": "11:02:04",
           "raw": "2026-10-23T11:02:04Z component=app request_id=REQ-842 event=file_created artifact=calendar-842.csv",
           "note": "予定表ファイルを作成。"
         },
         {
           "id": "m-c1-response",
-          "time": "11:02:05",
           "raw": "2026-10-23T11:02:05Z component=web request_id=REQ-842 event=response_sent status=200 response_kind=job_metadata",
           "note": "処理情報を返した応答。ファイル本体ではない。"
         },
         {
           "id": "m-c1-request",
-          "time": "11:02:00",
           "raw": "2026-10-23T11:02:00Z component=web request_id=REQ-842 event=request_received method=POST path=/api/calendar-export",
           "note": "書き出し要求の受付。"
         },
         {
           "id": "m-c1-queue",
-          "time": "11:02:01",
           "raw": "2026-10-23T11:02:01Z component=app request_id=REQ-842 event=job_queued job=CAL-842",
           "note": "書き出し処理を受け付け。"
         }
@@ -2749,37 +2530,31 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-c2-map",
-          "time": "11:10:00",
           "raw": "2026-10-23T11:10:00Z user=mia request_id=REQ-712 job=JOB-38 event=job_assigned",
           "note": "要求と処理番号の対応。"
         },
         {
           "id": "m-c2-other-map",
-          "time": "11:10:01",
           "raw": "2026-10-23T11:10:01Z user=mia request_id=REQ-713 job=JOB-39 event=job_assigned",
           "note": "同じアカウントの別要求。"
         },
         {
           "id": "m-c2-start",
-          "time": "11:10:02",
           "raw": "2026-10-23T11:10:02Z job=JOB-38 event=job_started dataset=room_list",
           "note": "JOB-38 の処理開始。room_list は会議室一覧。"
         },
         {
           "id": "m-c2-other-start",
-          "time": "11:10:03",
           "raw": "2026-10-23T11:10:03Z job=JOB-39 event=job_started dataset=room_list",
           "note": "JOB-39 の処理開始。"
         },
         {
           "id": "m-c2-output",
-          "time": "11:10:05",
           "raw": "2026-10-23T11:10:05Z job=JOB-38 event=artifact_created artifact=rooms-38.csv",
           "note": "JOB-38 の成果物作成。"
         },
         {
           "id": "m-c2-other-output",
-          "time": "11:10:06",
           "raw": "2026-10-23T11:10:06Z job=JOB-39 event=artifact_created artifact=rooms-39.csv",
           "note": "別のジョブの成果物。"
         }
@@ -2828,19 +2603,16 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-c3-auth",
-          "time": "11:20:00",
           "raw": "2026-10-23T11:20:00Z user=ren session=S-225 event=login_finished result=success",
           "note": "このセッションの認証に成功。"
         },
         {
           "id": "m-c3-check",
-          "time": "11:20:10",
           "raw": "2026-10-23T11:20:10Z user=ren session=S-225 request_id=REQ-225 event=permission_checked result=denied reason=missing_role required_role=admin",
           "note": "管理者の役割がないため操作を拒否。"
         },
         {
           "id": "m-c3-web",
-          "time": "11:20:11",
           "raw": "2026-10-23T11:20:11Z user=ren session=S-225 request_id=REQ-225 method=GET path=/admin/settings status=403",
           "note": "管理設定ページの要求に拒否の応答。"
         }
@@ -2901,19 +2673,16 @@ globalThis.EASY_DATA = {
       "rows": [
         {
           "id": "m-c4-a",
-          "time": "11:30:00",
           "raw": "2026-10-23T11:30:00Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
           "note": "問い合わせの記録1。"
         },
         {
           "id": "m-c4-b",
-          "time": "11:30:30",
           "raw": "2026-10-23T11:30:30Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
           "note": "問い合わせの記録2。"
         },
         {
           "id": "m-c4-c",
-          "time": "11:31:00",
           "raw": "2026-10-23T11:31:00Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
           "note": "問い合わせの記録3。"
         }
@@ -3602,43 +3371,37 @@ globalThis.EASY_DATA = {
       "steps": [
         {
           "id": "m-g1-find",
-          "title": "1 / 4 同じ要求の記録を集める",
+          "title": "同じ要求の記録を集める",
           "task": "対象の request_id=REQ-880 に関係する「Web要求・アプリ生成・Web応答」を3行選んでください。同じ user だけでまとめないようにします。",
           "kind": "rows",
           "rows": [
             {
               "id": "m-g1-request",
-              "time": "14:10:00",
               "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-880 event=request_received method=POST path=/api/export",
               "note": "書き出し要求を受付。"
             },
             {
               "id": "m-g1-other-request",
-              "time": "14:10:00",
               "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-881 event=request_received method=GET path=/health",
               "note": "同じ利用者とセッションからの状態確認要求。"
             },
             {
               "id": "m-g1-generated",
-              "time": "14:10:01",
               "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv",
               "note": "職員連絡先400件のファイル生成が完了。"
             },
             {
               "id": "m-g1-other-generated",
-              "time": "14:10:01",
               "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-879 job=EX-89 event=export_completed dataset=public_agenda records=50 artifact=agenda-89.csv",
               "note": "別要求で公開行事予定を50件生成。"
             },
             {
               "id": "m-g1-response",
-              "time": "14:10:02",
               "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-880 event=response_sent status=200 response_kind=job_metadata bytes=128",
               "note": "128バイトの処理情報を応答。ファイル本体の受取完了ではない。"
             },
             {
               "id": "m-g1-other-response",
-              "time": "14:10:02",
               "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-881 event=response_sent status=200 response_kind=health_status bytes=16",
               "note": "別要求のサービス状態確認への応答。"
             }
@@ -3660,7 +3423,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "m-g1-evidence",
-          "title": "2 / 4 生成した件数と承認上限を比べる",
+          "title": "生成した件数と承認上限を比べる",
           "task": "「REQ-880 で生成されたデータの件数は、今回提示された承認票の上限を超える」を裏付ける2枚を選んでください。",
           "kind": "evidence",
           "rows": [
@@ -3705,7 +3468,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "m-g1-judge",
-          "title": "3 / 4 分かったことだけで判断する",
+          "title": "分かったことだけで判断する",
           "task": "これまでの記録で支えられる判断を選んでください。生成・HTTP応答・受け取り・外部送信を混同しないようにします。",
           "kind": "choice",
           "rows": [
@@ -3758,7 +3521,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "m-g1-report",
-          "title": "4 / 4 証拠と未確認事項を引き継ぐ",
+          "title": "証拠と未確認事項を引き継ぐ",
           "task": "今回の調査報告として、「確認した事実」「確認の限界」「次の行動」を1つずつ選んでください。",
           "kind": "report",
           "rows": [
@@ -3876,7 +3639,7 @@ globalThis.EASY_DATA = {
         "tool": "時系列",
         "how": "別のログを並べる前に、時刻の基準をそろえて記録します。"
       },
-      "flag": "EASY{NORMALIZE_UTC_DATE}"
+      "flag": "EASY{ADV_NORMALIZE_UTC_DATE}"
     },
     {
       "id": "a-r2",
@@ -3919,7 +3682,7 @@ globalThis.EASY_DATA = {
         "tool": "時系列",
         "how": "発生と収集の時刻を混同せず、記録を並べます。"
       },
-      "flag": "EASY{READ_EVENT_TIMESTAMP}",
+      "flag": "EASY{ADV_READ_EVENT_TIMESTAMP}",
       "tokens": [
         {
           "id": "a-r2-event-time",
@@ -3985,7 +3748,7 @@ globalThis.EASY_DATA = {
         "tool": "ログ検索",
         "how": "親と子の ID を読み分け、プログラムのつながりを調べます。"
       },
-      "flag": "EASY{READ_PARENT_GUID}",
+      "flag": "EASY{ADV_READ_PARENT_GUID}",
       "tokens": [
         {
           "id": "a-r3-child-guid",
@@ -4055,7 +3818,7 @@ globalThis.EASY_DATA = {
         "tool": "資産・資料",
         "how": "表示名だけに頼らず、台帳の ID と突き合わせて対象を絞ります。"
       },
-      "flag": "EASY{MATCH_ACCOUNT_ID}",
+      "flag": "EASY{ADV_MATCH_ACCOUNT_ID}",
       "choices": [
         {
           "id": "a-r4-payroll",
@@ -4156,7 +3919,7 @@ globalThis.EASY_DATA = {
         "tool": "ログ検索",
         "how": "ID で絞った検索結果に対し、試行番号や処理区間を追加で照合し、別の試行を混ぜず根拠を集めます。"
       },
-      "flag": "EASY{SEPARATE_TRACE_RETRIES}",
+      "flag": "EASY{ADV_SEPARATE_TRACE_RETRIES}",
       "searchMode": "evidence"
     },
     {
@@ -4223,7 +3986,7 @@ globalThis.EASY_DATA = {
         "tool": "ログ検索",
         "how": "端末と ID を組み合わせ、別の出来事を混ぜないようにします。"
       },
-      "flag": "EASY{MATCH_HOST_AND_PARENT}"
+      "flag": "EASY{ADV_MATCH_HOST_AND_PARENT}"
     },
     {
       "id": "a-f3",
@@ -4279,7 +4042,8 @@ globalThis.EASY_DATA = {
       "answer": {
         "values": [
           "3"
-        ]
+        ],
+        "numericCount": true
       },
       "answerExplanation": "条件に合う対象は DOC-201・DOC-202・DOC-204 の 3 件です。共有作成成功は 4 行ありますが、DOC-201 の重複を一つにまとめます。",
       "hints": [
@@ -4292,7 +4056,7 @@ globalThis.EASY_DATA = {
         "tool": "対応記録",
         "how": "影響範囲を書くときに、何を数えた件数なのかを明確にします。"
       },
-      "flag": "EASY{COUNT_DISTINCT_OBJECTS}"
+      "flag": "EASY{ADV_COUNT_DISTINCT_OBJECTS}"
     },
     {
       "id": "a-f4",
@@ -4364,7 +4128,7 @@ globalThis.EASY_DATA = {
         "tool": "ログ検索",
         "how": "検索対象の範囲を明記し、対象漏れや重複を防ぎます。"
       },
-      "flag": "EASY{CHECK_TIME_BOUNDARIES}"
+      "flag": "EASY{ADV_CHECK_TIME_BOUNDARIES}"
     },
     {
       "id": "a-c1",
@@ -4427,7 +4191,7 @@ globalThis.EASY_DATA = {
         "tool": "時系列",
         "how": "システムごとに違う時刻表記をそろえて並べます。"
       },
-      "flag": "EASY{ORDER_TIMEZONES}"
+      "flag": "EASY{ADV_ORDER_TIMEZONES}"
     },
     {
       "id": "a-c2",
@@ -4499,7 +4263,7 @@ globalThis.EASY_DATA = {
         "tool": "時系列",
         "how": "関連プロセスを集め、どこまでつながりを確認できたか整理します。"
       },
-      "flag": "EASY{TRACE_PROCESS_CHAIN}"
+      "flag": "EASY{ADV_TRACE_PROCESS_CHAIN}"
     },
     {
       "id": "a-c3",
@@ -4554,7 +4318,7 @@ globalThis.EASY_DATA = {
         "tool": "資産・資料",
         "how": "通信経路の資料を見て、ログの IP が何を指すか確認します。"
       },
-      "flag": "EASY{READ_PROXY_CLIENT}",
+      "flag": "EASY{ADV_READ_PROXY_CLIENT}",
       "choices": [
         {
           "id": "a-c3-person",
@@ -4626,7 +4390,7 @@ globalThis.EASY_DATA = {
         "tool": "時系列",
         "how": "時刻の不確かさを補足し、確定した順序と推測を区別します。"
       },
-      "flag": "EASY{ALLOW_CLOCK_ERROR}",
+      "flag": "EASY{ADV_ALLOW_CLOCK_ERROR}",
       "choices": [
         {
           "id": "a-c4-a-first",
@@ -4707,7 +4471,7 @@ globalThis.EASY_DATA = {
         "tool": "対応記録",
         "how": "確認した事実と記録範囲の限界を並べて引き継ぎます。"
       },
-      "flag": "EASY{CHECK_LOG_COVERAGE}"
+      "flag": "EASY{ADV_CHECK_LOG_COVERAGE}"
     },
     {
       "id": "a-e2",
@@ -4779,7 +4543,7 @@ globalThis.EASY_DATA = {
         "tool": "資産・資料",
         "how": "最新の承認だけで判断せず、操作時点で有効だった内容と対象を確認します。"
       },
-      "flag": "EASY{CHECK_APPROVAL_VERSION}"
+      "flag": "EASY{ADV_CHECK_APPROVAL_VERSION}"
     },
     {
       "id": "a-e3",
@@ -4834,7 +4598,7 @@ globalThis.EASY_DATA = {
         "tool": "照会",
         "how": "回答をそのまま結論にせず、ログで具体化した追加質問をします。"
       },
-      "flag": "EASY{VERIFY_AUTOMATED_JOB}",
+      "flag": "EASY{ADV_VERIFY_AUTOMATED_JOB}",
       "choices": [
         {
           "id": "a-e3-blame",
@@ -4917,7 +4681,7 @@ globalThis.EASY_DATA = {
         "tool": "対応記録",
         "how": "対応の実施と、効果を確認できた対象・範囲を分けて記録します。"
       },
-      "flag": "EASY{VERIFY_AUTH_DENIAL}"
+      "flag": "EASY{ADV_VERIFY_AUTH_DENIAL}"
     },
     {
       "id": "a-d1",
@@ -4972,7 +4736,7 @@ globalThis.EASY_DATA = {
         "tool": "対応記録",
         "how": "優先度を成立状況・重要度・継続性の根拠とともに残します。"
       },
-      "flag": "EASY{PRIORITIZE_ACTIVE_EXPOSURE}",
+      "flag": "EASY{ADV_PRIORITIZE_ACTIVE_EXPOSURE}",
       "choices": [
         {
           "id": "a-d1-a",
@@ -5044,7 +4808,7 @@ globalThis.EASY_DATA = {
         "tool": "対応記録",
         "how": "対象と承認を示し、必要な範囲に絞った対処を記録します。"
       },
-      "flag": "EASY{CONTAIN_APPROVED_SHARE}",
+      "flag": "EASY{ADV_CONTAIN_APPROVED_SHARE}",
       "choices": [
         {
           "id": "a-d2-target",
@@ -5111,7 +4875,7 @@ globalThis.EASY_DATA = {
         "tool": "対応記録",
         "how": "識別情報を残しながら、引き継ぎで秘密の値を拡散させません。"
       },
-      "flag": "EASY{MASK_SECRET_VALUES}",
+      "flag": "EASY{ADV_MASK_SECRET_VALUES}",
       "choices": [
         {
           "id": "a-d3-spread",
@@ -5204,7 +4968,7 @@ globalThis.EASY_DATA = {
         "tool": "対応記録",
         "how": "対処が効いた対象と、残る利用や未確認事項を分け、追加の対応計画を具体的に引き継ぎます。"
       },
-      "flag": "EASY{VERIFY_SESSION_STOP}",
+      "flag": "EASY{ADV_VERIFY_SESSION_STOP}",
       "choices": [
         {
           "id": "a-d4-fact-ok",
@@ -5265,33 +5029,7 @@ globalThis.EASY_DATA = {
       "task": "四つの段階を順番に進め、調査と対応計画を完成させてください。",
       "kind": "investigation",
       "sourceLabel": "調べる記録と資料",
-      "rows": [
-        {
-          "id": "a-g1-auth",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:00:00Z system=identity actor_id=svc-survey credential_id=K-42 session=S-440 event=new_authentication result=success"
-        },
-        {
-          "id": "a-g1-other-auth",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:00:03Z system=identity actor_id=svc-map credential_id=K-43 session=S-441 event=new_authentication result=success"
-        },
-        {
-          "id": "a-g1-create",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:01:00Z system=cloud actor_id=svc-survey session=S-440 event=share_created folder=poll-results share_id=L-440 access=anonymous result=success"
-        },
-        {
-          "id": "a-g1-other-share",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:01:05Z system=cloud actor_id=svc-map session=S-441 event=share_created folder=public-map share_id=L-441 access=anonymous result=success"
-        },
-        {
-          "id": "a-g1-check",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:04:00Z system=cloud event=share_state_checked share_id=L-440 folder=poll-results state=enabled"
-        }
-      ],
+      "rows": [],
       "answer": {},
       "answerExplanation": "関連 ID で記録をつなぎ、承認・資料区分・記録範囲を確認し、対象を限定した対応計画と報告を完成させました。分かったことと分からないことを分ける姿勢が SOCroom の調査につながります。",
       "hints": [
@@ -5304,11 +5042,11 @@ globalThis.EASY_DATA = {
         "tool": "ログ検索 → 資産・資料 → 対応記録",
         "how": "SOCroom では複数画面を行き来して根拠を集め、未確認事項を残して担当者へ引き継ぎます。"
       },
-      "flag": "EASY{INVESTIGATE_CLOUD_SHARE}",
+      "flag": "EASY{ADV_INVESTIGATE_CLOUD_SHARE}",
       "steps": [
         {
           "id": "a-g1-step1",
-          "title": "1. 関連する記録を集める",
+          "title": "関連する記録を集める",
           "task": "K-42 による認証から、S-440 を使った L-440 の共有作成、L-440 の現在の状態まで、関連する記録をすべて選んでください。",
           "kind": "rows",
           "sourceLabel": "認証とクラウドの監査ログ",
@@ -5356,7 +5094,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "a-g1-step2",
-          "title": "2. 承認と対象の重要度を照合する",
+          "title": "承認と対象の重要度を照合する",
           "task": "「L-440 は承認 CHG-440 の対象外で、匿名共有が禁止された機密資料への共有である」を支える必要なカードだけをすべて選んでください。",
           "kind": "evidence",
           "sourceLabel": "操作・承認・資料区分",
@@ -5408,7 +5146,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "a-g1-step3",
-          "title": "3. 分かったことの範囲を判断する",
+          "title": "分かったことの範囲を判断する",
           "task": "現在の証拠に合う判断を一つ選んでください。未収集のログから何を言えるかにも注意します。",
           "kind": "choice",
           "sourceLabel": "現在の状態と調査範囲",
@@ -5472,7 +5210,7 @@ globalThis.EASY_DATA = {
         },
         {
           "id": "a-g1-step4",
-          "title": "4. 対象を絞った対応と引き継ぎ",
+          "title": "対象を絞った対応と引き継ぎ",
           "task": "まだ対処は実行していません。確認事実・未確認事項・承認に沿った次の対応を一つずつ選び、報告を完成させてください。",
           "kind": "report",
           "sourceLabel": "引き継ぐ記録と対応承認",

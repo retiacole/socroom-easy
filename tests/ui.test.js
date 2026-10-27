@@ -176,7 +176,7 @@ test('new learner sees one unlocked beginner start, 21 scoped tasks, three level
   }
   assert.equal(h.document.querySelectorAll('.level-card').length, 3);
   assert.equal(h.document.querySelectorAll('.mission-row').length, 21);
-  assert.equal(h.document.querySelectorAll('.mission-row:disabled').length, 20);
+  assert.equal(h.document.querySelectorAll('.mission-row[aria-disabled="true"]').length, 20);
   assert.equal(h.get('.hero-start').dataset.open, 'r1');
   assert.match(h.get('.hero-badges').textContent, /時間制限なし/);
   h.click('[data-action="glossary"]');
@@ -211,7 +211,7 @@ test('wrong token receives feedback, correct token earns one flag and unlocks th
   assert.equal(rec.completed, true);
   h.click('[data-action="map"]');
   assert.equal(h.get('.mission-row[data-open="r2"]').disabled, false);
-  assert.equal(h.get('.mission-row[data-open="r3"]').disabled, true);
+  assert.equal(h.get('.mission-row[data-open="r3"]').getAttribute('aria-disabled'), 'true');
   assert.match(h.get('.points').textContent, /100/);
 });
 
@@ -228,7 +228,7 @@ test('all 63 missions and twelve graduation stages complete through visible DOM 
       const steps = mission.steps || [mission];
       for (const [index, step] of steps.entries()) {
         assert.equal(h.get('#task-heading').textContent, step.task);
-        assert.equal(h.get('.mobile-task p').textContent, step.task, 'narrow-screen preview identifies the current task before the reading material');
+        assert.equal(h.document.querySelector('.mobile-task'), null, 'task is not duplicated on narrow screens');
         if (!['token', 'order'].includes(step.kind)) {
           for (const row of step.rows.filter(row => row.title)) {
             assert.equal(h.get(`[data-row="${row.id}"] h3`).textContent, row.title, 'source card retains its meaningful title');
@@ -296,9 +296,10 @@ test('filter updates visible rows, handles zero results and requires both query 
   h.input('#log-query', 'pc-kai');
   h.click(`[data-select="${mission.answer.rowIds[0]}"]`);
   h.submit();
-  assert.ok(h.document.querySelector('.feedback.try-again'), 'finding the row does not replace the specified query practice');
+  assert.ok(h.document.querySelector('.feedback.success'), 'alternative query preserves and narrows the necessary evidence');
+  h.click('[data-action="retry"]');
   h.input('#log-query', '　ＨＯＳＴ＝ＰＣ－ＫＡＩ　');
-  assert.equal(h.document.querySelector('.feedback'), null, 'editing the failed query removes stale feedback');
+  assert.equal(h.document.querySelector('.feedback'), null, 'retry clears previous feedback');
   assert.deepEqual([...h.document.querySelectorAll('[data-row]')].map(node => node.dataset.row), mission.answer.rowIds, 'filter accepts the same NFKC and case normalization as grading');
   h.click(`[data-select="${mission.answer.rowIds[0]}"]`);
   h.submit();
@@ -473,7 +474,7 @@ test('export and import use the easy format, require confirmation, and preserve 
   assert.equal(fresh.get('.hero-start').dataset.open, 'r2');
 });
 
-test('invalid, foreign, oversized, or forged save imports leave the current progress unchanged', async t => {
+test('invalid, foreign, or oversized save imports leave the current progress unchanged', async t => {
   const h = harness(t, saveBefore('r2'));
   const before = h.snapshot();
   const badProof = saveBefore('r2');
@@ -481,14 +482,18 @@ test('invalid, foreign, oversized, or forged save imports leave the current prog
   for (const [content, size] of [
     ['{invalid', undefined],
     [JSON.stringify({ format: 'socroom-save', version: 1, session: {} }), undefined],
-    [JSON.stringify(before), 2 * 1024 * 1024 + 1],
-    [JSON.stringify(badProof), undefined]
+    [JSON.stringify(before), 2 * 1024 * 1024 + 1]
   ]) {
     await h.importFile(content, size);
     assert.equal(h.get('#dialog').open, false);
     assert.match(h.get('#toast').textContent, /読み込めませんでした|2MB以下/);
     assert.deepEqual(h.snapshot(), before);
   }
+  await h.importFile(JSON.stringify(badProof));
+  assert.equal(h.get('#dialog').open, true);
+  assert.deepEqual(h.snapshot(), before, 'partial recovery requires confirmation');
+  h.click('[data-action="import-confirmed"]');
+  assert.equal(h.snapshot().progress.records.r1.completed, false, 'forged proof never awards a flag');
 });
 
 test('manual export works when browser storage is unavailable', t => {
@@ -524,7 +529,7 @@ test('reset confirms deletion of all three easy levels and leaves SOCroom and le
   assert.equal(h.snapshot().progress.records['m-r1'].completed, false);
   assert.equal(h.snapshot().progress.records['a-r1'].completed, false);
   assert.equal(h.get('.top-flags b').textContent, '0');
-  assert.equal(h.document.querySelectorAll('.mission-row:disabled').length, 20);
+  assert.equal(h.document.querySelectorAll('.mission-row[aria-disabled="true"]').length, 20);
 });
 
 
@@ -536,7 +541,7 @@ test('each level is selectable immediately and shows only its own first unlocked
     assert.equal(h.get('.level-card.active').dataset.level, level.id);
     assert.equal(h.get('.level-card.active').getAttribute('aria-pressed'), 'true');
     assert.equal(h.document.querySelectorAll('.mission-row').length, 21);
-    assert.equal(h.document.querySelectorAll('.mission-row:disabled').length, 20);
+    assert.equal(h.document.querySelectorAll('.mission-row[aria-disabled="true"]').length, 20);
     assert.deepEqual([...h.document.querySelectorAll('.mission-row')].map(node => node.dataset.open), missions.map(mission => mission.id));
     assert.equal(h.get('.hero-start').dataset.open, missions[0].id);
     assert.equal(h.get('.flag-score strong').textContent, '0');
@@ -597,7 +602,7 @@ test('map scores, flags and collections are scoped to a level while header count
   assert.match(h.get('.points').textContent, /200/);
   assert.equal(h.get('.hero-start').dataset.open, 'm-r3');
   assert.equal(h.get('.mission-row[data-open="m-r3"]').disabled, false);
-  assert.equal(h.get('.mission-row[data-open="m-r4"]').disabled, true);
+  assert.equal(h.get('.mission-row[data-open="m-r4"]').getAttribute('aria-disabled'), 'true');
   h.click('[data-action="collection"]');
   assert.equal(h.get('#dialog-title').textContent, '中級で集めたフラグ');
   assert.deepEqual([...h.document.querySelectorAll('.flag-collection code')].map(node => node.textContent), ['m-r1', 'm-r2'].map(id => E.getMission(id).flag));
@@ -621,9 +626,9 @@ test('map scores, flags and collections are scoped to a level while header count
   assert.equal(h.get('.hero-start').dataset.open, 'a-r1');
 });
 
-test('first v0.2 launch migrates genuine v0.1 graduation progress and preserves the old storage key', t => {
+test('first launch migrates genuine v0.1 graduation progress and removes the old key after saving', t => {
   const h = harness(t, null, { otherStorage: { [LEGACY_STORE]: legacyText } });
-  assert.equal(h.storage.get(LEGACY_STORE), legacyText);
+  assert.equal(h.storage.has(LEGACY_STORE), false);
   assert.ok(h.storage.has(STORE));
   assert.match(h.get('#toast').textContent, /初版の進捗を初級へ引き継ぎ/);
   assert.equal(h.get('.hero-start').dataset.open, 'g1');
@@ -652,7 +657,7 @@ test('first v0.2 launch migrates genuine v0.1 graduation progress and preserves 
   h.click('[data-action="advance"]');
   fillAnswerThroughDOM(h, E.getMission('g1').steps[3]); h.submit();
   assert.equal(h.snapshot().progress.records.g1.completed, true);
-  assert.equal(h.storage.get(LEGACY_STORE), legacyText, 'completion writes only the new storage key');
+  assert.equal(h.storage.has(LEGACY_STORE), false, 'successful migration removed the old storage key');
 });
 
 test('v1 import explains new-level replacement and changes progress only after confirmation', async t => {
@@ -692,22 +697,26 @@ test('current v2 storage takes priority over an older valid v1 save', t => {
   assert.doesNotMatch(h.get('#toast').textContent, /引き継ぎ/);
 });
 
-test('invalid legacy imports cannot replace current work and invalid old storage remains recoverable', async t => {
+test('partial legacy imports require confirmation and preserve the original for recovery', async t => {
   const broken = JSON.parse(legacyText);
   delete broken.progress.records.r4;
   const brokenText = JSON.stringify(broken);
   const h = harness(t, saveBefore('m-r2'));
   const before = h.snapshot();
   await h.importFile(brokenText);
-  assert.equal(h.get('#dialog').open, false);
-  assert.match(h.get('#toast').textContent, /読み込めませんでした/);
+  assert.equal(h.get('#dialog').open, true);
+  assert.match(h.get('.dialog-body').textContent, /読み取れる進捗を復元/);
   assert.deepEqual(h.snapshot(), before);
+  h.click('[data-action="import-confirmed"]');
+  assert.equal(h.snapshot().progress.records.r1.completed, true);
+  assert.equal(h.snapshot().progress.records.r4.completed, false);
+  h.click('[data-action="export-recovery"]');
+  assert.equal(h.downloads[0].content, brokenText);
   const oldOnly = harness(t, null, { otherStorage: { [LEGACY_STORE]: brokenText } });
-  assert.match(oldOnly.get('#toast').textContent, /読み込めませんでした/);
-  assert.equal(oldOnly.get('.top-flags b').textContent, '0');
-  assert.equal(oldOnly.storage.get(LEGACY_STORE), brokenText, 'invalid old save is preserved for recovery');
+  assert.match(oldOnly.get('#toast').textContent, /読み取れる進捗を復元/);
+  assert.equal(oldOnly.storage.get(STORE + '.recovery'), brokenText);
+  assert.equal(oldOnly.storage.has(LEGACY_STORE), false);
 });
-
 
 test('unreadable v2 saves are backed up without falling back to or modifying v1 progress', t => {
   const corrupt = '{"format":"socroom-easy-save",broken';
@@ -889,4 +898,118 @@ test('English wrong answers, imports and bilingual search remain localized and p
   const before=search.snapshot();setLanguage(search,'ja');assert.deepEqual(search.snapshot(),before);setLanguage(search,'en');search.submit();
   assert.ok(search.document.querySelector('.feedback.success'));assertEnglish(search,'English evidence search');
   assert.equal(E.hydrate(search.snapshot()).records['m-f4'].completed,true,'English query proof validates in Node and after reload');
+});
+
+
+test('locked missions remain keyboard-reachable and explain prerequisites without navigation', t => {
+  const h = harness(t);
+  const locked = h.get('.mission-row[data-open="r2"]');
+  assert.equal(locked.disabled, false);
+  assert.equal(locked.getAttribute('aria-disabled'), 'true');
+  locked.focus();
+  assert.equal(h.document.activeElement, locked);
+  h.click('.mission-row[data-open="r2"]');
+  assert.ok(h.document.querySelector('.map-page'));
+  assert.match(h.get('#toast').textContent, /先にひとつ前/);
+  assert.equal(h.snapshot().progress.currentId, 'r1');
+  assert.equal(h.get('.hero-art').getAttribute('role'), 'img');
+  assert.equal(h.get('.top-flags').getAttribute('role'), 'img');
+});
+
+test('unfinished practice can hide hints and restart without losing help history', t => {
+  const h = harness(t);
+  h.click('.hero-start');
+  h.click('[data-action="hint"]');
+  h.click('[data-action="solution"]');
+  h.click('[data-action="retry"]');
+  assert.equal(h.document.querySelector('.hint'), null);
+  assert.equal(h.document.querySelector('.solution'), null);
+  const record = h.snapshot().progress.records.r1;
+  assert.equal(record.completed, false);
+  assert.equal(record.assisted, true);
+  assert.equal(record.attemptAssisted, false);
+  fillAnswerThroughDOM(h, E.getMission('r1')); h.submit();
+  assert.equal(h.snapshot().progress.records.r1.independent, true);
+});
+
+test('graduation progress is an ordered list and the mission task has one copy', t => {
+  const h = harness(t, saveBefore('g1'));
+  h.click('.hero-start');
+  assert.equal(h.get('.investigation-steps').tagName, 'OL');
+  assert.equal(h.document.querySelectorAll('.investigation-steps > li').length, E.getMission('g1').steps.length);
+  assert.equal(h.document.querySelectorAll('[aria-current="step"]').length, 1);
+  assert.equal(h.document.querySelector('.mobile-task'), null);
+  assert.equal(h.get('#main').textContent.split(E.getMission('g1').steps[0].task).length-1, 1);
+});
+
+test('IME composition preserves selected rows and saved query until committed', t => {
+  const h = harness(t, saveBefore('f2'));
+  h.click('.hero-start');
+  h.input('#log-query', E.getMission('f2').answer.query);
+  const id = E.getMission('f2').answer.rowIds[0];
+  h.click(`[data-select="${id}"]`);
+  const field = h.get('#log-query');
+  field.dispatchEvent(new h.window.CompositionEvent('compositionstart', { bubbles: true }));
+  h.input('#log-query', '途中');
+  assert.deepEqual(h.snapshot().progress.records.f2.input, {query:E.getMission('f2').answer.query,rowIds:[id]});
+  assert.equal(h.get(`[data-select="${id}"]`).getAttribute('aria-pressed'), 'true');
+  field.value = '別の検索';
+  field.dispatchEvent(new h.window.CompositionEvent('compositionend', { bubbles: true }));
+  assert.deepEqual(h.snapshot().progress.records.f2.input, {query:'別の検索',rowIds:[]});
+});
+
+test('incremental input localizes changed subtrees without walking the document', t => {
+  const h = harness(t, saveBefore('f2'));
+  h.click('.hero-start');
+  const visited = [], original = h.document.createTreeWalker.bind(h.document);
+  h.document.createTreeWalker = (...args) => { visited.push(args[0]); return original(...args); };
+  h.input('#log-query', 'host');
+  assert.ok(visited.length);
+  assert.equal(visited.includes(h.document), false);
+  assert.ok(visited.every(node => ['answer-summary','selected-count','source-items','filter-count'].includes(node.id)));
+});
+
+test('recovery downloads survive reload and remain available if browser backup writes fail', t => {
+  const original = '{broken save';
+  const existing = harness(t, null, {otherStorage:{[STORE+'.recovery']:original}});
+  existing.click('[data-action="export-recovery"]');
+  assert.equal(existing.downloads[0].name, 'socroom-easy-recovery.json');
+  assert.equal(existing.downloads[0].content, original);
+  const blocked = harness(t, original, {failWriteKeys:[STORE+'.recovery']});
+  blocked.click('[data-action="export-recovery"]');
+  assert.equal(blocked.downloads[0].content, original);
+  assert.equal(blocked.storage.get(STORE), original);
+});
+
+test('legacy key is retained until the migrated current save is written successfully', t => {
+  const h = harness(t, null, {otherStorage:{[LEGACY_STORE]:legacyText},failWriteKeys:[STORE]});
+  assert.equal(h.storage.get(LEGACY_STORE), legacyText);
+  assert.equal(h.storage.has(STORE), false);
+  assert.match(h.get('#save-status').textContent, /自動保存できません/);
+});
+
+test('English title punctuation and live announcements use English separators', t => {
+  const h = harness(t);
+  h.input('#language-select','en','change');
+  assert.match(h.get('.section-heading h2').textContent, /: /);
+  assert.doesNotMatch(h.get('.section-heading h2').textContent, /：/);
+  h.click('.hero-start');
+  assert.doesNotMatch(h.get('#announcement').textContent, /[。：]/);
+  assert.match(h.get('#announcement').textContent, /\. /);
+});
+
+
+test('question titles retain their punctuation in Japanese and English announcements', t => {
+  const h = harness(t, saveBefore('m-r1'));
+  const mission = E.getMission('m-r1');
+  h.click('.hero-start');
+  assert.equal(h.get('#announcement').textContent, mission.title + mission.task);
+  h.click('[data-action="map"]');
+  h.input('#language-select', 'en', 'change');
+  h.click('.hero-start');
+  const title = h.window.EasyI18n.t(mission.title);
+  const task = h.window.EasyI18n.t(mission.task);
+  assert.match(title, /\?$/);
+  assert.equal(h.get('#announcement').textContent, title + ' ' + task);
+  assert.doesNotMatch(h.get('#announcement').textContent, /[?!]\./);
 });

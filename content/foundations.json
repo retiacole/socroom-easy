@@ -2,17 +2,17 @@
   "chapters": [
     {
       "id": "read",
-      "title": "01 ログを 1 行読む",
+      "title": "ログを 1 行読む",
       "subtitle": "時刻・アカウント・結果・通信元を、ひとつずつ読む。"
     },
     {
       "id": "find",
-      "title": "02 必要なログを見つける",
+      "title": "必要なログを見つける",
       "subtitle": "検索し、選び、数える。調べる範囲を小さくする。"
     },
     {
       "id": "connect",
-      "title": "03 記録をつなげて考える",
+      "title": "記録をつなげて考える",
       "subtitle": "順番と共通点を見つけ、分からないことも残す。"
     }
   ],
@@ -27,7 +27,7 @@
       "learn": [
         "ログには複数の欄があります。今回は「時刻」「host」「event」の 3 つだけを見ます。",
         "2026-10-20T08:30:00Z は、2026 年 10 月 20 日の 08:30:00 を表します。T は日付と時刻の区切りです。",
-        "末尾の Z は UTC という基準の時刻を使っている印です。この教材ではすべて UTC で読み、時差の計算はしません。",
+        "末尾の Z は UTC という基準の時刻を使っている印です。初級・中級ではすべて UTC で読み、時差の計算はしません。",
         "host は記録に登場する端末名、event は起きた操作の種類です。event=screen_lock は画面をロックした記録です。"
       ],
       "example": {
@@ -40,8 +40,6 @@
       "rows": [
         {
           "id": "r1-log",
-          "time": "09:12:04",
-          "host": "pc-aki",
           "event": "screen_lock",
           "raw": "2026-10-20T09:12:04Z host=pc-aki event=screen_lock"
         }
@@ -102,9 +100,6 @@
       "rows": [
         {
           "id": "r2-log",
-          "time": "09:14:10",
-          "host": "pc-rin",
-          "user": "rin",
           "event": "login",
           "raw": "2026-10-20T09:14:10Z host=pc-rin user=rin event=login"
         }
@@ -151,10 +146,7 @@
       "rows": [
         {
           "id": "r3-log",
-          "time": "09:15:20",
-          "user": "rin",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:15:20Z user=rin event=login result=failed"
         }
       ],
@@ -219,9 +211,6 @@
       "rows": [
         {
           "id": "r4-log",
-          "time": "09:18:00",
-          "src": "198.51.100.24",
-          "dst": "192.0.2.80",
           "event": "connection",
           "raw": "2026-10-20T09:18:00Z src=198.51.100.24 dst=192.0.2.80 event=connection"
         }
@@ -254,51 +243,35 @@
       "learn": [
         "host は端末名です。host=pc-kai は pc-kai という端末の記録を意味します。",
         "検索欄に文字を入れると、その文字を含む行に絞り込めます。この教材は生ログに書かれた文字をそのまま検索します。",
-        "今回は host=pc-kai と入力します。検索できたら、残った行をクリックして回答に選びます。",
+        "例えば host=pc-kai と入力します。pc-kai のように短い語でも、対象を残して関係のない行を除ければ使えます。検索できたら、対象の行をクリックして回答に選びます。",
         "user はアカウント、event=login はログインの試行、result=success は成功、result=failed は失敗です。時刻はすべて同じ日の UTC です。"
       ],
       "example": {
         "title": "別の端末を検索する例",
         "text": "端末 pc-demo を探す場合は「host=pc-demo」と検索します。\n2026-10-19T09:00:00Z host=pc-demo user=demo event=login result=success\nこの行が残ったら、行を選択します。検索と選択の両方で回答します。"
       },
-      "task": "検索欄に「host=pc-kai」と入力し、pc-kai のログを選択してください。",
+      "task": "検索で行を絞り込み、pc-kai のログを選択してください。検索語の例は「host=pc-kai」です。対象を残し、少なくとも 1 行を除いてください。",
       "kind": "filter",
       "sourceLabel": "認証ログ・4 行",
       "rows": [
         {
           "id": "f1-a",
-          "time": "09:20:00",
-          "host": "pc-emi",
-          "user": "emi",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:20:00Z host=pc-emi user=emi event=login result=success"
         },
         {
           "id": "f1-b",
-          "time": "09:20:12",
-          "host": "pc-kai",
-          "user": "kai",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:20:12Z host=pc-kai user=kai event=login result=failed"
         },
         {
           "id": "f1-c",
-          "time": "09:20:18",
-          "host": "pc-nao",
-          "user": "nao",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:20:18Z host=pc-nao user=nao event=login result=success"
         },
         {
           "id": "f1-d",
-          "time": "09:20:30",
-          "host": "pc-ren",
-          "user": "ren",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:20:30Z host=pc-ren user=ren event=login result=success"
         }
       ],
@@ -310,8 +283,8 @@
       },
       "answerExplanation": "host=pc-kai に一致するのは 09:20:12 の 1 行です。検索だけで終わらず、調べる対象の行を選べました。",
       "hints": [
-        "検索欄に端末を表すキー host と端末名を入れましょう。",
-        "入力する文字列は host=pc-kai です。前後の引用符は不要です。",
+        "端末名で検索し、pc-kai の記録を残しながら関係のない行を減らしましょう。",
+        "検索語の例は host=pc-kai です。pc-kai でも絞り込めます。前後の引用符は不要です。",
         "検索後に残る、09:20:12 の行を選択します。"
       ],
       "solution": "検索欄に「host=pc-kai」と入力し、09:20:12 の行を選んで答え合わせします。",
@@ -319,7 +292,8 @@
         "tool": "ログ検索",
         "how": "SOCroom で対象端末のログを絞り、関係のない端末の記録をいったん外す操作につながります。"
       },
-      "flag": "EASY{FIND_HOST}"
+      "flag": "EASY{FIND_HOST}",
+      "searchMode": "evidence"
     },
     {
       "id": "f2",
@@ -330,7 +304,7 @@
       "brief": "同じアカウントの記録が、離れた位置や別の端末に現れることがあります。端末名ではなくアカウント名を軸に探してみましょう。",
       "learn": [
         "user はアカウント名、host は端末名です。同じ user が別々の host に登場する場合もあります。",
-        "検索欄に user=nao と入力すると、今回の資料でその文字を含むログが残ります。",
+        "例えば user=nao と検索すると、その文字を含むログが残ります。nao のように短い語でも、対象の行をすべて残して関係のない行を除ければ使えます。",
         "今回は 1 行だけでなく、一致する行をすべて選びます。複数の行をクリックすると、まとめて選択できます。",
         "event=login はログインの試行、result=success は成功、result=failed は失敗です。時刻は UTC です。"
       ],
@@ -338,53 +312,33 @@
         "title": "別のアカウントを追う例",
         "text": "user=haru で探すと、host=pc-demo user=haru と host=pc-sub user=haru の両方が対象です。host が違っても user が一致するため、両方の行を選びます。"
       },
-      "task": "「user=nao」と検索し、nao のログをすべて選択してください。成功・失敗の両方を対象にします。",
+      "task": "検索で行を絞り込み、nao のログをすべて選択してください。検索語の例は「user=nao」です。成功・失敗の両方を残し、少なくとも 1 行を除いてください。",
       "kind": "filter",
       "sourceLabel": "認証ログ・5 行",
       "rows": [
         {
           "id": "f2-a",
-          "time": "09:23:00",
-          "host": "pc-nao",
-          "user": "nao",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:23:00Z host=pc-nao user=nao event=login result=failed"
         },
         {
           "id": "f2-b",
-          "time": "09:23:05",
-          "host": "pc-emi",
-          "user": "emi",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:23:05Z host=pc-emi user=emi event=login result=success"
         },
         {
           "id": "f2-c",
-          "time": "09:23:10",
-          "host": "pc-kai",
-          "user": "kai",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:23:10Z host=pc-kai user=kai event=login result=failed"
         },
         {
           "id": "f2-d",
-          "time": "09:23:20",
-          "host": "pc-shared",
-          "user": "nao",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:23:20Z host=pc-shared user=nao event=login result=success"
         },
         {
           "id": "f2-e",
-          "time": "09:23:25",
-          "host": "pc-ren",
-          "user": "ren",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:23:25Z host=pc-ren user=ren event=login result=success"
         }
       ],
@@ -406,7 +360,8 @@
         "tool": "ログ検索",
         "how": "SOCroom で同じアカウントの前後の操作を調べるとき、端末が違う記録も見つけられるようになります。"
       },
-      "flag": "EASY{FIND_USER}"
+      "flag": "EASY{FIND_USER}",
+      "searchMode": "evidence"
     },
     {
       "id": "f3",
@@ -431,38 +386,22 @@
       "rows": [
         {
           "id": "f3-a",
-          "time": "09:25:00",
-          "host": "pc-yui",
-          "user": "yui",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:25:00Z host=pc-yui user=yui event=login result=success"
         },
         {
           "id": "f3-b",
-          "time": "09:25:07",
-          "host": "pc-ren",
-          "user": "ren",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:25:07Z host=pc-ren user=ren event=login result=failed"
         },
         {
           "id": "f3-c",
-          "time": "09:25:12",
-          "host": "pc-yui",
-          "user": "yui",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:25:12Z host=pc-yui user=yui event=login result=failed"
         },
         {
           "id": "f3-d",
-          "time": "09:25:22",
-          "host": "pc-ren",
-          "user": "ren",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:25:22Z host=pc-ren user=ren event=login result=success"
         }
       ],
@@ -508,57 +447,35 @@
       "rows": [
         {
           "id": "f4-a",
-          "time": "09:28:00",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:28:00Z host=pc-aki user=aki event=login result=failed"
         },
         {
           "id": "f4-b",
-          "time": "09:28:08",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:28:08Z host=pc-aki user=aki event=login result=failed"
         },
         {
           "id": "f4-c",
-          "time": "09:28:20",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:28:20Z host=pc-aki user=aki event=login result=success"
         },
         {
           "id": "f4-d",
-          "time": "09:29:00",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:29:00Z host=pc-aki user=aki event=login result=failed"
         },
         {
           "id": "f4-e",
-          "time": "09:29:15",
-          "host": "pc-aki",
-          "user": "aki",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:29:15Z host=pc-aki user=aki event=login result=success"
         }
       ],
       "answer": {
         "values": [
-          "3",
-          "３",
-          "3件",
-          "３件"
-        ]
+          "3"
+        ],
+        "numericCount": true
       },
       "answerExplanation": "failed は 09:28:00、09:28:08、09:29:00 の 3 件です。この 5 行の中での件数であり、表示されていない時間帯まで含む数ではありません。",
       "hints": [
@@ -596,33 +513,21 @@
       "rows": [
         {
           "id": "c1-close",
-          "time": "09:30:30",
-          "host": "pc-mei",
-          "user": "mei",
           "event": "file_close",
           "raw": "2026-10-20T09:30:30Z host=pc-mei user=mei event=file_close"
         },
         {
           "id": "c1-login",
-          "time": "09:30:10",
-          "host": "pc-mei",
-          "user": "mei",
           "event": "login",
           "raw": "2026-10-20T09:30:10Z host=pc-mei user=mei event=login"
         },
         {
           "id": "c1-logout",
-          "time": "09:30:40",
-          "host": "pc-mei",
-          "user": "mei",
           "event": "logout",
           "raw": "2026-10-20T09:30:40Z host=pc-mei user=mei event=logout"
         },
         {
           "id": "c1-open",
-          "time": "09:30:20",
-          "host": "pc-mei",
-          "user": "mei",
           "event": "file_open",
           "raw": "2026-10-20T09:30:20Z host=pc-mei user=mei event=file_open"
         }
@@ -671,41 +576,26 @@
       "rows": [
         {
           "id": "c2-a",
-          "time": "09:35:00",
-          "user": "sora",
-          "session": "S72",
           "event": "login",
           "raw": "2026-10-20T09:35:00Z user=sora session=S72 event=login"
         },
         {
           "id": "c2-b",
-          "time": "09:35:03",
-          "user": "sora",
-          "session": "S73",
           "event": "login",
           "raw": "2026-10-20T09:35:03Z user=sora session=S73 event=login"
         },
         {
           "id": "c2-c",
-          "time": "09:35:10",
-          "user": "sora",
-          "session": "S72",
           "event": "file_open",
           "raw": "2026-10-20T09:35:10Z user=sora session=S72 event=file_open"
         },
         {
           "id": "c2-d",
-          "time": "09:35:15",
-          "user": "emi",
-          "session": "S74",
           "event": "login",
           "raw": "2026-10-20T09:35:15Z user=emi session=S74 event=login"
         },
         {
           "id": "c2-e",
-          "time": "09:35:30",
-          "user": "sora",
-          "session": "S72",
           "event": "logout",
           "raw": "2026-10-20T09:35:30Z user=sora session=S72 event=logout"
         }
@@ -753,20 +643,12 @@
       "rows": [
         {
           "id": "c3-a",
-          "time": "09:40:00",
-          "user": "mio",
-          "src": "192.0.2.44",
           "event": "login",
-          "result": "failed",
           "raw": "2026-10-20T09:40:00Z user=mio src=192.0.2.44 event=login result=failed"
         },
         {
           "id": "c3-b",
-          "time": "09:40:15",
-          "user": "mio",
-          "src": "192.0.2.44",
           "event": "login",
-          "result": "success",
           "raw": "2026-10-20T09:40:15Z user=mio src=192.0.2.44 event=login result=success"
         }
       ],
@@ -826,15 +708,11 @@
       "rows": [
         {
           "id": "c4-stop",
-          "time": "10:05:00",
-          "host": "collector-01",
           "event": "collection_stopped",
           "raw": "2026-10-20T10:05:00Z host=collector-01 event=collection_stopped"
         },
         {
           "id": "c4-start",
-          "time": "10:15:00",
-          "host": "collector-01",
           "event": "collection_started",
           "raw": "2026-10-20T10:15:00Z host=collector-01 event=collection_started"
         }
@@ -886,7 +764,7 @@
     },
     {
       "term": "UTC",
-      "meaning": "世界で共通に使う時刻の基準。日本標準時より 9 時間遅い基準です。この教材ではすべて UTC で扱い、変換は不要です。",
+      "meaning": "世界で共通に使う時刻の基準。日本標準時より 9 時間遅い基準です。初級・中級ではすべて UTC で扱い、変換は不要です。上級では時差の換算も練習します。",
       "example": "日時の末尾の Z は UTC を表します。09:00 UTC は同じ日の 18:00 日本標準時です。"
     },
     {

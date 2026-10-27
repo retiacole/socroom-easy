@@ -1,15 +1,9 @@
 {
-  "01 通信と処理の欄を読む": "01 Read network and processing fields",
   "HTTP・DNS・プロセス・追加認証を、短い記録で理解する。": "Understand HTTP, DNS, processes, and additional authentication through short records.",
-  "02 条件を重ねて探す": "02 Search with combined conditions",
   "要求番号・端末・結果を照合し、必要な行と件数を取り出す。": "Compare request IDs, devices, and outcomes to extract the required lines and counts.",
-  "03 複数の記録をつなぐ": "03 Connect multiple records",
   "要求から処理へ。同じ出来事を別の記録から確かめる。": "Follow requests into processing and verify the same event across sources.",
-  "04 資料で判断を支える": "04 Support judgments with documents",
   "業務用途・承認の範囲・本人の回答・資料の日付を照合する。": "Compare business purpose, approval scope, owner replies, and document dates.",
-  "05 次の確認を伝える": "05 Communicate the next checks",
   "事実と未確認事項を分け、担当者が動ける報告にする。": "Separate facts from unknowns in reports the next responder can act on.",
-  "06 卒業調査：書き出しの範囲": "06 Graduation: export scope",
   "関係するログを集め、承認と比較し、確認の限界まで報告する。": "Collect related logs, compare approval, and report the limits of the investigation.",
   "ブラウザとWebサービスなどが、要求と応答をやり取りするための取り決め。ログの status は応答の状態を表します。": "A protocol for requests and responses between browsers and web services. A log's status field describes the response.",
   "status=403 は要求が拒否された応答。ログイン成功とは別に、操作できる権限が必要な場合がある。": "status=403 is a denied response. An authenticated account may still need authorization for an operation.",
@@ -298,5 +292,11 @@
   "業務用途を確認できても、今回の要求すべてが承認されたとは限りません。ここでは要求先の用途だけを確かめます。": "A known business purpose does not establish approval for every request. Here, verify only the destination's purpose.",
   "別の資料で練習": "Practice with another document",
   "proxy=10.40.0.7 target_host=booking.vendor.example とあり、台帳で booking.vendor.example が会議予約なら、要求先の用途は会議予約です。10.40.0.7 の中継機能と取り違えません。": "If proxy=10.40.0.7 target_host=booking.vendor.example and the inventory identifies booking.vendor.example as meeting reservations, that is the requested service's purpose. Do not confuse it with 10.40.0.7's relay function.",
-  "「記録された要求先は、契約書類を保管する業務サービスである」と説明する根拠を2枚選んでください。": "Select two cards supporting that the recorded destination is a business service for storing contracts."
+  "「記録された要求先は、契約書類を保管する業務サービスである」と説明する根拠を2枚選んでください。": "Select two cards supporting that the recorded destination is a business service for storing contracts.",
+  "通信と処理の欄を読む": "Read network and processing fields",
+  "条件を重ねて探す": "Search with combined conditions",
+  "複数の記録をつなぐ": "Connect multiple records",
+  "資料で判断を支える": "Support judgments with documents",
+  "次の確認を伝える": "Communicate the next checks",
+  "卒業調査：書き出しの範囲": "Graduation: export scope"
 }

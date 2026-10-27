@@ -32,7 +32,7 @@ test('duplicate-count exercise has identical visible events with separate select
   const duplicates = item.rows.filter((row, index, rows) => rows.some((other, otherIndex) => index !== otherIndex && row.raw === other.raw));
   assert.equal(duplicates.length, 2);
   assert.notEqual(duplicates[0].id, duplicates[1].id);
-  for (const key of ['raw', 'time', 'note']) assert.equal(duplicates[0][key], duplicates[1][key], key + ' does not identify the replay');
+  for (const key of ['raw', 'note']) assert.equal(duplicates[0][key], duplicates[1][key], key + ' does not identify the replay');
   assert.ok(item.rows.every(row => !/\bcopy=/.test(row.raw)));
   const rejected = item.rows.filter(row => /\bresult=denied(?:\s|$)/.test(row.raw));
   const attempts = new Set(rejected.map(row => row.raw.match(/\battempt=([^\s]+)/)[1]));
