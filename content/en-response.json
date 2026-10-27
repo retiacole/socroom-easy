@@ -252,7 +252,6 @@
   "各段階の解説に従い、R-204 の3ログ、実行ログと承認票の2枚、承認作業との一致を示す判定、事実・限界・次の行動の3文を選びます。": "Follow each stage's explanation: select the three R-204 logs, the execution log and approval, the judgment matching approved work, then three report sentences covering facts, limits, and next action.",
   "SOCroom の一連の調査": "A complete SOCroom investigation",
   "ログを絞る→資料と照合する→判断する→根拠と次の行動を残す、というSOCroomの流れに進むための練習です。": "Practice SOCroom's sequence: narrow logs → compare documents → make a judgment → record evidence and next actions.",
-  "1 / 4 関係するログを集める": "1 / 4 Collect related logs",
   "render-kiosk-02 の job=R-204 に関するログを、3行すべて選んでください。host は端末名、job は1回分の仕事の番号です。": "Select all three logs for job=R-204 on render-kiosk-02. host is the device; job identifies one unit of work.",
   "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。svc-render は自動処理用アカウント。": "At 21:00 UTC, conversion of lobby-map.svg to PDF began. svc-render is an automation account.",
   "別の端末・別のジョブで、メニューのPDF生成を開始。": "Another device and job began generating a menu PDF.",
@@ -265,7 +264,6 @@
   "端末が同じでも job が違えば別の仕事です。両方の条件が一致する行を集めます。": "A different job ID identifies different work even on the same device. Match both conditions.",
   "21:00:00、21:00:04、21:00:06 の3行が、同じ端末の R-204 です。": "The lines at 21:00:00, 21:00:04, and 21:00:06 belong to R-204 on the same device.",
   "21:00:00の開始、21:00:04のPDF作成、21:00:06の完了の3行を選びます。": "Select the start at 21:00:00, PDF creation at 21:00:04, and completion at 21:00:06.",
-  "2 / 4 実際の動きと承認を照合する": "2 / 4 Compare activity with approval",
   "「R-204 の端末・アカウント・実施時間・作成内容は、承認された作業に一致する」を裏付ける資料を2枚選んでください。": "Select two records supporting that R-204's device, account, execution window, and output match the approved work.",
   "R-204 の3行の実行記録": "Three execution records for R-204",
   "2026-10-21 UTC 21:00:00〜21:00:06。端末 render-kiosk-02、アカウント svc-render、ジョブ R-204。lobby-map.svg から /srv/maps/lobby-map.pdf を作成し、処理が完了。前の段階で集めた3行の要約です。": "October 21, 2026, 21:00:00–21:00:06 UTC. Device render-kiosk-02, account svc-render, job R-204. Created /srv/maps/lobby-map.pdf from lobby-map.svg and completed. This summarizes the three logs collected in the previous stage.",
@@ -280,7 +278,6 @@
   "資料の端末名・日付・時間・作成ファイルが、R-204 と一致するか見ます。": "Compare the device, date, time, and output file with R-204.",
   "「R-204 の3行の実行記録」と「承認済み作業票 RQ-204」の2枚です。": "Select the three execution records for R-204 and approved work order RQ-204.",
   "「R-204 の3行の実行記録」と「承認済み作業票 RQ-204」を選びます。": "Select the three execution records for R-204 and approved work order RQ-204.",
-  "3 / 4 確認した範囲で判断する": "3 / 4 Judge within the checked scope",
   "これまでの証拠から、今回の通知に対する最も適切な判断を選んでください。": "Which judgment best fits the evidence collected for this notification?",
   "確認できた一致": "Confirmed matches",
   "R-204 の実行記録と承認票 RQ-204 は、端末 render-kiosk-02、アカウント svc-render、時間、案内図のPDF作成で一致しました。": "R-204 and RQ-204 match on device render-kiosk-02, account svc-render, time, and guide-map PDF creation.",
@@ -297,7 +294,6 @@
   "時刻が夜かどうかではなく、作業票で許可された範囲を使って判断します。": "Use the approved scope rather than whether it was nighttime.",
   "R-204 は承認された作業に一致し、この通知では不正の根拠が見つからない、という選択肢です。": "Choose the answer that R-204 matches the approved work and this notification has no identified evidence of unauthorized activity.",
   "「R-204 の案内図PDF生成は RQ-204 の承認範囲に一致する。他の操作の安全性は、この調査では判断できない。」を選びます。": "Choose: R-204's guide-map PDF generation matches RQ-204's approved scope; this investigation cannot establish the safety of other activity.",
-  "4 / 4 調査を短く報告する": "4 / 4 Report the investigation briefly",
   "今回の調査を終える報告として、「確認した事実」「確認の限界」「次の行動」を1つずつ選んでください。": "Select one sentence each for confirmed facts, limits, and next actions to finish this investigation.",
   "調査結果のまとめ": "Investigation summary",
   "R-204 は UTC 21:00:00〜21:00:06 に render-kiosk-02 で svc-render が実行した案内図PDF生成。作業票 RQ-204 の対象・時間・内容に一致。確認したのは、この3行と承認票。": "R-204 generated a guide-map PDF on render-kiosk-02 using svc-render from 21:00:00–21:00:06 UTC. It matches RQ-204's target, window, and work. Only these three logs and the approval were checked.",
@@ -319,5 +315,9 @@
   "事実の文は、前の段階で確かめた承認票との一致を選びます。": "For the fact sentence, choose the approval match established in the previous stage.",
   "限界の文でも、調べたジョブ番号と記録の数を照合します。行動は通知を閉じる手順に合わせましょう。": "Check the job ID and record count in the limits sentence. Match the next action to the closure procedure.",
   "次の行動は、記録と承認票を残して、手順に従って今回の通知を対応済みにすることです。": "The next action is to retain the logs and approval, then mark this notification handled under the procedure.",
-  "事実：R-204 は RQ-204 に一致。限界：他の操作は未調査。次の行動：3行と承認票を記録して今回の通知を対応済みにする。の3文を選びます。": "Choose: R-204 matches RQ-204; other activity remains uninvestigated; retain the three logs and approval, then mark this notification handled."
+  "事実：R-204 は RQ-204 に一致。限界：他の操作は未調査。次の行動：3行と承認票を記録して今回の通知を対応済みにする。の3文を選びます。": "Choose: R-204 matches RQ-204; other activity remains uninvestigated; retain the three logs and approval, then mark this notification handled.",
+  "関係するログを集める": "Collect related logs",
+  "実際の動きと承認を照合する": "Compare activity with approval",
+  "確認した範囲で判断する": "Judge within the checked scope",
+  "調査を短く報告する": "Report the investigation briefly"
 }

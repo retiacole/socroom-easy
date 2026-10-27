@@ -91,7 +91,10 @@ test('text accepts surrounding whitespace and declared case handling but not unr
   E.setInput(p, 'text', { text: 'client-03' }); assert.equal(E.submit(p).passed, false);
   E.setInput(p, 'text', { text: ' CLIENT-02  ' }); assert.equal(E.submit(p).passed, true);
   const strict = harness([{ ...definitions[1], answer: { values: ['CaseSensitive'], caseSensitive: true } }]);
-  strict.E.setInput(strict.p, 'text', { text: 'casesensitive' }); assert.equal(strict.E.submit(strict.p).passed, false);
+  strict.E.setInput(strict.p, 'text', { text: 'casesensitive' });
+  const caseFailure = strict.E.submit(strict.p);
+  assert.equal(caseFailure.passed, false);
+  assert.match(caseFailure.message, /大文字と小文字/);
   strict.E.setInput(strict.p, 'text', { text: 'CaseSensitive' }); assert.equal(strict.E.submit(strict.p).passed, true);
 });
 
@@ -175,7 +178,10 @@ test('choice feedback teaches why successful authentication cannot prove legitim
   const { E, p } = harness(); unlock(E, p, 'choice');
   E.setInput(p, 'choice', { choiceId: 'legitimate' });
   const result = E.submit(p); assert.equal(result.passed, false); assert.match(result.message, /本人か判断できません/);
-  E.setInput(p, 'choice', { choiceId: 'unknown' }); assert.equal(E.submit(p).passed, true);
+  E.setInput(p, 'choice', { choiceId: 'unknown' });
+  const correct = E.submit(p);
+  assert.equal(correct.passed, true);
+  assert.equal(correct.message, '本人の確認が必要です。');
 });
 
 test('evidence tasks need all independent sources without unrelated material', () => {
@@ -190,7 +196,10 @@ test('reports distinguish fact, uncertainty, and next action, validating each ch
   assert.throws(() => E.setInput(p, 'report', { parts: { fact: 'next-right' } }), /存在しない/);
   E.setInput(p, 'report', { parts: { fact: 'fact-right', limit: 'limit-wrong', next: 'next-right' } });
   const result = E.submit(p); assert.equal(result.passed, false); assert.match(result.message, /未確認を断定しない/);
-  E.setInput(p, 'report', { parts: { limit: 'limit-right' } }); assert.equal(E.submit(p).passed, true);
+  E.setInput(p, 'report', { parts: { limit: 'limit-right' } });
+  const correct = E.submit(p);
+  assert.equal(correct.passed, true);
+  for (const text of ['事実の説明', '未確認の説明', '次の確認の説明']) assert.ok(correct.message.includes(text));
 });
 
 test('investigation needs all four actual submissions before its flag is earned', () => {
@@ -322,7 +331,10 @@ test('independent completion is regraded from a full proof, never a saved boolea
     record => { record.attemptHintCounts = [0, 0, 0, 4]; }
   ]) {
     const raw = clone(p); edit(raw.records.graduate);
-    assert.throws(() => E.hydrate(raw));
+    const restored = E.hydrate(raw);
+    assert.equal(restored.records.graduate.completed, false);
+    assert.equal(restored.records.graduate.independent, false);
+    assert.equal(E.stats(restored).completed, 8, 'unrelated proofs survive');
   }
 });
 
@@ -380,17 +392,32 @@ test('an unverified completed boolean cannot unlock subsequent lessons', () => {
   assert.equal(E.isUnlocked(restored, 'text'), false);
 });
 
-test('tampered successful submissions and skipped investigation steps are rejected atomically', () => {
+test('tampered proofs and skipped steps reset only their mission and preserve all other earned flags', () => {
   const { E, p } = harness(); unlock(E, p, 'graduate');
   const tampered = clone(p); tampered.records.token.solved[0].input.tokenId = 'time';
-  assert.throws(() => E.hydrate(tampered), /条件と一致しません/);
-  assert.equal(E.stats(p).completed, 8);
-  const skipped = clone(p); skipped.records.graduate.stage = 2;
-  assert.throws(() => E.hydrate(skipped), /飛ばした/);
-  const wrongStage = clone(p); wrongStage.records.graduate.stage = 4;
-  assert.throws(() => E.hydrate(wrongStage), /ステップ/);
+  let recovery;
+  const restored = E.hydrate(tampered, { onRecovery: report => { recovery = report; } });
+  assert.deepEqual(clone(recovery.resetMissionIds), ['token']);
+  assert.equal(restored.records.token.completed, false);
+  assert.equal(E.stats(restored).completed, 7);
+  assert.equal(restored.records.text.completed, true);
+  assert.equal(E.isUnlocked(restored, 'text'), false, 'retained flags do not bypass a reset prerequisite');
+  assert.equal(restored.currentId, 'token');
+  assert.deepEqual(clone(E.hydrate(E.exportProgress(restored))), clone(restored));
+  solve(E, restored, 'token');
+  assert.equal(E.isUnlocked(restored, 'graduate'), true, 'fixing the one missing proof unlocks preserved work');
+  assert.equal(E.stats(p).completed, 8, 'the source was not mutated');
+  for (const stage of [2, 4]) {
+    const skipped = clone(p); skipped.records.graduate.stage = stage;
+    const fixed = E.hydrate(skipped);
+    assert.equal(fixed.records.graduate.stage, 0);
+    assert.equal(E.stats(fixed).completed, 8);
+  }
   const unknown = clone(p); unknown.records.extra = clone(p.records.token);
-  assert.throws(() => E.hydrate(unknown), /一覧/);
+  const filtered = E.hydrate(unknown, { onRecovery: report => { recovery = report; } });
+  assert.deepEqual(clone(recovery.ignoredMissionIds), ['extra']);
+  assert.equal(Object.hasOwn(filtered.records, 'extra'), false);
+  assert.equal(E.stats(filtered).completed, 8);
 });
 
 test('import recomputes hint and reveal aliases and cannot hide retained help evidence', () => {
@@ -415,20 +442,31 @@ test('bounded inputs reject excessive strings, duplicate rows, unknown IDs, and 
   assert.throws(() => E.setInput(p, 'text', { executable: 'anything' }), /使わない/);
 });
 
-test('save importer rejects foreign formats, excessive histories, invalid counts and stages', () => {
+test('foreign envelopes and unbounded history are rejected; invalid records are reset locally', () => {
   const { E, p } = harness();
   assert.throws(() => E.hydrate({ format: 'socroom-save', version: 1, progress: p }), /SOCroom-easy/);
   assert.throws(() => E.hydrate({ ...clone(p), version: 'other' }), /バージョン/);
+  assert.throws(() => E.hydrate({ ...clone(p), records: [] }), /形式/);
+  assert.throws(() => E.hydrate({ ...clone(p), history: new Array(101).fill({ type: 'retry', id: 'token', stage: 0 }) }), /形式/);
   const cases = [
     raw => { raw.records.token.attempts = -1; },
     raw => { raw.records.token.hintCounts = [99]; },
     raw => { raw.records.token.revealedStages = [0, 0]; },
     raw => { raw.records.token.solved = [null]; },
     raw => { raw.records.token.solved = new Array(1); },
-    raw => { raw.history = Array.from({ length: 101 }, () => ({ type: 'retry', id: 'token', stage: 0 })); },
-    raw => { raw.history = [{ type: 'execute', id: 'token', stage: 0 }]; }
+    raw => { raw.records.token.input.tokenId = '__proto__'; },
+    raw => { raw.records.token.input = { executable: '<script>alert(1)</script>' }; }
   ];
-  for (const edit of cases) { const raw = clone(p); edit(raw); assert.throws(() => E.hydrate(raw)); }
+  for (const edit of cases) {
+    const raw = clone(p); edit(raw); let recovery;
+    const restored = E.hydrate(raw, { onRecovery: report => { recovery = report; } });
+    assert.deepEqual(clone(recovery.resetMissionIds), ['token']);
+    assert.deepEqual(clone(restored.records.token), clone(p.records.token));
+  }
+  let recovery;
+  const history = E.hydrate({ ...clone(p), history: [{ type: 'execute', id: 'token', stage: 0 }] }, { onRecovery: report => { recovery = report; } });
+  assert.equal(recovery.discardedHistory, 1);
+  assert.deepEqual(clone(history.history), []);
 });
 
 test('history remains bounded during repeated practice and completed points cannot be duplicated', () => {
@@ -519,7 +557,9 @@ test('production filter proofs cannot be restored from a selected row without it
   }
   const changed = E.exportProgress(p);
   changed.progress.records.f1.solved[0].input.query = '';
-  assert.throws(() => E.hydrate(changed), /条件と一致しません/);
+  const restored = E.hydrate(changed);
+  assert.equal(restored.records.f1.completed, false);
+  assert.equal(E.stats(restored).completed, 4);
   assert.equal(E.stats(p).completed, 5);
 });
 
@@ -607,7 +647,7 @@ test('completing advanced first neither completes other levels nor forces their 
   assert.equal(E.hydrate(E.exportProgress(p)).records['3-graduate'].completed, true);
 });
 
-test('v2 import rejects contradictory or missing level cursors without changing existing progress', () => {
+test('v2 import repairs contradictory or missing level cursors without changing existing progress', () => {
   const { E, p } = threeLevelHarness();
   const edits = [
     raw => { delete raw.currentLevel; },
@@ -618,7 +658,14 @@ test('v2 import rejects contradictory or missing level cursors without changing 
     raw => { raw.currentByLevel.beginner = '1-text'; },
     raw => { raw.currentId = '3-token'; }
   ];
-  for (const edit of edits) { const raw = clone(p); edit(raw); assert.throws(() => E.hydrate(raw)); }
+  for (const edit of edits) {
+    const raw = clone(p); edit(raw);
+    const restored = E.hydrate(raw);
+    assert.equal(restored.currentLevel, 'beginner');
+    assert.equal(restored.currentId, '1-token');
+    assert.deepEqual(clone(restored.records), clone(p.records));
+    assert.deepEqual(clone(restored.currentByLevel), clone(p.currentByLevel));
+  }
   assert.equal(p.currentLevel, 'beginner');
   assert.equal(E.stats(p).completed, 0);
   assert.throws(() => E.hydrate({ format: 'socroom-easy-save', version: 1, progress: p }), /保存ファイル/);
@@ -649,7 +696,13 @@ test('genuine v0.1 save migrates all beginner records, assistance and graduation
   for (const [id, oldRecord] of Object.entries(legacyFixture.progress.records)) {
     const migrated = clone(restored.records[id]);
     for (const key of ['attemptAssisted', 'attemptHintCounts', 'attemptRevealedStages', 'independentSolved', 'independent']) delete migrated[key];
-    assert.deepEqual(migrated, oldRecord, `${id} retains all original progress`);
+    const originalRecord = clone(oldRecord);
+    // Feedback is regenerated from current teaching text, never trusted from a save.
+    for (const record of [migrated, originalRecord]) {
+      if (record.feedback) delete record.feedback.message;
+      for (const result of record.stageResults) delete result.message;
+    }
+    assert.deepEqual(migrated, originalRecord, `${id} retains all original progress`);
     assert.equal(restored.records[id].independent, oldRecord.completed && !oldRecord.assisted);
   }
   assert.deepEqual(clone(restored.history), legacyFixture.progress.history);
@@ -678,7 +731,7 @@ test('genuine v0.1 save migrates all beginner records, assistance and graduation
   assert.equal(E.stats(restored).points, 2100);
 });
 
-test('legacy imports reject missing records, new-level contamination and unverified answers atomically', () => {
+test('legacy imports recover missing records and ignore unknown IDs while validating retained proofs', () => {
   const { E } = productionHarness();
   const edits = [
     raw => { delete raw.progress.records.r2; },
@@ -688,8 +741,20 @@ test('legacy imports reject missing records, new-level contamination and unverif
     raw => { raw.progress.history.push({ type: 'hint', id: 'm-r1', stage: 0 }); },
     raw => { raw.progress.records.g1.stage = 3; }
   ];
-  for (const edit of edits) { const raw = clone(legacyFixture); edit(raw); assert.throws(() => E.hydrate(raw)); }
-  const valid = E.hydrate(clone(legacyFixture));
+  for (const edit of edits) {
+    const raw = clone(legacyFixture); edit(raw);
+    let recovery;
+    const restored = E.hydrate(raw, { onRecovery: report => { recovery = report; } });
+    assert.ok(recovery, 'adjustments are reported to the UI for backup');
+    assert.ok(E.stats(restored, 'beginner').completed >= 19);
+    assert.equal(E.stats(restored, 'intermediate').completed, 0);
+    assert.equal(restored.records['m-r1'].hints, 0);
+    assert.equal(E.isUnlocked(restored, restored.currentId), true);
+    assert.deepEqual(clone(E.hydrate(E.exportProgress(restored))), clone(restored));
+  }
+  let recovery;
+  const valid = E.hydrate(clone(legacyFixture), { onRecovery: report => { recovery = report; } });
+  assert.equal(recovery, undefined, 'normal migration needs no partial-recovery warning');
   assert.equal(valid.records.g1.stage, 2);
   assert.equal(E.stats(valid, 'beginner').completed, 20);
 });
@@ -715,4 +780,107 @@ test('switching away from a migrated graduation resumes the exact stage without 
   assert.equal(restored.currentId, 'm-r2');
   assert.deepEqual(clone(restored.records['m-r2']), middleBefore);
   assert.deepEqual(clone(restored.records.g1), graduationBefore);
+});
+
+
+test('curriculum additions and removals preserve known mission proofs, drafts and help', () => {
+  const original = harness();
+  for (const mission of definitions) solve(original.E, original.p, mission.id);
+  original.E.retry(original.p, 'text'); original.E.revealHint(original.p, 'text');
+  original.E.setInput(original.p, 'text', { text: 'draft-' });
+  const added = { ...clone(definitions[0]), id: 'added' };
+  const updatedDefinitions = [added, ...clone(definitions).filter(mission => mission.id !== 'rows')];
+  const { E } = harness(updatedDefinitions);
+  let recovery;
+  const restored = E.hydrate(original.E.exportProgress(original.p), { onRecovery: report => { recovery = report; } });
+  assert.deepEqual(clone(recovery.addedMissionIds), ['added']);
+  assert.deepEqual(clone(recovery.ignoredMissionIds), ['rows']);
+  assert.equal(E.stats(restored).completed, definitions.length - 1);
+  assert.equal(restored.currentId, 'added');
+  assert.equal(restored.records.text.input.text, 'draft-');
+  assert.equal(restored.records.text.hints, 1);
+  assert.equal(restored.records.graduate.completed, true);
+  assert.equal(restored.records.added.completed, false);
+  assert.deepEqual(clone(E.hydrate(E.exportProgress(restored))), clone(restored));
+});
+
+test('changed answer resets its mission only, while shorter hint lists keep completion and lifetime assistance', () => {
+  const original = harness();
+  for (const mission of definitions) solve(original.E, original.p, mission.id);
+  original.E.retry(original.p, 'text');
+  for (let index = 0; index < 3; index++) original.E.revealHint(original.p, 'text');
+  const changed = clone(definitions);
+  changed[0].answer.tokenId = 'time';
+  changed[1].hints = ['updated hint'];
+  const { E } = harness(changed);
+  let recovery;
+  const restored = E.hydrate(original.E.exportProgress(original.p), { onRecovery: report => { recovery = report; } });
+  assert.deepEqual(clone(recovery.resetMissionIds), ['token']);
+  assert.deepEqual(clone(recovery.adjustedMissionIds), ['text']);
+  assert.equal(E.stats(restored).completed, definitions.length - 1);
+  assert.equal(restored.records.text.completed, true);
+  assert.equal(restored.records.text.hints, 3);
+  assert.equal(restored.records.text.assisted, true);
+  assert.equal(restored.records.text.attemptAssisted, true);
+  assert.deepEqual(clone(restored.records.text.attemptHintCounts), [1]);
+  assert.deepEqual(clone(E.hydrate(E.exportProgress(restored))), clone(restored));
+});
+
+test('numeric count answers uniformly accept NFKC digits and optional 件 or 回, without widening other text answers', () => {
+  const definition = { ...definitions[1], answer: { values: ['3'], numericCount: true } };
+  const { E, p } = harness([definition]);
+  for (const text of ['3', '３', '3件', '３回', ' ３ 件 ']) {
+    E.setInput(p, 'text', { text });
+    assert.equal(E.submit(p).passed, true, text);
+    assert.equal(E.hydrate(E.exportProgress(p)).records.text.completed, true);
+  }
+  for (const text of ['4', '33', '3人', '3件回', 'three', '3.0']) {
+    E.setInput(p, 'text', { text });
+    assert.equal(E.submit(p).passed, false, text);
+  }
+  const strict = harness([{ ...definition, answer: { values: ['3'] } }]);
+  strict.E.setInput(strict.p, 'text', { text: '3件' });
+  assert.equal(strict.E.submit(strict.p).passed, false);
+});
+
+test('beginner searches accept effective partial queries while rejecting broad or incomplete evidence', () => {
+  const { D } = productionHarness();
+  for (const [id, query] of [['f1', 'pc-kai'], ['f2', 'nao']]) {
+    const definition = D.missions.find(mission => mission.id === id);
+    const { E, p } = harness([definition]);
+    E.setInput(p, id, { query, rowIds: definition.answer.rowIds });
+    assert.equal(E.submit(p).passed, true, id + ' accepts a useful substring');
+    for (const badQuery of ['', 'user=', 'not-present']) {
+      E.setInput(p, id, { query: badQuery, rowIds: definition.answer.rowIds });
+      assert.equal(E.submit(p).passed, false, id + ' rejects ' + badQuery);
+    }
+  }
+});
+
+
+test('future-stage events in the current attempt cannot corrupt retained graduation completion on a later reload', () => {
+  const { E, p } = harness(); unlock(E, p, 'graduate');
+  for (let stage = 0; stage < 4; stage++) {
+    if (stage === 3) { E.revealHint(p); E.revealSolution(p); }
+    E.setInput(p, 'graduate', inputFor(E.currentStep(p))); E.submit(p);
+    if (stage < 3) E.advanceStep(p);
+  }
+  E.retry(p, 'graduate');
+  for (const type of ['hint', 'solution', 'advance', 'submit']) {
+    const raw = clone(p);
+    raw.history.push({ type, id: 'graduate', stage: 3, ...(type === 'submit' ? { passed: true } : {}) });
+    let recovery;
+    const restored = E.hydrate(raw, { onRecovery: report => { recovery = report; } });
+    assert.equal(recovery.discardedHistory, 1);
+    assert.equal(restored.records.graduate.completed, true);
+    assert.equal(restored.records.graduate.attemptAssisted, false);
+    assert.deepEqual(clone(restored.records.graduate.attemptHintCounts), [0, 0, 0, 0]);
+    assert.deepEqual(clone(restored.records.graduate.attemptRevealedStages), []);
+    assert.deepEqual(clone(restored.records.graduate.hintCounts), [0, 0, 0, 1], 'past attempts retain lifetime help');
+    assert.deepEqual(clone(restored.records.graduate.revealedStages), [3]);
+    let secondRecovery;
+    const second = E.hydrate(E.exportProgress(restored), { onRecovery: report => { secondRecovery = report; } });
+    assert.equal(secondRecovery, undefined);
+    assert.deepEqual(clone(second), clone(restored));
+  }
 });

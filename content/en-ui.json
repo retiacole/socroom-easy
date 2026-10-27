@@ -200,5 +200,22 @@
   "これまでの操作をつないで、1件の調査に挑戦。": "Combine the skills you learned into one investigation.",
   "初級の卒業調査を振り返る": "Review the Beginner graduation investigation",
   "中級の卒業調査を振り返る": "Review the Intermediate graduation investigation",
-  "上級の卒業調査を振り返る": "Review the Advanced graduation investigation"
+  "上級の卒業調査を振り返る": "Review the Advanced graduation investigation",
+  "読み取れる進捗を復元しました。更新や破損で使えない記録は調整しました。元のデータは「退避データを保存」から取り出せます。": "Your readable progress was restored. Records affected by updates or damage were adjusted. Use Download backup to keep the original data.",
+  "保存した進捗を読み込めませんでした。「退避データを保存」で元のデータを取り出せます。保存ファイルがあれば「読込」から復元できます。": "Saved progress could not be read. Use Download backup to keep the original data, or Import to restore an exported save.",
+  "退避データを保存": "Download backup",
+  "{level}の学習マップを表示しました。{count}問あります。": "Opened the {level} learning map with {count} missions.",
+  "級は自由に選べます。各級の課題数はカードに表示しています。": "Choose any level. Each card shows its mission count.",
+  "{level}の{count}問を体験しました。": "You completed all {count} {level} missions.",
+  "SOCroomのチュートリアルから、一連の調査に挑戦してみましょう。": "Try a complete investigation starting with SOCroom's tutorial.",
+  "全{levels}級・{flags}フラグを獲得しました。": "You earned all {flags} flags across {levels} levels.",
+  "全{count}問で、": "Across {count} missions,",
+  "小課題{practice}問 ＋ 仕上げの調査{graduation}問": "{practice} short missions + {graduation} final investigation",
+  "ヒントを閉じて最初からやり直す": "Close hints and restart this mission",
+  "次の練習への進み方を表示しています。": "Your next practice options are shown.",
+  "必要なら先に保存ファイルを取り出してください。SOCroomの進捗には影響しません。": "Export a save first if needed. SOCroom progress is unaffected.",
+  "全{count}級のフラグ・下書き・ヒントの記録を消します。": "This clears flags, drafts, and hint history across all {count} levels.",
+  "必要なら先に現在の進捗を保存してください。": "Export your current progress first if needed.",
+  "全{count}級の学習記録をこのファイルで置き換えます。": "This replaces progress across all {count} levels with this file.",
+  "読み取れる進捗を復元します。更新や破損で使えない記録は調整しました。元のデータは読込後に「退避データを保存」から取り出せます。": "Readable progress will be restored. Records affected by updates or damage were adjusted. After importing, use Download backup to keep the original file."
 }

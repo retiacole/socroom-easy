@@ -619,73 +619,43 @@
       "steps": [
         {
           "id": "g1-find",
-          "title": "1 / 4 関係するログを集める",
+          "title": "関係するログを集める",
           "task": "render-kiosk-02 の job=R-204 に関するログを、3行すべて選んでください。host は端末名、job は1回分の仕事の番号です。",
           "kind": "rows",
           "rows": [
             {
               "id": "g1-log-a",
-              "time": "21:00:00",
-              "host": "render-kiosk-02",
-              "user": "svc-render",
               "event": "render_started",
-              "result": "started",
-              "session": "R-204",
               "raw": "2026-10-21T21:00:00Z host=render-kiosk-02 user=svc-render job=R-204 event=render_started input=lobby-map.svg",
               "note": "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。svc-render は自動処理用アカウント。"
             },
             {
               "id": "g1-noise-a",
-              "time": "21:00:01",
-              "host": "render-kiosk-03",
-              "user": "svc-render",
               "event": "render_started",
-              "result": "started",
-              "session": "R-205",
               "raw": "2026-10-21T21:00:01Z host=render-kiosk-03 user=svc-render job=R-205 event=render_started input=cafe-menu.svg",
               "note": "別の端末・別のジョブで、メニューのPDF生成を開始。"
             },
             {
               "id": "g1-log-b",
-              "time": "21:00:04",
-              "host": "render-kiosk-02",
-              "user": "svc-render",
               "event": "pdf_created",
-              "result": "success",
-              "session": "R-204",
               "raw": "2026-10-21T21:00:04Z host=render-kiosk-02 user=svc-render job=R-204 event=pdf_created output=/srv/maps/lobby-map.pdf",
               "note": "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。"
             },
             {
               "id": "g1-noise-b",
-              "time": "21:00:05",
-              "host": "render-kiosk-02",
-              "user": "svc-render",
               "event": "cleanup_completed",
-              "result": "success",
-              "session": "R-203",
               "raw": "2026-10-21T21:00:05Z host=render-kiosk-02 user=svc-render job=R-203 event=cleanup_completed",
               "note": "同じ端末だが、別のジョブ R-203 の片付け処理。"
             },
             {
               "id": "g1-log-c",
-              "time": "21:00:06",
-              "host": "render-kiosk-02",
-              "user": "svc-render",
               "event": "render_completed",
-              "result": "success",
-              "session": "R-204",
               "raw": "2026-10-21T21:00:06Z host=render-kiosk-02 user=svc-render job=R-204 event=render_completed result=success",
               "note": "ジョブ R-204 のPDF生成処理が完了。"
             },
             {
               "id": "g1-noise-c",
-              "time": "21:00:07",
-              "host": "lobby-screen-01",
-              "user": "svc-display",
               "event": "display_refreshed",
-              "result": "success",
-              "session": "D-81",
               "raw": "2026-10-21T21:00:07Z host=lobby-screen-01 user=svc-display job=D-81 event=display_refreshed",
               "note": "別の端末で画面表示を更新。"
             }
@@ -707,7 +677,7 @@
         },
         {
           "id": "g1-evidence",
-          "title": "2 / 4 実際の動きと承認を照合する",
+          "title": "実際の動きと承認を照合する",
           "task": "「R-204 の端末・アカウント・実施時間・作成内容は、承認された作業に一致する」を裏付ける資料を2枚選んでください。",
           "kind": "evidence",
           "rows": [
@@ -752,7 +722,7 @@
         },
         {
           "id": "g1-judge",
-          "title": "3 / 4 確認した範囲で判断する",
+          "title": "確認した範囲で判断する",
           "task": "これまでの証拠から、今回の通知に対する最も適切な判断を選んでください。",
           "kind": "choice",
           "rows": [
@@ -799,7 +769,7 @@
         },
         {
           "id": "g1-report",
-          "title": "4 / 4 調査を短く報告する",
+          "title": "調査を短く報告する",
           "task": "今回の調査を終える報告として、「確認した事実」「確認の限界」「次の行動」を1つずつ選んでください。",
           "kind": "report",
           "rows": [

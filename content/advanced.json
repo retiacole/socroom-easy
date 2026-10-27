@@ -130,7 +130,7 @@
         "tool": "時系列",
         "how": "別のログを並べる前に、時刻の基準をそろえて記録します。"
       },
-      "flag": "EASY{NORMALIZE_UTC_DATE}"
+      "flag": "EASY{ADV_NORMALIZE_UTC_DATE}"
     },
     {
       "id": "a-r2",
@@ -173,7 +173,7 @@
         "tool": "時系列",
         "how": "発生と収集の時刻を混同せず、記録を並べます。"
       },
-      "flag": "EASY{READ_EVENT_TIMESTAMP}",
+      "flag": "EASY{ADV_READ_EVENT_TIMESTAMP}",
       "tokens": [
         {
           "id": "a-r2-event-time",
@@ -239,7 +239,7 @@
         "tool": "ログ検索",
         "how": "親と子の ID を読み分け、プログラムのつながりを調べます。"
       },
-      "flag": "EASY{READ_PARENT_GUID}",
+      "flag": "EASY{ADV_READ_PARENT_GUID}",
       "tokens": [
         {
           "id": "a-r3-child-guid",
@@ -309,7 +309,7 @@
         "tool": "資産・資料",
         "how": "表示名だけに頼らず、台帳の ID と突き合わせて対象を絞ります。"
       },
-      "flag": "EASY{MATCH_ACCOUNT_ID}",
+      "flag": "EASY{ADV_MATCH_ACCOUNT_ID}",
       "choices": [
         {
           "id": "a-r4-payroll",
@@ -410,7 +410,7 @@
         "tool": "ログ検索",
         "how": "ID で絞った検索結果に対し、試行番号や処理区間を追加で照合し、別の試行を混ぜず根拠を集めます。"
       },
-      "flag": "EASY{SEPARATE_TRACE_RETRIES}",
+      "flag": "EASY{ADV_SEPARATE_TRACE_RETRIES}",
       "searchMode": "evidence"
     },
     {
@@ -477,7 +477,7 @@
         "tool": "ログ検索",
         "how": "端末と ID を組み合わせ、別の出来事を混ぜないようにします。"
       },
-      "flag": "EASY{MATCH_HOST_AND_PARENT}"
+      "flag": "EASY{ADV_MATCH_HOST_AND_PARENT}"
     },
     {
       "id": "a-f3",
@@ -533,7 +533,8 @@
       "answer": {
         "values": [
           "3"
-        ]
+        ],
+        "numericCount": true
       },
       "answerExplanation": "条件に合う対象は DOC-201・DOC-202・DOC-204 の 3 件です。共有作成成功は 4 行ありますが、DOC-201 の重複を一つにまとめます。",
       "hints": [
@@ -546,7 +547,7 @@
         "tool": "対応記録",
         "how": "影響範囲を書くときに、何を数えた件数なのかを明確にします。"
       },
-      "flag": "EASY{COUNT_DISTINCT_OBJECTS}"
+      "flag": "EASY{ADV_COUNT_DISTINCT_OBJECTS}"
     },
     {
       "id": "a-f4",
@@ -618,7 +619,7 @@
         "tool": "ログ検索",
         "how": "検索対象の範囲を明記し、対象漏れや重複を防ぎます。"
       },
-      "flag": "EASY{CHECK_TIME_BOUNDARIES}"
+      "flag": "EASY{ADV_CHECK_TIME_BOUNDARIES}"
     },
     {
       "id": "a-c1",
@@ -681,7 +682,7 @@
         "tool": "時系列",
         "how": "システムごとに違う時刻表記をそろえて並べます。"
       },
-      "flag": "EASY{ORDER_TIMEZONES}"
+      "flag": "EASY{ADV_ORDER_TIMEZONES}"
     },
     {
       "id": "a-c2",
@@ -753,7 +754,7 @@
         "tool": "時系列",
         "how": "関連プロセスを集め、どこまでつながりを確認できたか整理します。"
       },
-      "flag": "EASY{TRACE_PROCESS_CHAIN}"
+      "flag": "EASY{ADV_TRACE_PROCESS_CHAIN}"
     },
     {
       "id": "a-c3",
@@ -808,7 +809,7 @@
         "tool": "資産・資料",
         "how": "通信経路の資料を見て、ログの IP が何を指すか確認します。"
       },
-      "flag": "EASY{READ_PROXY_CLIENT}",
+      "flag": "EASY{ADV_READ_PROXY_CLIENT}",
       "choices": [
         {
           "id": "a-c3-person",
@@ -880,7 +881,7 @@
         "tool": "時系列",
         "how": "時刻の不確かさを補足し、確定した順序と推測を区別します。"
       },
-      "flag": "EASY{ALLOW_CLOCK_ERROR}",
+      "flag": "EASY{ADV_ALLOW_CLOCK_ERROR}",
       "choices": [
         {
           "id": "a-c4-a-first",
@@ -961,7 +962,7 @@
         "tool": "対応記録",
         "how": "確認した事実と記録範囲の限界を並べて引き継ぎます。"
       },
-      "flag": "EASY{CHECK_LOG_COVERAGE}"
+      "flag": "EASY{ADV_CHECK_LOG_COVERAGE}"
     },
     {
       "id": "a-e2",
@@ -1033,7 +1034,7 @@
         "tool": "資産・資料",
         "how": "最新の承認だけで判断せず、操作時点で有効だった内容と対象を確認します。"
       },
-      "flag": "EASY{CHECK_APPROVAL_VERSION}"
+      "flag": "EASY{ADV_CHECK_APPROVAL_VERSION}"
     },
     {
       "id": "a-e3",
@@ -1088,7 +1089,7 @@
         "tool": "照会",
         "how": "回答をそのまま結論にせず、ログで具体化した追加質問をします。"
       },
-      "flag": "EASY{VERIFY_AUTOMATED_JOB}",
+      "flag": "EASY{ADV_VERIFY_AUTOMATED_JOB}",
       "choices": [
         {
           "id": "a-e3-blame",
@@ -1171,7 +1172,7 @@
         "tool": "対応記録",
         "how": "対応の実施と、効果を確認できた対象・範囲を分けて記録します。"
       },
-      "flag": "EASY{VERIFY_AUTH_DENIAL}"
+      "flag": "EASY{ADV_VERIFY_AUTH_DENIAL}"
     },
     {
       "id": "a-d1",
@@ -1226,7 +1227,7 @@
         "tool": "対応記録",
         "how": "優先度を成立状況・重要度・継続性の根拠とともに残します。"
       },
-      "flag": "EASY{PRIORITIZE_ACTIVE_EXPOSURE}",
+      "flag": "EASY{ADV_PRIORITIZE_ACTIVE_EXPOSURE}",
       "choices": [
         {
           "id": "a-d1-a",
@@ -1298,7 +1299,7 @@
         "tool": "対応記録",
         "how": "対象と承認を示し、必要な範囲に絞った対処を記録します。"
       },
-      "flag": "EASY{CONTAIN_APPROVED_SHARE}",
+      "flag": "EASY{ADV_CONTAIN_APPROVED_SHARE}",
       "choices": [
         {
           "id": "a-d2-target",
@@ -1365,7 +1366,7 @@
         "tool": "対応記録",
         "how": "識別情報を残しながら、引き継ぎで秘密の値を拡散させません。"
       },
-      "flag": "EASY{MASK_SECRET_VALUES}",
+      "flag": "EASY{ADV_MASK_SECRET_VALUES}",
       "choices": [
         {
           "id": "a-d3-spread",
@@ -1458,7 +1459,7 @@
         "tool": "対応記録",
         "how": "対処が効いた対象と、残る利用や未確認事項を分け、追加の対応計画を具体的に引き継ぎます。"
       },
-      "flag": "EASY{VERIFY_SESSION_STOP}",
+      "flag": "EASY{ADV_VERIFY_SESSION_STOP}",
       "choices": [
         {
           "id": "a-d4-fact-ok",
@@ -1519,33 +1520,7 @@
       "task": "四つの段階を順番に進め、調査と対応計画を完成させてください。",
       "kind": "investigation",
       "sourceLabel": "調べる記録と資料",
-      "rows": [
-        {
-          "id": "a-g1-auth",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:00:00Z system=identity actor_id=svc-survey credential_id=K-42 session=S-440 event=new_authentication result=success"
-        },
-        {
-          "id": "a-g1-other-auth",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:00:03Z system=identity actor_id=svc-map credential_id=K-43 session=S-441 event=new_authentication result=success"
-        },
-        {
-          "id": "a-g1-create",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:01:00Z system=cloud actor_id=svc-survey session=S-440 event=share_created folder=poll-results share_id=L-440 access=anonymous result=success"
-        },
-        {
-          "id": "a-g1-other-share",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:01:05Z system=cloud actor_id=svc-map session=S-441 event=share_created folder=public-map share_id=L-441 access=anonymous result=success"
-        },
-        {
-          "id": "a-g1-check",
-          "sourceType": "log",
-          "raw": "2026-10-23T08:04:00Z system=cloud event=share_state_checked share_id=L-440 folder=poll-results state=enabled"
-        }
-      ],
+      "rows": [],
       "answer": {},
       "answerExplanation": "関連 ID で記録をつなぎ、承認・資料区分・記録範囲を確認し、対象を限定した対応計画と報告を完成させました。分かったことと分からないことを分ける姿勢が SOCroom の調査につながります。",
       "hints": [
@@ -1558,11 +1533,11 @@
         "tool": "ログ検索 → 資産・資料 → 対応記録",
         "how": "SOCroom では複数画面を行き来して根拠を集め、未確認事項を残して担当者へ引き継ぎます。"
       },
-      "flag": "EASY{INVESTIGATE_CLOUD_SHARE}",
+      "flag": "EASY{ADV_INVESTIGATE_CLOUD_SHARE}",
       "steps": [
         {
           "id": "a-g1-step1",
-          "title": "1. 関連する記録を集める",
+          "title": "関連する記録を集める",
           "task": "K-42 による認証から、S-440 を使った L-440 の共有作成、L-440 の現在の状態まで、関連する記録をすべて選んでください。",
           "kind": "rows",
           "sourceLabel": "認証とクラウドの監査ログ",
@@ -1610,7 +1585,7 @@
         },
         {
           "id": "a-g1-step2",
-          "title": "2. 承認と対象の重要度を照合する",
+          "title": "承認と対象の重要度を照合する",
           "task": "「L-440 は承認 CHG-440 の対象外で、匿名共有が禁止された機密資料への共有である」を支える必要なカードだけをすべて選んでください。",
           "kind": "evidence",
           "sourceLabel": "操作・承認・資料区分",
@@ -1662,7 +1637,7 @@
         },
         {
           "id": "a-g1-step3",
-          "title": "3. 分かったことの範囲を判断する",
+          "title": "分かったことの範囲を判断する",
           "task": "現在の証拠に合う判断を一つ選んでください。未収集のログから何を言えるかにも注意します。",
           "kind": "choice",
           "sourceLabel": "現在の状態と調査範囲",
@@ -1726,7 +1701,7 @@
         },
         {
           "id": "a-g1-step4",
-          "title": "4. 対象を絞った対応と引き継ぎ",
+          "title": "対象を絞った対応と引き継ぎ",
           "task": "まだ対処は実行していません。確認事実・未確認事項・承認に沿った次の対応を一つずつ選び、報告を完成させてください。",
           "kind": "report",
           "sourceLabel": "引き継ぐ記録と対応承認",

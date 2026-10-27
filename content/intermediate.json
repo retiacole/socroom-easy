@@ -2,32 +2,32 @@
   "chapters": [
     {
       "id": "read",
-      "title": "01 通信と処理の欄を読む",
+      "title": "通信と処理の欄を読む",
       "subtitle": "HTTP・DNS・プロセス・追加認証を、短い記録で理解する。"
     },
     {
       "id": "find",
-      "title": "02 条件を重ねて探す",
+      "title": "条件を重ねて探す",
       "subtitle": "要求番号・端末・結果を照合し、必要な行と件数を取り出す。"
     },
     {
       "id": "connect",
-      "title": "03 複数の記録をつなぐ",
+      "title": "複数の記録をつなぐ",
       "subtitle": "要求から処理へ。同じ出来事を別の記録から確かめる。"
     },
     {
       "id": "evidence",
-      "title": "04 資料で判断を支える",
+      "title": "資料で判断を支える",
       "subtitle": "業務用途・承認の範囲・本人の回答・資料の日付を照合する。"
     },
     {
       "id": "respond",
-      "title": "05 次の確認を伝える",
+      "title": "次の確認を伝える",
       "subtitle": "事実と未確認事項を分け、担当者が動ける報告にする。"
     },
     {
       "id": "graduate",
-      "title": "06 卒業調査：書き出しの範囲",
+      "title": "卒業調査：書き出しの範囲",
       "subtitle": "関係するログを集め、承認と比較し、確認の限界まで報告する。"
     }
   ],
@@ -118,7 +118,6 @@
       "rows": [
         {
           "id": "m-r1-log",
-          "time": "10:02:11",
           "raw": "192.0.2.44 - mina [23/Oct/2026:10:02:11 +0000] \"GET /admin/users HTTP/1.1\" 403 162 \"-\" \"TrainingBrowser/1.0\"",
           "note": "管理画面の利用者一覧を求めた要求の応答記録。"
         }
@@ -191,7 +190,6 @@
       "rows": [
         {
           "id": "m-r2-log",
-          "time": "10:05:20",
           "raw": "{\"timestamp\":\"2026-10-23T10:05:20Z\",\"host\":\"ws-18\",\"src\":\"10.40.1.18\",\"resolver\":\"10.40.0.53\",\"query\":\"reports-old.office.example\",\"type\":\"A\",\"rcode\":\"NXDOMAIN\"}",
           "note": "type=A は IPv4 アドレスの問い合わせ。"
         }
@@ -239,7 +237,6 @@
       "rows": [
         {
           "id": "m-r3-log",
-          "time": "10:08:01",
           "raw": "2026-10-23T10:08:01Z host=ws-22 user=mina event=process_started pid=582 image=sheet-viewer.exe ppid=310 parent_image=browser.exe",
           "note": "pid と ppid はこの端末でのプロセス番号。"
         }
@@ -311,19 +308,16 @@
       "rows": [
         {
           "id": "m-r4-pass",
-          "time": "10:12:00",
           "raw": "2026-10-23T10:12:00Z user=keito auth_id=AUTH-62 factor=password result=accepted",
           "note": "パスワード要素の確認を通過。"
         },
         {
           "id": "m-r4-push",
-          "time": "10:12:05",
           "raw": "2026-10-23T10:12:05Z user=keito auth_id=AUTH-62 factor=push result=denied",
           "note": "追加の確認通知は拒否。"
         },
         {
           "id": "m-r4-final",
-          "time": "10:12:06",
           "raw": "2026-10-23T10:12:06Z user=keito auth_id=AUTH-62 event=auth_finished result=blocked",
           "note": "この認証ではログイン完了を認めなかった。"
         }
@@ -385,37 +379,31 @@
       "rows": [
         {
           "id": "m-f1-web",
-          "time": "10:20:00",
           "raw": "2026-10-23T10:20:00Z component=web user=rio request_id=REQ-731 event=request_received path=/calendar",
           "note": "予定表への要求を受付。"
         },
         {
           "id": "m-f1-other",
-          "time": "10:20:01",
           "raw": "2026-10-23T10:20:01Z component=web user=rio request_id=REQ-732 event=request_received path=/help",
           "note": "同じ利用者からの別の要求。"
         },
         {
           "id": "m-f1-app",
-          "time": "10:20:02",
           "raw": "2026-10-23T10:20:02Z component=app user=rio request_id=REQ-731 event=permission_checked result=denied",
           "note": "要求に対する権限確認。"
         },
         {
           "id": "m-f1-old",
-          "time": "10:20:03",
           "raw": "2026-10-23T10:20:03Z component=app user=aya request_id=REQ-729 event=permission_checked result=allowed",
           "note": "別の利用者・別の要求。"
         },
         {
           "id": "m-f1-response",
-          "time": "10:20:04",
           "raw": "2026-10-23T10:20:04Z component=web user=rio request_id=REQ-731 event=response_sent status=403",
           "note": "拒否の応答。"
         },
         {
           "id": "m-f1-other-response",
-          "time": "10:20:05",
           "raw": "2026-10-23T10:20:05Z component=web user=rio request_id=REQ-732 event=response_sent status=200",
           "note": "ヘルプへの別の要求の応答。"
         }
@@ -466,37 +454,31 @@
       "rows": [
         {
           "id": "m-f2-a",
-          "time": "10:25:00",
           "raw": "2026-10-23T10:25:00Z host=ws-18 query=reports-old.office.example type=A rcode=NXDOMAIN",
           "note": "名前が存在しないという応答。"
         },
         {
           "id": "m-f2-b",
-          "time": "10:25:01",
           "raw": "2026-10-23T10:25:01Z host=ws-19 query=reports-old.office.example type=A rcode=NXDOMAIN",
           "note": "別の端末からの問い合わせ。"
         },
         {
           "id": "m-f2-c",
-          "time": "10:25:02",
           "raw": "2026-10-23T10:25:02Z host=ws-18 query=reports.office.example type=A rcode=NOERROR answer=192.0.2.80",
           "note": "アドレス回答のある問い合わせ。"
         },
         {
           "id": "m-f2-d",
-          "time": "10:25:03",
           "raw": "2026-10-23T10:25:03Z host=ws-18 query=calendar-old.office.example type=A rcode=NXDOMAIN",
           "note": "名前が存在しないという応答。"
         },
         {
           "id": "m-f2-e",
-          "time": "10:25:04",
           "raw": "2026-10-23T10:25:04Z host=ws-18 query=calendar.office.example type=A rcode=SERVFAIL",
           "note": "処理できなかった応答。名前不存在とは別。"
         },
         {
           "id": "m-f2-f",
-          "time": "10:25:05",
           "raw": "2026-10-23T10:25:05Z host=ws-19 query=calendar.office.example type=A rcode=NOERROR answer=192.0.2.81",
           "note": "別の端末へのアドレス回答。"
         }
@@ -544,49 +526,41 @@
       "rows": [
         {
           "id": "m-f3-a",
-          "time": "10:30:00",
           "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-b",
-          "time": "10:30:00",
           "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-c",
-          "time": "10:30:10",
           "raw": "2026-10-23T10:30:10Z user=mei attempt=M-12 event=mfa_result result=denied",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-d",
-          "time": "10:30:20",
           "raw": "2026-10-23T10:30:20Z user=mei attempt=M-13 event=mfa_result result=approved",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-e",
-          "time": "10:30:30",
           "raw": "2026-10-23T10:30:30Z user=mei attempt=M-14 event=mfa_result result=timeout",
           "note": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-f",
-          "time": "10:30:40",
           "raw": "2026-10-23T10:30:40Z user=mei attempt=M-15 event=mfa_result result=denied",
           "note": "確認通知への応答記録。"
         }
       ],
       "answer": {
         "values": [
-          "3",
-          "３",
-          "3回",
-          "３回"
+          "3"
         ],
-        "caseSensitive": false
+        "caseSensitive": false,
+        "numericCount": true
       },
       "answerExplanation": "拒否された試行番号は M-11・M-12・M-15 の3種類です。M-11 の2行は同じ試行です。M-13 の承認と M-14 の時間切れは、指定された denied の件数に含めません。",
       "hints": [
@@ -625,37 +599,31 @@
       "rows": [
         {
           "id": "m-f4-a",
-          "time": "10:35:00",
           "raw": "2026-10-23T10:35:00Z host=ws-22 user=mina event=file_read path=/team/plan.csv",
           "note": "対象端末で計画表を読み取り。"
         },
         {
           "id": "m-f4-b",
-          "time": "10:35:01",
           "raw": "2026-10-23T10:35:01Z host=ws-22 user=mina2 event=file_read path=/team/plan.csv",
           "note": "名前が似た別アカウント。"
         },
         {
           "id": "m-f4-c",
-          "time": "10:35:02",
           "raw": "2026-10-23T10:35:02Z host=ws-23 user=mina event=file_read path=/team/plan.csv",
           "note": "同じアカウントだが別端末。"
         },
         {
           "id": "m-f4-d",
-          "time": "10:35:03",
           "raw": "2026-10-23T10:35:03Z host=ws-22 user=mina event=file_created path=/temp/notes.txt",
           "note": "同じ端末・アカウントの作成操作。"
         },
         {
           "id": "m-f4-e",
-          "time": "10:35:04",
           "raw": "2026-10-23T10:35:04Z host=ws-22 user=mina event=file_read path=/team/budget.csv",
           "note": "対象端末で予算表を読み取り。"
         },
         {
           "id": "m-f4-f",
-          "time": "10:35:05",
           "raw": "2026-10-23T10:35:05Z host=ws-22 user=hana event=file_read path=/team/plan.csv",
           "note": "別のアカウント。"
         }
@@ -705,25 +673,21 @@
       "rows": [
         {
           "id": "m-c1-file",
-          "time": "11:02:04",
           "raw": "2026-10-23T11:02:04Z component=app request_id=REQ-842 event=file_created artifact=calendar-842.csv",
           "note": "予定表ファイルを作成。"
         },
         {
           "id": "m-c1-response",
-          "time": "11:02:05",
           "raw": "2026-10-23T11:02:05Z component=web request_id=REQ-842 event=response_sent status=200 response_kind=job_metadata",
           "note": "処理情報を返した応答。ファイル本体ではない。"
         },
         {
           "id": "m-c1-request",
-          "time": "11:02:00",
           "raw": "2026-10-23T11:02:00Z component=web request_id=REQ-842 event=request_received method=POST path=/api/calendar-export",
           "note": "書き出し要求の受付。"
         },
         {
           "id": "m-c1-queue",
-          "time": "11:02:01",
           "raw": "2026-10-23T11:02:01Z component=app request_id=REQ-842 event=job_queued job=CAL-842",
           "note": "書き出し処理を受け付け。"
         }
@@ -773,37 +737,31 @@
       "rows": [
         {
           "id": "m-c2-map",
-          "time": "11:10:00",
           "raw": "2026-10-23T11:10:00Z user=mia request_id=REQ-712 job=JOB-38 event=job_assigned",
           "note": "要求と処理番号の対応。"
         },
         {
           "id": "m-c2-other-map",
-          "time": "11:10:01",
           "raw": "2026-10-23T11:10:01Z user=mia request_id=REQ-713 job=JOB-39 event=job_assigned",
           "note": "同じアカウントの別要求。"
         },
         {
           "id": "m-c2-start",
-          "time": "11:10:02",
           "raw": "2026-10-23T11:10:02Z job=JOB-38 event=job_started dataset=room_list",
           "note": "JOB-38 の処理開始。room_list は会議室一覧。"
         },
         {
           "id": "m-c2-other-start",
-          "time": "11:10:03",
           "raw": "2026-10-23T11:10:03Z job=JOB-39 event=job_started dataset=room_list",
           "note": "JOB-39 の処理開始。"
         },
         {
           "id": "m-c2-output",
-          "time": "11:10:05",
           "raw": "2026-10-23T11:10:05Z job=JOB-38 event=artifact_created artifact=rooms-38.csv",
           "note": "JOB-38 の成果物作成。"
         },
         {
           "id": "m-c2-other-output",
-          "time": "11:10:06",
           "raw": "2026-10-23T11:10:06Z job=JOB-39 event=artifact_created artifact=rooms-39.csv",
           "note": "別のジョブの成果物。"
         }
@@ -852,19 +810,16 @@
       "rows": [
         {
           "id": "m-c3-auth",
-          "time": "11:20:00",
           "raw": "2026-10-23T11:20:00Z user=ren session=S-225 event=login_finished result=success",
           "note": "このセッションの認証に成功。"
         },
         {
           "id": "m-c3-check",
-          "time": "11:20:10",
           "raw": "2026-10-23T11:20:10Z user=ren session=S-225 request_id=REQ-225 event=permission_checked result=denied reason=missing_role required_role=admin",
           "note": "管理者の役割がないため操作を拒否。"
         },
         {
           "id": "m-c3-web",
-          "time": "11:20:11",
           "raw": "2026-10-23T11:20:11Z user=ren session=S-225 request_id=REQ-225 method=GET path=/admin/settings status=403",
           "note": "管理設定ページの要求に拒否の応答。"
         }
@@ -925,19 +880,16 @@
       "rows": [
         {
           "id": "m-c4-a",
-          "time": "11:30:00",
           "raw": "2026-10-23T11:30:00Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
           "note": "問い合わせの記録1。"
         },
         {
           "id": "m-c4-b",
-          "time": "11:30:30",
           "raw": "2026-10-23T11:30:30Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
           "note": "問い合わせの記録2。"
         },
         {
           "id": "m-c4-c",
-          "time": "11:31:00",
           "raw": "2026-10-23T11:31:00Z host=ws-27 query=portal-legacy.office.example type=A rcode=NXDOMAIN",
           "note": "問い合わせの記録3。"
         }
@@ -1626,43 +1578,37 @@
       "steps": [
         {
           "id": "m-g1-find",
-          "title": "1 / 4 同じ要求の記録を集める",
+          "title": "同じ要求の記録を集める",
           "task": "対象の request_id=REQ-880 に関係する「Web要求・アプリ生成・Web応答」を3行選んでください。同じ user だけでまとめないようにします。",
           "kind": "rows",
           "rows": [
             {
               "id": "m-g1-request",
-              "time": "14:10:00",
               "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-880 event=request_received method=POST path=/api/export",
               "note": "書き出し要求を受付。"
             },
             {
               "id": "m-g1-other-request",
-              "time": "14:10:00",
               "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-881 event=request_received method=GET path=/health",
               "note": "同じ利用者とセッションからの状態確認要求。"
             },
             {
               "id": "m-g1-generated",
-              "time": "14:10:01",
               "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv",
               "note": "職員連絡先400件のファイル生成が完了。"
             },
             {
               "id": "m-g1-other-generated",
-              "time": "14:10:01",
               "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-879 job=EX-89 event=export_completed dataset=public_agenda records=50 artifact=agenda-89.csv",
               "note": "別要求で公開行事予定を50件生成。"
             },
             {
               "id": "m-g1-response",
-              "time": "14:10:02",
               "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-880 event=response_sent status=200 response_kind=job_metadata bytes=128",
               "note": "128バイトの処理情報を応答。ファイル本体の受取完了ではない。"
             },
             {
               "id": "m-g1-other-response",
-              "time": "14:10:02",
               "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-881 event=response_sent status=200 response_kind=health_status bytes=16",
               "note": "別要求のサービス状態確認への応答。"
             }
@@ -1684,7 +1630,7 @@
         },
         {
           "id": "m-g1-evidence",
-          "title": "2 / 4 生成した件数と承認上限を比べる",
+          "title": "生成した件数と承認上限を比べる",
           "task": "「REQ-880 で生成されたデータの件数は、今回提示された承認票の上限を超える」を裏付ける2枚を選んでください。",
           "kind": "evidence",
           "rows": [
@@ -1729,7 +1675,7 @@
         },
         {
           "id": "m-g1-judge",
-          "title": "3 / 4 分かったことだけで判断する",
+          "title": "分かったことだけで判断する",
           "task": "これまでの記録で支えられる判断を選んでください。生成・HTTP応答・受け取り・外部送信を混同しないようにします。",
           "kind": "choice",
           "rows": [
@@ -1782,7 +1728,7 @@
         },
         {
           "id": "m-g1-report",
-          "title": "4 / 4 証拠と未確認事項を引き継ぐ",
+          "title": "証拠と未確認事項を引き継ぐ",
           "task": "今回の調査報告として、「確認した事実」「確認の限界」「次の行動」を1つずつ選んでください。",
           "kind": "report",
           "rows": [

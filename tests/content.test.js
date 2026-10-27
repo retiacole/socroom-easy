@@ -81,3 +81,61 @@ test('quantitative answers agree with actual log timestamps, scope, and deduplic
   const chronology=get('m-c1');
   assert.deepEqual(chronology.answer.rowIds,[...chronology.rows].sort((a,b)=>Date.parse(a.raw.split(' ')[0])-Date.parse(b.raw.split(' ')[0])).map(r=>r.id));
 });
+
+test('chapter and investigation labels leave numbering to the UI',()=>{
+  for(const level of D.levels)for(const chapter of level.chapters){
+    assert.doesNotMatch(chapter.title,/^\d+[\s./]/,level.id+' '+chapter.id);
+  }
+  for(const mission of D.missions)for(const step of mission.steps||[]){
+    assert.doesNotMatch(step.title,/^\d+[\s./]/,step.id);
+  }
+});
+
+test('flags identify intermediate and advanced courses and count answers use one canonical value',()=>{
+  for(const mission of D.missions){
+    if(mission.level==='intermediate')assert.match(mission.flag,/^EASY\{MID_/);
+    if(mission.level==='advanced')assert.match(mission.flag,/^EASY\{ADV_/);
+    if(mission.kind==='text'){
+      assert.equal(new Set(mission.answer.values.map(normalized)).size,mission.answer.values.length,mission.id+' has no NFKC-equivalent aliases');
+    }
+  }
+  for(const id of ['f4','m-f3','a-f3']){
+    const answer=D.missions.find(m=>m.id===id).answer;
+    assert.equal(answer.numericCount,true,id+' uses uniform count grading');
+    assert.deepEqual(answer.values,['3']);
+  }
+});
+
+test('source records contain displayed fields and investigation sources live in stages',()=>{
+  const displayed=new Set(['id','raw','body','title','sourceType','event','note']);
+  for(const mission of D.missions){
+    if(mission.kind==='investigation')assert.deepEqual(mission.rows,[],mission.id+' has no unused top-level source copy');
+    for(const step of mission.steps||[mission])for(const row of step.rows){
+      for(const key of Object.keys(row))assert.ok(displayed.has(key),mission.id+' unused source field '+key);
+    }
+  }
+});
+
+test('selection IDs are unique within each interaction and reports declare all three groups',()=>{
+  for(const mission of D.missions)for(const step of mission.steps||[mission]){
+    for(const key of ['tokens','choices'])if(step[key]){
+      const ids=step[key].map(item=>item.id);
+      assert.equal(new Set(ids).size,ids.length,mission.id+' '+key+' unique IDs');
+    }
+    if(step.kind==='report'){
+      assert.deepEqual([...new Set(step.choices.map(choice=>choice.group))].sort(),['fact','limit','next']);
+      for(const group of ['fact','limit','next'])assert.ok(step.choices.filter(choice=>choice.group===group).length>=2,mission.id+' '+group+' offers a meaningful choice');
+    }
+  }
+});
+
+test('beginner searches teach evidence-preserving queries and UTC scope excludes advanced exercises',()=>{
+  for(const id of ['f1','f2'])assert.equal(D.missions.find(m=>m.id===id).searchMode,'evidence');
+  const timestampLesson=D.missions.find(m=>m.id==='r1').learn.join('\n');
+  assert.match(timestampLesson,/初級・中級では/);
+  assert.match(timestampLesson,/T は日付と時刻の区切り/);
+  assert.doesNotMatch(timestampLesson,/この教材ではすべて UTC/);
+  const meaning=D.glossary.find(item=>item.term==='UTC').meaning;
+  assert.match(meaning,/初級・中級では/);
+  assert.match(meaning,/上級では時差/);
+});

@@ -450,7 +450,6 @@
   "各段階のヒントと解説を使い、ID 照合 → 承認と区分 → 限界を含む判断 → 対応計画と報告の順に進めます。": "Use each stage's hints and explanations in this order: ID matching → approval and classification → conclusions with limitations → response plan and report.",
   "ログ検索 → 資産・資料 → 対応記録": "Log search → Assets and reference material → Response record",
   "SOCroom では複数画面を行き来して根拠を集め、未確認事項を残して担当者へ引き継ぎます。": "In SOCroom, move between views to collect evidence and hand over to the responsible person with unverified items clearly stated.",
-  "1. 関連する記録を集める": "1. Collect related records",
   "K-42 による認証から、S-440 を使った L-440 の共有作成、L-440 の現在の状態まで、関連する記録をすべて選んでください。": "Select every related record from authentication with K-42, through creation of share L-440 using S-440, to L-440's current state.",
   "認証とクラウドの監査ログ": "Authentication and cloud audit logs",
   "K-42 の認証で S-440 が使われ、その S-440 で L-440 が作成されました。08:04 の L-440 は enabled です。S-441 と L-441 は別の処理です。": "Authentication with K-42 used S-440, and S-440 created L-440. L-440 was enabled at 08:04. S-441 and L-441 belong to a separate operation.",
@@ -458,7 +457,6 @@
   "認証の session と共有作成の session を合わせ、共有作成の share_id と状態確認の share_id を合わせます。": "Match the session in authentication to the session in share creation, then match share_id in creation to share_id in the state check.",
   "K-42 の認証、L-440 の共有作成、L-440 の状態確認の 3 行です。": "Select the three rows: authentication with K-42, creation of L-440, and the L-440 state check.",
   "K-42／S-440 の認証、S-440／L-440 の共有作成、L-440 の状態確認の 3 行を選びます。": "Select authentication with K-42/S-440, share creation with S-440/L-440, and the L-440 state check: three rows.",
-  "2. 承認と対象の重要度を照合する": "2. Match approval and target sensitivity",
   "「L-440 は承認 CHG-440 の対象外で、匿名共有が禁止された機密資料への共有である」を支える必要なカードだけをすべて選んでください。": "Select only the cards needed to support: 'L-440 is outside approval CHG-440 and shares confidential material for which anonymous sharing is prohibited.'",
   "操作・承認・資料区分": "Operation, approval, and document classification",
   "確定した承認 CHG-440": "Confirmed approval CHG-440",
@@ -474,7 +472,6 @@
   "操作ログの folder と承認された対象を照合し、実際の folder の区分資料も確認します。": "Compare folder in the operation log with the approved target, then check the actual folder's classification.",
   "L-440 の共有作成、CHG-440、資料区分と共有ルールの 3 枚です。": "Select three cards: L-440 share creation, CHG-440, and document classification and sharing rules.",
   "共有作成ログ、CHG-440、資料区分と共有ルールを選びます。対象不一致と禁止された匿名共有を別々に裏付けます。": "Select the share-creation log, CHG-440, and document classification and sharing rules. Separately substantiate the target mismatch and the prohibited anonymous sharing.",
-  "3. 分かったことの範囲を判断する": "3. Assess what the evidence establishes",
   "現在の証拠に合う判断を一つ選んでください。未収集のログから何を言えるかにも注意します。": "Select the conclusion that matches the current evidence. Consider what can be said when logs were not collected.",
   "現在の状態と調査範囲": "Current state and investigation coverage",
   "アクセス記録の取得状況": "Access-log collection status",
@@ -490,7 +487,6 @@
   "共有の問題と、実際の情報取得の有無を分けます。": "Separate the sharing problem from whether information was actually retrieved.",
   "「匿名共有が有効」「閲覧・ダウンロードは未確認」の両方を残す判断です。": "Choose the conclusion that retains both 'anonymous sharing is enabled' and 'viewing/downloads remain unverified'.",
   "承認対象外の共有への対処が必要とし、実際のアクセスは未確認とする判断を選びます。": "Choose the conclusion that the out-of-scope share needs remediation while actual access remains unverified.",
-  "4. 対象を絞った対応と引き継ぎ": "4. Targeted response and handover",
   "まだ対処は実行していません。確認事実・未確認事項・承認に沿った次の対応を一つずつ選び、報告を完成させてください。": "No response has been executed yet. Complete the report by selecting one confirmed fact, one unverified item, and one approved next action.",
   "引き継ぐ記録と対応承認": "Handover records and response approval",
   "08:05 UTC に責任者が承認した対応": "Response approved by the manager at 08:05 UTC",
@@ -513,5 +509,9 @@
   "事実は、操作と状態確認の時刻、関連する ID、承認対象との一致・不一致を照合します。": "For the facts, match the operation and state-check times, related IDs, and whether the target matches the approval.",
   "未確認事項は記録の取得状況に合わせ、次の対応は承認された対象・操作・結果確認と照合します。": "Align unverified items with logging coverage. Match the next action to approved targets, operations, and result checks.",
   "L-440、K-42、S-440 をそれぞれ対処・確認する承認済みの計画を選びます。": "Select the approved plan that separately addresses and verifies L-440, K-42, and S-440.",
-  "事実は共有作成と有効状態、未確認はアクセスと経緯・影響、次は L-440・K-42・S-440 の限定対処と結果確認を選びます。": "Choose share creation and enabled state as facts; access, the sequence of events, and wider impact as unverified; and targeted action plus result checks for L-440, K-42, and S-440 as the next response."
+  "事実は共有作成と有効状態、未確認はアクセスと経緯・影響、次は L-440・K-42・S-440 の限定対処と結果確認を選びます。": "Choose share creation and enabled state as facts; access, the sequence of events, and wider impact as unverified; and targeted action plus result checks for L-440, K-42, and S-440 as the next response.",
+  "関連する記録を集める": "Collect related records",
+  "承認と対象の重要度を照合する": "Match approval and target sensitivity",
+  "分かったことの範囲を判断する": "Assess what the evidence establishes",
+  "対象を絞った対応と引き継ぎ": "Targeted response and handover"
 }

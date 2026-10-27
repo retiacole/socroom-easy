@@ -71,5 +71,6 @@
   " 件足りません。条件に合う資料を見直しましょう。": " more required. Review records matching the conditions.",
   " 件多いです。条件と関係のない資料を見直しましょう。": " extra. Review records unrelated to the conditions.",
   "検索で必要な証拠を残せています。": "Your search keeps the required evidence. ",
-  " か所の位置が違います。各行の時刻を比較し、最も早い出来事から順番に並べましょう。": " positions differ. Compare timestamps and order the events from earliest to latest."
+  " か所の位置が違います。各行の時刻を比較し、最も早い出来事から順番に並べましょう。": " positions differ. Compare timestamps and order the events from earliest to latest.",
+  "大文字と小文字もログに合わせてください。": "Match the uppercase and lowercase letters in the log as well."
 }
