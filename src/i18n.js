@@ -5,8 +5,16 @@
   const escape=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
   const pattern=new RegExp(Object.keys(dictionary).sort((a,b)=>b.length-a.length).map(escape).join('|'),'g');
   const textSources=new WeakMap(),attributeSources=new WeakMap();
-  let locale='ja';
-  try{if(root.localStorage?.getItem(key)==='en')locale='en';}catch(error){/* The language menu works without storage. */}
+  function browserLocale(){
+    try{
+      const browser=root.navigator;
+      const preferred=Array.isArray(browser?.languages)?browser.languages.find(value=>typeof value==='string'&&value.trim()):null;
+      const language=preferred||(typeof browser?.language==='string'?browser.language:'');
+      return /^ja(?:-|$)/i.test(language.trim())?'ja':'en';
+    }catch(error){return 'en';}
+  }
+  let locale=browserLocale();
+  try{const saved=root.localStorage?.getItem(key);if(['ja','en'].includes(saved))locale=saved;}catch(error){/* The language menu works without storage. */}
   function english(value){const text=String(value??'');if(!hasJapanese.test(text))return text;return Object.hasOwn(dictionary,text)?dictionary[text]:text.replace(pattern,match=>dictionary[match]);}
   function t(value){return locale==='en'?english(value):String(value??'');}
   function format(template,values={}){return t(template).replace(/\{([a-zA-Z][a-zA-Z0-9]*)\}/g,(match,key)=>Object.hasOwn(values,key)?String(values[key]):match);}

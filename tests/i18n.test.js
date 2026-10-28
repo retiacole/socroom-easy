@@ -36,3 +36,44 @@ test('subtree localization includes its own accessible name and can restore Japa
   assert.equal(button.getAttribute('aria-label'),'Close');assert.equal(button.textContent,'Back');
   I.setLocale('ja');I.apply(button);assert.equal(button.getAttribute('aria-label'),'閉じる');assert.equal(button.textContent,'戻る');dom.window.close();
 });
+
+
+function initialLanguage(browser, saved, blocked = false) {
+  const vm = require('node:vm'), fs = require('node:fs');
+  const writes = [];
+  const context = {EASY_EN: {}, navigator: browser};
+  Object.defineProperty(context, 'localStorage', {get() {
+    if (blocked) throw new Error('Storage disabled');
+    return {getItem() {return saved ?? null;}, setItem(key, value) {writes.push([key, value]);}};
+  }});
+  vm.runInNewContext(fs.readFileSync(require.resolve('../src/i18n.js'), 'utf8'), context);
+  return {i18n: context.EasyI18n, writes};
+}
+
+test('the first browser language selects Japanese or the English fallback without saving a preference', () => {
+  for (const [browser, expected] of [
+    [{languages: ['ja-JP', 'en-US'], language: 'en-US'}, 'ja'],
+    [{languages: ['JA-jp']}, 'ja'],
+    [{languages: ['fr-FR', 'ja-JP'], language: 'ja-JP'}, 'en'],
+    [{languages: ['th-TH']}, 'en'],
+    [{languages: ['', null, 'ja'], language: 'en-US'}, 'ja'],
+    [{languages: [], language: 'ja-JP'}, 'ja'],
+    [{language: 'en-GB'}, 'en'],
+    [undefined, 'en']
+  ]) {
+    const app = initialLanguage(browser);
+    assert.equal(app.i18n.locale, expected, JSON.stringify(browser));
+    assert.deepEqual(app.writes, []);
+  }
+});
+
+test('both saved languages override the browser, invalid saves fall back, and storage is optional', () => {
+  assert.equal(initialLanguage({languages: ['en-US']}, 'ja').i18n.locale, 'ja');
+  assert.equal(initialLanguage({languages: ['ja-JP']}, 'en').i18n.locale, 'en');
+  assert.equal(initialLanguage({languages: ['ja-JP']}, 'invalid').i18n.locale, 'ja');
+  assert.equal(initialLanguage({languages: ['ja-JP']}, undefined, true).i18n.locale, 'ja');
+  const app = initialLanguage({languages: ['en-US']});
+  assert.equal(app.i18n.setLocale('ja'), true);
+  assert.equal(app.i18n.locale, 'ja');
+  assert.deepEqual(app.writes, [['socroom-easy.language.v1', 'ja']]);
+});

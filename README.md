@@ -2,7 +2,7 @@
   <img src="docs/images/socroom-easy-banner.png" width="960" alt="道場で稽古するSOCroom-easyのキャラクターを描いたピクセルアート">
 </p>
 
-# SOCroom-easy v0.4.0
+# SOCroom-easy v0.4.1
 
 [すぐにやってみる / Play Now](https://retiacole.github.io/socroom-easy/) · [オフライン用HTML / Offline HTML](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html)
 
@@ -32,6 +32,10 @@ Choose **Play Now** to start in your browser, or download the HTML file with **D
 Online and local files use separate browser saves. To transfer progress, export a JSON save in the original app and import it in the other one.
 
 ## 日本語・English
+
+言語の保存がない場合、ブラウザの優先言語が日本語なら日本語、それ以外なら英語で開きます。手動で選んだ言語は次回も優先されます。
+
+Without a saved language choice, the app opens in Japanese when the browser’s primary language is Japanese, and in English otherwise. A manually selected language takes priority on later visits.
 
 画面上部の **Language** メニューから日本語と英語を切り替えられます。全63問の説明・ミッション・3段階のヒント・解説・選択肢・資料・用語帳・採点メッセージ・卒業報告を英語で利用できます。選択した言語は同じブラウザに保存されます。自動保存が使えない環境でも、言語の切り替えと進捗JSONの保存は利用できます。
 
