@@ -40,6 +40,8 @@ function harness(t, saved = null, options = {}) {
     // A URL only selects online/file link behavior; resources remain disabled.
     virtualConsole,
     beforeParse(window) {
+      Object.defineProperty(window.navigator, 'languages', {value: options.languages || ['ja-JP']});
+      Object.defineProperty(window.navigator, 'language', {value: options.language || 'ja-JP'});
       if(options.noSegmenter)window.Intl.Segmenter=undefined;
       Object.defineProperty(window, 'localStorage', { configurable: true, value: {
         getItem(key) { if (options.failStorage) throw new Error('storage unavailable'); return storage.get(key) ?? null; },
@@ -1053,4 +1055,16 @@ test('optional graduation guidance preserves assisted completion and same-room c
       assert.equal(E.stats(E.hydrate(h.snapshot()), nextLevel).completed, 0);
     } else assert.equal(h.document.querySelector('.bridge-card [data-level]'), null);
   }
+});
+
+
+test('a fresh visit displays the browser language and a saved Japanese choice survives English browser settings', t => {
+  const english = harness(t, null, {languages: ['fr-FR', 'ja-JP'], language: 'ja-JP'});
+  assert.equal(english.document.documentElement.lang, 'en');
+  assert.equal(english.get('#language-select').value, 'en');
+  assert.match(english.document.title, /Small discoveries/);
+  const japanese = harness(t, null, {languages: ['ja-JP', 'en-US']});
+  assert.equal(japanese.document.documentElement.lang, 'ja');
+  const chosen = harness(t, null, {languages: ['en-US'], otherStorage: {[LANGUAGE_STORE]: 'ja'}});
+  assert.equal(chosen.document.documentElement.lang, 'ja');
 });

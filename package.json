@@ -1,6 +1,6 @@
 {
   "name": "socroom-easy",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "description": "SOCroomの前に、一つずつの調査操作を学ぶオフラインCTF入門",
   "license": "MIT",
