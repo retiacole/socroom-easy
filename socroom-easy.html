@@ -206,6 +206,10 @@ summary:hover { color: var(--blue); }
 .raw-log { line-height: 1.95; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; color: #34483b; tab-size: 2; }
 .raw-log mark { background: #fff09e; color: #39300d; border-radius: 2px; }
 .row-note { color: var(--muted); margin-top: 9px; line-height: 1.85; }
+.log-reading { margin-top: 14px; padding-top: 9px; border-top: 1px solid #dce4d6; }
+.log-reading summary { color: #3d5541; font-weight: 600; padding: 5px 0; }
+.log-reading-body { margin-top: 10px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
+.log-reading-help { margin-bottom: 16px; color: #3d5541; line-height: 1.85; }
 .reference-body { white-space: pre-wrap; line-height: 1.95; overflow-wrap: anywhere; }
 .row-select { display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #c3cfc0; border-radius: 5px; background: #f8faf4; color: #4a6647; font-weight: 600; margin: 14px 0 0 auto; padding: 6px 11px; min-height: 34px; }
 .row-select svg { width: 13px; height: 13px; }
@@ -767,7 +771,7 @@ small { font-size: 12px; }
 <script>/* Fictional teaching data, bundled for offline use. */
 globalThis.EASY_DATA = {
   "version": "socroom-easy-2",
-  "releaseVersion": "0.4.1",
+  "releaseVersion": "0.4.2",
   "levels": [
     {
       "id": "beginner",
@@ -1859,7 +1863,8 @@ globalThis.EASY_DATA = {
           "id": "e1-log",
           "sourceType": "log",
           "title": "今回のログ",
-          "body": "host=meeting-gw-01 event=connection_started\nhost は機器名、event は起きた出来事です。meeting-gw-01 が接続を開始した記録です。"
+          "body": "host=meeting-gw-01 event=connection_started",
+          "reading": "host は機器名、event は起きた出来事です。meeting-gw-01 が接続を開始した記録です。"
         },
         {
           "id": "e1-asset",
@@ -1926,7 +1931,8 @@ globalThis.EASY_DATA = {
           "id": "e2-log",
           "sourceType": "log",
           "title": "printer-07 の実行ログ",
-          "body": "2026-10-21T22:04:00Z host=printer-07 event=restart result=completed\nUTC 22:04、printer-07 の再起動が完了した記録です。"
+          "body": "2026-10-21T22:04:00Z host=printer-07 event=restart result=completed",
+          "reading": "UTC 22:04、printer-07 の再起動が完了した記録です。"
         },
         {
           "id": "e2-approved",
@@ -1985,7 +1991,8 @@ globalThis.EASY_DATA = {
           "id": "e3-log",
           "sourceType": "log",
           "title": "共有フォルダーの操作ログ",
-          "body": "2026-10-21T09:12:00Z folder=design-notes actor=mori event=member_added member=ueda\nUTC 09:12、mori が design-notes フォルダーに ueda を追加しました。actor は操作した利用者、member は追加された利用者です。"
+          "body": "2026-10-21T09:12:00Z folder=design-notes actor=mori event=member_added member=ueda",
+          "reading": "UTC 09:12、mori が design-notes フォルダーに ueda を追加しました。actor は操作した利用者、member は追加された利用者です。"
         },
         {
           "id": "e3-owner",
@@ -2052,7 +2059,8 @@ globalThis.EASY_DATA = {
           "id": "e4-log",
           "sourceType": "log",
           "title": "class-guest-8 の操作ログ",
-          "body": "2026-10-21T16:05:00Z actor=training-admin user=class-guest-8 event=account_disabled\nUTC 16:05、training-admin が class-guest-8 を無効化しました。"
+          "body": "2026-10-21T16:05:00Z actor=training-admin user=class-guest-8 event=account_disabled",
+          "reading": "UTC 16:05、training-admin が class-guest-8 を無効化しました。"
         },
         {
           "id": "e4-doc",
@@ -2118,7 +2126,8 @@ globalThis.EASY_DATA = {
           "id": "d1-log",
           "sourceType": "log",
           "title": "認証ログ",
-          "body": "2026-10-21T08:18:00Z host=desk-east-04 user=yano event=login result=success\nUTC 08:18、desk-east-04 で yano アカウントのログインが成功した記録です。"
+          "body": "2026-10-21T08:18:00Z host=desk-east-04 user=yano event=login result=success",
+          "reading": "UTC 08:18、desk-east-04 で yano アカウントのログインが成功した記録です。"
         },
         {
           "id": "d1-status",
@@ -2258,7 +2267,9 @@ globalThis.EASY_DATA = {
           "id": "d3-alert",
           "sourceType": "log",
           "title": "記録の受信状況",
-          "body": "2026-10-21T12:35:00Z host=room-display-06 event=telemetry_missing last_received=12:30:00Z\nUTC 12:30 を最後に、room-display-06 の記録が5分間届いていません。原因と利用への影響は、まだ確認していません。"
+          "body": "2026-10-21T12:35:00Z host=room-display-06 event=telemetry_missing last_received=12:30:00Z",
+          "reading": "UTC 12:30 を最後に、room-display-06 の記録が5分間届いていません。",
+          "note": "原因と利用への影響は、まだ確認していません。"
         },
         {
           "id": "d3-runbook",
@@ -2325,7 +2336,8 @@ globalThis.EASY_DATA = {
           "id": "d4-log",
           "sourceType": "log",
           "title": "ファイルへのアクセス記録",
-          "body": "2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied\nUTC 10:42、noda による staff-guide.pdf の読み取り要求は拒否されました。denied は、要求が許可されなかったという意味です。"
+          "body": "2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied",
+          "reading": "UTC 10:42、noda による staff-guide.pdf の読み取り要求は拒否されました。denied は、要求が許可されなかったという意味です。"
         },
         {
           "id": "d4-status",
@@ -2438,37 +2450,38 @@ globalThis.EASY_DATA = {
               "id": "g1-log-a",
               "event": "render_started",
               "raw": "2026-10-21T21:00:00Z host=render-kiosk-02 user=svc-render job=R-204 event=render_started input=lobby-map.svg",
-              "note": "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。svc-render は自動処理用アカウント。"
+              "note": "svc-render は自動処理用アカウント。",
+              "reading": "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。"
             },
             {
               "id": "g1-noise-a",
               "event": "render_started",
               "raw": "2026-10-21T21:00:01Z host=render-kiosk-03 user=svc-render job=R-205 event=render_started input=cafe-menu.svg",
-              "note": "別の端末・別のジョブで、メニューのPDF生成を開始。"
+              "reading": "別の端末・別のジョブで、メニューのPDF生成を開始。"
             },
             {
               "id": "g1-log-b",
               "event": "pdf_created",
               "raw": "2026-10-21T21:00:04Z host=render-kiosk-02 user=svc-render job=R-204 event=pdf_created output=/srv/maps/lobby-map.pdf",
-              "note": "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。"
+              "reading": "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。"
             },
             {
               "id": "g1-noise-b",
               "event": "cleanup_completed",
               "raw": "2026-10-21T21:00:05Z host=render-kiosk-02 user=svc-render job=R-203 event=cleanup_completed",
-              "note": "同じ端末だが、別のジョブ R-203 の片付け処理。"
+              "reading": "同じ端末だが、別のジョブ R-203 の片付け処理。"
             },
             {
               "id": "g1-log-c",
               "event": "render_completed",
               "raw": "2026-10-21T21:00:06Z host=render-kiosk-02 user=svc-render job=R-204 event=render_completed result=success",
-              "note": "ジョブ R-204 のPDF生成処理が完了。"
+              "reading": "ジョブ R-204 のPDF生成処理が完了。"
             },
             {
               "id": "g1-noise-c",
               "event": "display_refreshed",
               "raw": "2026-10-21T21:00:07Z host=lobby-screen-01 user=svc-display job=D-81 event=display_refreshed",
-              "note": "別の端末で画面表示を更新。"
+              "reading": "別の端末で画面表示を更新。"
             }
           ],
           "answer": {
@@ -2750,7 +2763,7 @@ globalThis.EASY_DATA = {
         {
           "id": "m-r2-log",
           "raw": "{\"timestamp\":\"2026-10-23T10:05:20Z\",\"host\":\"ws-18\",\"src\":\"10.40.1.18\",\"resolver\":\"10.40.0.53\",\"query\":\"reports-old.office.example\",\"type\":\"A\",\"rcode\":\"NXDOMAIN\"}",
-          "note": "type=A は IPv4 アドレスの問い合わせ。"
+          "reading": "type=A は IPv4 アドレスの問い合わせ。"
         }
       ],
       "answer": {
@@ -2868,17 +2881,17 @@ globalThis.EASY_DATA = {
         {
           "id": "m-r4-pass",
           "raw": "2026-10-23T10:12:00Z user=keito auth_id=AUTH-62 factor=password result=accepted",
-          "note": "パスワード要素の確認を通過。"
+          "reading": "パスワード要素の確認を通過。"
         },
         {
           "id": "m-r4-push",
           "raw": "2026-10-23T10:12:05Z user=keito auth_id=AUTH-62 factor=push result=denied",
-          "note": "追加の確認通知は拒否。"
+          "reading": "追加の確認通知は拒否。"
         },
         {
           "id": "m-r4-final",
           "raw": "2026-10-23T10:12:06Z user=keito auth_id=AUTH-62 event=auth_finished result=blocked",
-          "note": "この認証ではログイン完了を認めなかった。"
+          "reading": "この認証ではログイン完了を認めなかった。"
         }
       ],
       "answer": {
@@ -2939,32 +2952,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-f1-web",
           "raw": "2026-10-23T10:20:00Z component=web user=rio request_id=REQ-731 event=request_received path=/calendar",
-          "note": "予定表への要求を受付。"
+          "reading": "予定表への要求を受付。"
         },
         {
           "id": "m-f1-other",
           "raw": "2026-10-23T10:20:01Z component=web user=rio request_id=REQ-732 event=request_received path=/help",
-          "note": "同じ利用者からの別の要求。"
+          "reading": "同じ利用者からの別の要求。"
         },
         {
           "id": "m-f1-app",
           "raw": "2026-10-23T10:20:02Z component=app user=rio request_id=REQ-731 event=permission_checked result=denied",
-          "note": "要求に対する権限確認。"
+          "reading": "要求に対する権限確認。"
         },
         {
           "id": "m-f1-old",
           "raw": "2026-10-23T10:20:03Z component=app user=aya request_id=REQ-729 event=permission_checked result=allowed",
-          "note": "別の利用者・別の要求。"
+          "reading": "別の利用者・別の要求。"
         },
         {
           "id": "m-f1-response",
           "raw": "2026-10-23T10:20:04Z component=web user=rio request_id=REQ-731 event=response_sent status=403",
-          "note": "拒否の応答。"
+          "reading": "拒否の応答。"
         },
         {
           "id": "m-f1-other-response",
           "raw": "2026-10-23T10:20:05Z component=web user=rio request_id=REQ-732 event=response_sent status=200",
-          "note": "ヘルプへの別の要求の応答。"
+          "reading": "ヘルプへの別の要求の応答。"
         }
       ],
       "answer": {
@@ -3014,32 +3027,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-f2-a",
           "raw": "2026-10-23T10:25:00Z host=ws-18 query=reports-old.office.example type=A rcode=NXDOMAIN",
-          "note": "名前が存在しないという応答。"
+          "reading": "名前が存在しないという応答。"
         },
         {
           "id": "m-f2-b",
           "raw": "2026-10-23T10:25:01Z host=ws-19 query=reports-old.office.example type=A rcode=NXDOMAIN",
-          "note": "別の端末からの問い合わせ。"
+          "reading": "別の端末からの問い合わせ。"
         },
         {
           "id": "m-f2-c",
           "raw": "2026-10-23T10:25:02Z host=ws-18 query=reports.office.example type=A rcode=NOERROR answer=192.0.2.80",
-          "note": "アドレス回答のある問い合わせ。"
+          "reading": "アドレス回答のある問い合わせ。"
         },
         {
           "id": "m-f2-d",
           "raw": "2026-10-23T10:25:03Z host=ws-18 query=calendar-old.office.example type=A rcode=NXDOMAIN",
-          "note": "名前が存在しないという応答。"
+          "reading": "名前が存在しないという応答。"
         },
         {
           "id": "m-f2-e",
           "raw": "2026-10-23T10:25:04Z host=ws-18 query=calendar.office.example type=A rcode=SERVFAIL",
-          "note": "処理できなかった応答。名前不存在とは別。"
+          "reading": "処理できなかった応答。名前不存在とは別。"
         },
         {
           "id": "m-f2-f",
           "raw": "2026-10-23T10:25:05Z host=ws-19 query=calendar.office.example type=A rcode=NOERROR answer=192.0.2.81",
-          "note": "別の端末へのアドレス回答。"
+          "reading": "別の端末へのアドレス回答。"
         }
       ],
       "answer": {
@@ -3086,32 +3099,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-f3-a",
           "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-b",
           "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-c",
           "raw": "2026-10-23T10:30:10Z user=mei attempt=M-12 event=mfa_result result=denied",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-d",
           "raw": "2026-10-23T10:30:20Z user=mei attempt=M-13 event=mfa_result result=approved",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-e",
           "raw": "2026-10-23T10:30:30Z user=mei attempt=M-14 event=mfa_result result=timeout",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-f",
           "raw": "2026-10-23T10:30:40Z user=mei attempt=M-15 event=mfa_result result=denied",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         }
       ],
       "answer": {
@@ -3159,32 +3172,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-f4-a",
           "raw": "2026-10-23T10:35:00Z host=ws-22 user=mina event=file_read path=/team/plan.csv",
-          "note": "対象端末で計画表を読み取り。"
+          "reading": "対象端末で計画表を読み取り。"
         },
         {
           "id": "m-f4-b",
           "raw": "2026-10-23T10:35:01Z host=ws-22 user=mina2 event=file_read path=/team/plan.csv",
-          "note": "名前が似た別アカウント。"
+          "reading": "名前が似た別アカウント。"
         },
         {
           "id": "m-f4-c",
           "raw": "2026-10-23T10:35:02Z host=ws-23 user=mina event=file_read path=/team/plan.csv",
-          "note": "同じアカウントだが別端末。"
+          "reading": "同じアカウントだが別端末。"
         },
         {
           "id": "m-f4-d",
           "raw": "2026-10-23T10:35:03Z host=ws-22 user=mina event=file_created path=/temp/notes.txt",
-          "note": "同じ端末・アカウントの作成操作。"
+          "reading": "同じ端末・アカウントの作成操作。"
         },
         {
           "id": "m-f4-e",
           "raw": "2026-10-23T10:35:04Z host=ws-22 user=mina event=file_read path=/team/budget.csv",
-          "note": "対象端末で予算表を読み取り。"
+          "reading": "対象端末で予算表を読み取り。"
         },
         {
           "id": "m-f4-f",
           "raw": "2026-10-23T10:35:05Z host=ws-22 user=hana event=file_read path=/team/plan.csv",
-          "note": "別のアカウント。"
+          "reading": "別のアカウント。"
         }
       ],
       "answer": {
@@ -3233,22 +3246,23 @@ globalThis.EASY_DATA = {
         {
           "id": "m-c1-file",
           "raw": "2026-10-23T11:02:04Z component=app request_id=REQ-842 event=file_created artifact=calendar-842.csv",
-          "note": "予定表ファイルを作成。"
+          "reading": "予定表ファイルを作成。"
         },
         {
           "id": "m-c1-response",
           "raw": "2026-10-23T11:02:05Z component=web request_id=REQ-842 event=response_sent status=200 response_kind=job_metadata",
-          "note": "処理情報を返した応答。ファイル本体ではない。"
+          "note": "ファイル本体ではない。",
+          "reading": "処理情報を返した応答。"
         },
         {
           "id": "m-c1-request",
           "raw": "2026-10-23T11:02:00Z component=web request_id=REQ-842 event=request_received method=POST path=/api/calendar-export",
-          "note": "書き出し要求の受付。"
+          "reading": "書き出し要求の受付。"
         },
         {
           "id": "m-c1-queue",
           "raw": "2026-10-23T11:02:01Z component=app request_id=REQ-842 event=job_queued job=CAL-842",
-          "note": "書き出し処理を受け付け。"
+          "reading": "書き出し処理を受け付け。"
         }
       ],
       "answer": {
@@ -3297,32 +3311,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-c2-map",
           "raw": "2026-10-23T11:10:00Z user=mia request_id=REQ-712 job=JOB-38 event=job_assigned",
-          "note": "要求と処理番号の対応。"
+          "reading": "要求と処理番号の対応。"
         },
         {
           "id": "m-c2-other-map",
           "raw": "2026-10-23T11:10:01Z user=mia request_id=REQ-713 job=JOB-39 event=job_assigned",
-          "note": "同じアカウントの別要求。"
+          "reading": "同じアカウントの別要求。"
         },
         {
           "id": "m-c2-start",
           "raw": "2026-10-23T11:10:02Z job=JOB-38 event=job_started dataset=room_list",
-          "note": "JOB-38 の処理開始。room_list は会議室一覧。"
+          "reading": "JOB-38 の処理開始。room_list は会議室一覧。"
         },
         {
           "id": "m-c2-other-start",
           "raw": "2026-10-23T11:10:03Z job=JOB-39 event=job_started dataset=room_list",
-          "note": "JOB-39 の処理開始。"
+          "reading": "JOB-39 の処理開始。"
         },
         {
           "id": "m-c2-output",
           "raw": "2026-10-23T11:10:05Z job=JOB-38 event=artifact_created artifact=rooms-38.csv",
-          "note": "JOB-38 の成果物作成。"
+          "reading": "JOB-38 の成果物作成。"
         },
         {
           "id": "m-c2-other-output",
           "raw": "2026-10-23T11:10:06Z job=JOB-39 event=artifact_created artifact=rooms-39.csv",
-          "note": "別のジョブの成果物。"
+          "reading": "別のジョブの成果物。"
         }
       ],
       "answer": {
@@ -3370,17 +3384,17 @@ globalThis.EASY_DATA = {
         {
           "id": "m-c3-auth",
           "raw": "2026-10-23T11:20:00Z user=ren session=S-225 event=login_finished result=success",
-          "note": "このセッションの認証に成功。"
+          "reading": "このセッションの認証に成功。"
         },
         {
           "id": "m-c3-check",
           "raw": "2026-10-23T11:20:10Z user=ren session=S-225 request_id=REQ-225 event=permission_checked result=denied reason=missing_role required_role=admin",
-          "note": "管理者の役割がないため操作を拒否。"
+          "reading": "管理者の役割がないため操作を拒否。"
         },
         {
           "id": "m-c3-web",
           "raw": "2026-10-23T11:20:11Z user=ren session=S-225 request_id=REQ-225 method=GET path=/admin/settings status=403",
-          "note": "管理設定ページの要求に拒否の応答。"
+          "reading": "管理設定ページの要求に拒否の応答。"
         }
       ],
       "answer": {
@@ -3512,7 +3526,8 @@ globalThis.EASY_DATA = {
           "id": "m-e1-log",
           "sourceType": "log",
           "title": "今回の通信記録",
-          "body": "2026-10-23T12:00:00Z src=10.40.1.22 proxy=10.40.0.5 target_host=archive.vendor.example method=GET path=/documents\nproxy は中継機器、target_host は要求先の名前。"
+          "body": "2026-10-23T12:00:00Z src=10.40.1.22 proxy=10.40.0.5 target_host=archive.vendor.example method=GET path=/documents",
+          "reading": "proxy は中継機器、target_host は要求先の名前。"
         },
         {
           "id": "m-e1-service",
@@ -3578,7 +3593,8 @@ globalThis.EASY_DATA = {
           "id": "m-e2-log",
           "sourceType": "log",
           "title": "実際の書き出し記録",
-          "body": "2026-10-23T12:10:03Z user=svc-report request_id=REQ-550 event=export_completed dataset=salary_summary artifact=salary-550.csv\n給与集計のファイルを生成。"
+          "body": "2026-10-23T12:10:03Z user=svc-report request_id=REQ-550 event=export_completed dataset=salary_summary artifact=salary-550.csv",
+          "reading": "給与集計のファイルを生成。"
         },
         {
           "id": "m-e2-approval",
@@ -3643,7 +3659,8 @@ globalThis.EASY_DATA = {
           "id": "m-e3-log",
           "sourceType": "log",
           "title": "AUTH-78 の追加確認ログ",
-          "body": "2026-10-23T12:20:08Z user=tomoe auth_id=AUTH-78 factor=push result=denied\nこの資料に含まれるのは追加確認の結果だけ。"
+          "body": "2026-10-23T12:20:08Z user=tomoe auth_id=AUTH-78 factor=push result=denied",
+          "note": "この資料に含まれるのは追加確認の結果だけ。"
         },
         {
           "id": "m-e3-reply",
@@ -3661,7 +3678,8 @@ globalThis.EASY_DATA = {
           "id": "m-e3-other",
           "sourceType": "log",
           "title": "前日の別の認証",
-          "body": "2026-10-22T08:00:00Z user=tomoe auth_id=AUTH-10 event=auth_finished result=success\n前日の別の認証で成功した記録。"
+          "body": "2026-10-22T08:00:00Z user=tomoe auth_id=AUTH-10 event=auth_finished result=success",
+          "reading": "前日の別の認証で成功した記録。"
         }
       ],
       "answer": {
@@ -3708,7 +3726,9 @@ globalThis.EASY_DATA = {
           "id": "m-e4-log",
           "sourceType": "log",
           "title": "照会したい出来事",
-          "body": "2026-10-23T12:40:00Z host=files-gw-02 event=service_error\nfiles-gw-02 でサービスエラーが記録された。原因は未確認。"
+          "body": "2026-10-23T12:40:00Z host=files-gw-02 event=service_error",
+          "reading": "files-gw-02 でサービスエラーが記録された。",
+          "note": "原因は未確認。"
         },
         {
           "id": "m-e4-old",
@@ -3866,7 +3886,8 @@ globalThis.EASY_DATA = {
           "id": "m-d2-web",
           "sourceType": "log",
           "title": "現在ある Web 応答ログ",
-          "body": "2026-10-23T13:15:00Z user=ao request_id=REQ-902 method=POST path=/api/export status=200 response_kind=job_metadata\nこの応答には処理番号などが含まれ、ファイル本体や生成件数の記録ではない。"
+          "body": "2026-10-23T13:15:00Z user=ao request_id=REQ-902 method=POST path=/api/export status=200 response_kind=job_metadata",
+          "note": "この応答には処理番号などが含まれ、ファイル本体や生成件数の記録ではない。"
         },
         {
           "id": "m-d2-format",
@@ -4144,32 +4165,33 @@ globalThis.EASY_DATA = {
             {
               "id": "m-g1-request",
               "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-880 event=request_received method=POST path=/api/export",
-              "note": "書き出し要求を受付。"
+              "reading": "書き出し要求を受付。"
             },
             {
               "id": "m-g1-other-request",
               "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-881 event=request_received method=GET path=/health",
-              "note": "同じ利用者とセッションからの状態確認要求。"
+              "reading": "同じ利用者とセッションからの状態確認要求。"
             },
             {
               "id": "m-g1-generated",
               "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv",
-              "note": "職員連絡先400件のファイル生成が完了。"
+              "reading": "職員連絡先400件のファイル生成が完了。"
             },
             {
               "id": "m-g1-other-generated",
               "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-879 job=EX-89 event=export_completed dataset=public_agenda records=50 artifact=agenda-89.csv",
-              "note": "別要求で公開行事予定を50件生成。"
+              "reading": "別要求で公開行事予定を50件生成。"
             },
             {
               "id": "m-g1-response",
               "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-880 event=response_sent status=200 response_kind=job_metadata bytes=128",
-              "note": "128バイトの処理情報を応答。ファイル本体の受取完了ではない。"
+              "note": "ファイル本体の受取完了ではない。",
+              "reading": "128バイトの処理情報を応答。"
             },
             {
               "id": "m-g1-other-response",
               "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-881 event=response_sent status=200 response_kind=health_status bytes=16",
-              "note": "別要求のサービス状態確認への応答。"
+              "reading": "別要求のサービス状態確認への応答。"
             }
           ],
           "answer": {
@@ -4197,7 +4219,9 @@ globalThis.EASY_DATA = {
               "id": "m-g1-evidence-actual",
               "sourceType": "log",
               "title": "REQ-880 のアプリ生成記録",
-              "body": "2026-10-23T14:10:01Z user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv\n職員連絡先400件のファイルを生成。前の段階で選んだ実際の記録。"
+              "body": "2026-10-23T14:10:01Z user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv",
+              "reading": "職員連絡先400件のファイルを生成。",
+              "note": "前の段階で選んだ実際の記録。"
             },
             {
               "id": "m-g1-evidence-approval",
@@ -4215,7 +4239,9 @@ globalThis.EASY_DATA = {
               "id": "m-g1-evidence-web",
               "sourceType": "log",
               "title": "REQ-880 の Web 応答",
-              "body": "2026-10-23T14:10:02Z request_id=REQ-880 status=200 response_kind=job_metadata bytes=128\n処理情報に対する成功応答。生成したデータ件数や業務上の承認を表す欄ではない。"
+              "body": "2026-10-23T14:10:02Z request_id=REQ-880 status=200 response_kind=job_metadata bytes=128",
+              "reading": "処理情報に対する成功応答。",
+              "note": "生成したデータ件数や業務上の承認を表す欄ではない。"
             }
           ],
           "answer": {
@@ -6935,7 +6961,6 @@ globalThis.EASY_EN = {
   "2026-10-20T08:30:00Z は、2026 年 10 月 20 日の 08:30:00 を表します。T は日付と時刻の区切りです。": "2026-10-20T08:30:00Z means October 20, 2026 at 08:30:00. T separates the date from the time.",
   "今回の調査で提供された架空の記録・資料": "Fictional records and reference material provided for this investigation",
   "今回の通信記録": "The connection record for this case",
-  "2026-10-23T12:00:00Z src=10.40.1.22 proxy=10.40.0.5 target_host=archive.vendor.example method=GET path=/documents\nproxy は中継機器、target_host は要求先の名前。": "2026-10-23T12:00:00Z src=10.40.1.22 proxy=10.40.0.5 target_host=archive.vendor.example method=GET path=/documents\nproxy identifies the intermediary; target_host names the requested destination.",
   "業務サービス台帳": "Business-service inventory",
   "archive.vendor.example：契約書類の保管・閲覧。管理担当：法務システム係。\nbooking.vendor.example：会議室の予約。管理担当：総務設備係。": "archive.vendor.example: Contract-document storage and viewing. Owner: Legal Systems Team.\nbooking.vendor.example: Meeting-room reservations. Owner: General Affairs Facilities Team.",
   "中継機器の台帳": "Intermediary-device inventory",
@@ -6958,7 +6983,6 @@ globalThis.EASY_EN = {
   "承認票が「在庫一覧の書き出し」で、実行記録が「商品説明一覧の書き出し」なら、時間と担当者が同じでも対象の違いを報告します。名前の似ているデータも同一とは限りません。": "If approval covers exporting an inventory list but the execution record shows a product-description list, report the target mismatch even if the time and operator match. Similar data names do not necessarily mean the same dataset.",
   "「作業時刻とアカウントは承認内だが、実際の対象データは承認票と異なる」を裏付ける2枚を選んでください。": "Select the two cards that support: 'The time and account are approved, but the actual dataset differs from the approval record.'",
   "実際の書き出し記録": "Actual export record",
-  "2026-10-23T12:10:03Z user=svc-report request_id=REQ-550 event=export_completed dataset=salary_summary artifact=salary-550.csv\n給与集計のファイルを生成。": "2026-10-23T12:10:03Z user=svc-report request_id=REQ-550 event=export_completed dataset=salary_summary artifact=salary-550.csv\nA payroll-summary file was generated.",
   "承認済み作業票 AP-550": "Approved work order AP-550",
   "実施日：2026-10-23 UTC 12:10〜12:20。アカウント：svc-report。許可する作業：attendance_summary（勤怠集計）の書き出し。salary_summary（給与集計）はこの承認の対象外。": "Date: October 23, 2026, 12:10–12:20 UTC. Account: svc-report. Permitted work: Export attendance_summary (attendance summary). salary_summary (payroll summary) is outside this approval.",
   "サービスの説明": "Service description",
@@ -6979,13 +7003,11 @@ globalThis.EASY_EN = {
   "利用者が「端末を再起動していない」と回答した場合、回答内容はそのまま残します。実際に誰が再起動したかや原因を決めるには、操作ログなど別の証拠も確認します。": "If a user says 'I did not restart the device', preserve that response as stated. Identifying who actually restarted it or why requires other evidence, such as operation logs.",
   "「AUTH-78 の追加確認は拒否され、利用者はその認証要求に心当たりがないと回答した」を直接支える2枚を選んでください。": "Select the two cards directly supporting: 'The additional verification for AUTH-78 was rejected, and the user reported not recognizing that authentication request.'",
   "AUTH-78 の追加確認ログ": "Additional-verification log for AUTH-78",
-  "2026-10-23T12:20:08Z user=tomoe auth_id=AUTH-78 factor=push result=denied\nこの資料に含まれるのは追加確認の結果だけ。": "2026-10-23T12:20:08Z user=tomoe auth_id=AUTH-78 factor=push result=denied\nThis material contains only the additional-verification result.",
   "tomoe への確認結果": "Response from tomoe",
   "2026-10-23 UTC 12:25、登録済みの社内連絡先で確認。「12:20の AUTH-78 に該当するログインは試していません。届いた確認通知は拒否しました」と回答。": "Confirmed through a registered company contact at 12:25 UTC on October 23, 2026. The user replied: 'I did not attempt the login corresponding to AUTH-78 at 12:20. I rejected the verification prompt I received.'",
   "認証サービスの利用案内": "Authentication-service guide",
   "このサービスはパスワードと確認通知を使う。確認通知の結果と、認証全体の最終結果は別々に記録する。": "This service uses a password and a verification prompt. The prompt result and the final overall authentication result are logged separately.",
   "前日の別の認証": "A separate authentication on the previous day",
-  "2026-10-22T08:00:00Z user=tomoe auth_id=AUTH-10 event=auth_finished result=success\n前日の別の認証で成功した記録。": "2026-10-22T08:00:00Z user=tomoe auth_id=AUTH-10 event=auth_finished result=success\nA successful, separate authentication on the previous day.",
   "AUTH-78 の追加確認ログは拒否を、tomoe の回答はその認証要求に心当たりがないという説明を支えます。前日の成功は別の認証です。AUTH-78 の最終結果はこの資料では未確認として残します。": "The AUTH-78 verification log supports rejection; tomoe's response supports the reported lack of recognition. The previous day's success is a different authentication. Leave AUTH-78's final result unverified on this evidence.",
   "ログの結果と、本人が述べたことを1枚ずつ選びます。": "Select one card for the logged result and one for what the user said.",
   "前日の AUTH-10 の成功は、今回の AUTH-78 の最終結果ではありません。": "The success of AUTH-10 on the previous day is not the final result of this AUTH-78 attempt.",
@@ -7001,7 +7023,6 @@ globalThis.EASY_EN = {
   "10月1日〜15日の担当がA係、10月16日以降がB係なら、10月20日の出来事はB係へ照会します。資料を作った日ではなく、担当の適用期間で決めます。": "If Team A owns a device October 1–15 and Team B from October 16, ask Team B about an October 20 event. Use the ownership validity period, not the document's creation date.",
   "2026-10-23 の files-gw-02 の出来事は、台帳上どの担当へ照会しますか。適用期間で選んでください。": "According to the inventory validity periods, which team should receive the inquiry about files-gw-02 on October 23, 2026?",
   "照会したい出来事": "Event to inquire about",
-  "2026-10-23T12:40:00Z host=files-gw-02 event=service_error\nfiles-gw-02 でサービスエラーが記録された。原因は未確認。": "2026-10-23T12:40:00Z host=files-gw-02 event=service_error\nA service error was logged on files-gw-02. The cause remains unverified.",
   "台帳 第1版": "Inventory version 1",
   "機器：files-gw-02。用途：社内ファイル中継。担当：総務設備係。適用：2026-10-01〜2026-10-20。": "Device: files-gw-02. Purpose: Internal file relay. Owner: General Affairs Facilities Team. Valid: October 1–20, 2026.",
   "台帳 第2版": "Inventory version 2",
@@ -7055,7 +7076,6 @@ globalThis.EASY_EN = {
   "「何かログをください」より「REQ-DEMO のアプリ監査ログで、対象データと処理件数を確認したい」と依頼すると、必要な資料と目的が伝わります。": "Instead of 'Please send some logs', say 'Please provide the application audit log for REQ-DEMO so I can check the dataset and processed record count.' This identifies both the material and the purpose.",
   "REQ-902 が実際に何件のデータを生成したか確認するため、最も直接的な追加依頼を選んでください。": "Choose the most direct additional request to establish how many records REQ-902 actually generated.",
   "現在ある Web 応答ログ": "Available web-response log",
-  "2026-10-23T13:15:00Z user=ao request_id=REQ-902 method=POST path=/api/export status=200 response_kind=job_metadata\nこの応答には処理番号などが含まれ、ファイル本体や生成件数の記録ではない。": "2026-10-23T13:15:00Z user=ao request_id=REQ-902 method=POST path=/api/export status=200 response_kind=job_metadata\nThis response contains information such as a job ID, not the file contents or generated record count.",
   "このサービスのログ仕様": "Logging specification for this service",
   "Webログ：要求番号と応答状態を記録。アプリ監査ログ：同じ request_id と、dataset・生成した records 件数・artifact を記録。ブラウザの保存完了は別の確認が必要。": "Web log: Records the request ID and response status. Application audit log: Records the same request_id plus dataset, generated records count, and artifact. Completion of saving in the browser requires a separate check.",
   "実際の生成件数を知るには、同じ REQ-902 のアプリ監査ログを依頼します。Webの200応答だけでは件数は分かりません。会社全体の全ログを集めるより、対象番号と確認したい欄を指定した方が、この問いに直接答えられます。": "To determine the actual generated count, request the application audit log for the same REQ-902. A web 200 response does not provide the count. Specifying the request ID and needed fields answers this question more directly than collecting every log in the company.",
@@ -7154,7 +7174,6 @@ globalThis.EASY_EN = {
   "同じ利用者とセッションからの状態確認要求。": "A status-check request from the same user and session.",
   "職員連絡先400件のファイル生成が完了。": "Generation of a file containing 400 staff-contact records completed.",
   "別要求で公開行事予定を50件生成。": "A separate request generated 50 public-agenda records.",
-  "128バイトの処理情報を応答。ファイル本体の受取完了ではない。": "The response contained 128 bytes of job metadata. This does not establish receipt of the file itself.",
   "別要求のサービス状態確認への応答。": "A response to a separate service-status request.",
   "REQ-880 は14:10:00の書き出し要求、14:10:01の400件生成、14:10:02の処理情報の応答です。同じ kei・S-880 でも REQ-881 は別要求であり、50件を生成した REQ-879 も対象外です。": "REQ-880 covers the export request at 14:10:00, generation of 400 records at 14:10:01, and the job-metadata response at 14:10:02. REQ-881 is separate even though it shares kei and S-880; REQ-879, which generated 50 records, is also out of scope.",
   "request_id の値全体を照合します。同じアカウントやセッションでも複数の要求があります。": "Match the complete request_id value. One account or session can issue several requests.",
@@ -7163,13 +7182,11 @@ globalThis.EASY_EN = {
   "REQ-880 のWeb要求、staff_directory 400件を生成したアプリ記録、処理情報を返したWeb応答を選びます。": "Select REQ-880's web request, the application record generating 400 staff_directory records, and the web response returning job metadata.",
   "「REQ-880 で生成されたデータの件数は、今回提示された承認票の上限を超える」を裏付ける2枚を選んでください。": "Select the two cards supporting: 'The number of records generated by REQ-880 exceeds the limit in the approval supplied for this task.'",
   "REQ-880 のアプリ生成記録": "Application-generation record for REQ-880",
-  "2026-10-23T14:10:01Z user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv\n職員連絡先400件のファイルを生成。前の段階で選んだ実際の記録。": "2026-10-23T14:10:01Z user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv\nA file containing 400 staff-contact records was generated. This is the actual record selected in the previous stage.",
   "今回の承認票 AP-880": "Current approval AP-880",
   "承認済み。実施日：2026-10-23 UTC 14:00〜14:30。対象アカウント：kei。対象：staff_directory。目的：項目表示の確認。許可する書き出しは1回あたり50件以内。現時点で提示されている今回の承認票はこの1枚。": "Approved. Date: October 23, 2026, 14:00–14:30 UTC. Account: kei. Dataset: staff_directory. Purpose: Check field display. Each export may contain at most 50 records. This is the only approval for the task supplied so far.",
   "前月の承認票 AP-810": "Previous month's approval AP-810",
   "実施日：2026-09-20 UTC 09:00〜10:00。対象アカウント：kei。staff_directory の400件を移行確認のため書き出すことを許可。この承認は当日のみ有効。": "Date: September 20, 2026, 09:00–10:00 UTC. Account: kei. Exporting 400 staff_directory records is allowed for migration verification. This approval is valid only on that date.",
   "REQ-880 の Web 応答": "Web response for REQ-880",
-  "2026-10-23T14:10:02Z request_id=REQ-880 status=200 response_kind=job_metadata bytes=128\n処理情報に対する成功応答。生成したデータ件数や業務上の承認を表す欄ではない。": "2026-10-23T14:10:02Z request_id=REQ-880 status=200 response_kind=job_metadata bytes=128\nA successful job-metadata response. These fields do not represent the generated record count or business approval.",
   "実際のアプリ記録では400件、今回の AP-880 の上限は50件です。対象・日付・アカウントを合わせたうえで件数が上限を超えていると説明できます。前月のみ有効な400件の承認を今回へ流用しません。": "The actual application record shows 400 records, while AP-880 permits 50. After matching the dataset, date, and account, you can state that the count exceeds the limit. Do not reuse last month's 400-record approval for this task.",
   "実際の生成件数を示すものと、今回有効な許可範囲を示すものが必要です。": "You need evidence of the actual generated count and the permission currently applicable to this task.",
   "件数を比べる前に、承認票の日付・対象・アカウントが今回の生成記録と一致するか確認します。": "Before comparing counts, check that the approval's date, target, and account match the generation record.",
@@ -7219,6 +7236,19 @@ globalThis.EASY_EN = {
   "生成した件数と承認上限を比べる": "Compare the generated count with the approved limit",
   "分かったことだけで判断する": "Conclude only what the evidence supports",
   "証拠と未確認事項を引き継ぐ": "Hand over evidence and unknowns",
+  "proxy は中継機器、target_host は要求先の名前。": "proxy identifies the intermediary; target_host names the requested destination.",
+  "給与集計のファイルを生成。": "A payroll-summary file was generated.",
+  "この資料に含まれるのは追加確認の結果だけ。": "This material contains only the additional-verification result.",
+  "前日の別の認証で成功した記録。": "A successful, separate authentication on the previous day.",
+  "files-gw-02 でサービスエラーが記録された。": "A service error was logged on files-gw-02.",
+  "原因は未確認。": "The cause remains unverified.",
+  "この応答には処理番号などが含まれ、ファイル本体や生成件数の記録ではない。": "This response contains information such as a job ID, not the file contents or generated record count.",
+  "128バイトの処理情報を応答。": "The response contained 128 bytes of job metadata.",
+  "ファイル本体の受取完了ではない。": "This does not establish receipt of the file itself.",
+  "職員連絡先400件のファイルを生成。": "A file containing 400 staff-contact records was generated.",
+  "前の段階で選んだ実際の記録。": "This is the actual record selected in the previous stage.",
+  "処理情報に対する成功応答。": "A successful job-metadata response.",
+  "生成したデータ件数や業務上の承認を表す欄ではない。": "These fields do not represent the generated record count or business approval.",
   "HTTP・DNS・プロセス・追加認証を、短い記録で理解する。": "Understand HTTP, DNS, processes, and additional authentication through short records.",
   "要求番号・端末・結果を照合し、必要な行と件数を取り出す。": "Compare request IDs, devices, and outcomes to extract the required lines and counts.",
   "要求から処理へ。同じ出来事を別の記録から確かめる。": "Follow requests into processing and verify the same event across sources.",
@@ -7427,7 +7457,6 @@ globalThis.EASY_EN = {
   "同じ基準の時計で 11:00:01 の要求受付、11:00:03 の処理、11:00:05 の応答なら、その順に並べます。記録元が違うだけで、順番を変える必要はありません。": "With synchronized clocks, receipt at 11:00:01, processing at 11:00:03, and response at 11:00:05 occur in that order. Different sources do not change it.",
   "4枚を、記録された時刻が早い順に並べてください。": "Order the four cards from earliest recorded time to latest.",
   "予定表ファイルを作成。": "Schedule file created.",
-  "処理情報を返した応答。ファイル本体ではない。": "Response containing processing information, not the file itself.",
   "書き出し要求の受付。": "Export request received.",
   "書き出し処理を受け付け。": "Export job accepted.",
   "11:02:00 の要求受付→11:02:01 の処理受付→11:02:04 のファイル作成→11:02:05 の応答です。応答は処理情報であり、利用者のファイル受取完了までは示していません。": "The order is receipt at 11:02:00 → job accepted at 11:02:01 → file created at 11:02:04 → response at 11:02:05. The response contains job information and does not establish file receipt by the user.",
@@ -7517,6 +7546,8 @@ globalThis.EASY_EN = {
   "資料で判断を支える": "Support judgments with documents",
   "次の確認を伝える": "Communicate the next checks",
   "卒業調査：書き出しの範囲": "Graduation: export scope",
+  "処理情報を返した応答。": "Response containing processing information.",
+  "ファイル本体ではない。": "This is not the file itself.",
   "証拠": "Evidence",
   "判断の根拠として示せる記録。ログ、承認された作業予定、担当者の回答などを組み合わせます。": "Records supporting a judgment. Combine logs, approved work schedules, and responses from responsible staff.",
   "端末の再起動ログと、その時間の再起動を認めた作業票を照合する。": "Compare a device restart log with a work order authorizing a restart at that time.",
@@ -7546,7 +7577,6 @@ globalThis.EASY_EN = {
   "ログにある meeting-gw-01 は、どの仕事に使う機器ですか。台帳の名前を照合して選んでください。": "What is meeting-gw-01 used for? Match the complete device name in the inventory.",
   "確認するログと資産台帳": "Log and asset inventory",
   "今回のログ": "The current log",
-  "host=meeting-gw-01 event=connection_started\nhost は機器名、event は起きた出来事です。meeting-gw-01 が接続を開始した記録です。": "host=meeting-gw-01 event=connection_started\nhost is the device name and event is the activity. This records meeting-gw-01 starting a connection.",
   "資産台帳の抜粋": "Asset inventory excerpt",
   "meeting-gw-01：会議室の映像・音声を社内会議システムにつなぐ機器。担当：総務設備係。\nlabel-print-03：配送ラベルを印刷する機器。担当：発送係。\nmeeting-sign-01：会議室前で予約状況を表示する機器。担当：総務設備係。": "meeting-gw-01: Connects meeting-room video and audio to the internal meeting system. Owner: General Affairs facilities team.\nlabel-print-03: Prints shipping labels. Owner: Dispatch team.\nmeeting-sign-01: Displays reservations outside meeting rooms. Owner: General Affairs facilities team.",
   "会議室の映像・音声をつなぐ機器": "Equipment connecting meeting-room video and audio",
@@ -7573,7 +7603,6 @@ globalThis.EASY_EN = {
   "「printer-07 の22:04の再起動は、承認された機器・時間・作業内容に一致する」と説明する根拠を2枚選んでください。": "Select two cards supporting: the 22:04 restart of printer-07 matches the approved device, time, and operation.",
   "今回集まった3枚の資料": "Three collected documents",
   "printer-07 の実行ログ": "printer-07 execution log",
-  "2026-10-21T22:04:00Z host=printer-07 event=restart result=completed\nUTC 22:04、printer-07 の再起動が完了した記録です。": "2026-10-21T22:04:00Z host=printer-07 event=restart result=completed\nThe restart of printer-07 completed at 22:04 UTC.",
   "承認済み作業票 CHG-72": "Approved work order CHG-72",
   "対象：printer-07。作業：印刷機器の再起動。実施可能時間：2026-10-21 UTC 22:00〜22:10。状態：設備責任者による承認済み。": "Target: printer-07. Work: restart the printer. Permitted window: October 21, 2026, 22:00–22:10 UTC. Status: approved by the facilities lead.",
   "承認済み作業票 CHG-73": "Approved work order CHG-73",
@@ -7596,7 +7625,6 @@ globalThis.EASY_EN = {
   "新しい利用者の追加が業務上の作業だったか確認したいとき、最も役立つ問い合わせを1つ選んでください。": "Which inquiry best checks whether adding the new user was authorized business work?",
   "操作ログと担当者の情報": "Activity log and owner information",
   "共有フォルダーの操作ログ": "Shared folder activity log",
-  "2026-10-21T09:12:00Z folder=design-notes actor=mori event=member_added member=ueda\nUTC 09:12、mori が design-notes フォルダーに ueda を追加しました。actor は操作した利用者、member は追加された利用者です。": "2026-10-21T09:12:00Z folder=design-notes actor=mori event=member_added member=ueda\nAt 09:12 UTC, mori added ueda to design-notes. actor performed the action; member was added.",
   "フォルダーの管理情報": "Folder management information",
   "design-notes の管理担当：設計チームの mori。利用者の追加には、設計チーム責任者による事前承認が必要です。今回の承認の有無は、まだ確認できていません。": "design-notes owner: mori of the Design team. Adding users requires prior approval from the Design team lead. Approval for this addition has not yet been confirmed.",
   "UTC 09:12 の design-notes への ueda 追加は、承認された作業ですか。依頼・承認の記録を教えてください。": "Was adding ueda to design-notes at 09:12 UTC approved? Please provide the request and approval records.",
@@ -7623,7 +7651,6 @@ globalThis.EASY_EN = {
   "「class-guest-8 は、担当者が承認票に従って終了処理した研修用アカウント」と説明するため、直接関係する資料を3枚選んでください。": "Select three directly relevant records supporting that class-guest-8 was a training account disabled by the responsible staff under the approved work order.",
   "受け取った4枚の記録": "Four received records",
   "class-guest-8 の操作ログ": "class-guest-8 activity log",
-  "2026-10-21T16:05:00Z actor=training-admin user=class-guest-8 event=account_disabled\nUTC 16:05、training-admin が class-guest-8 を無効化しました。": "2026-10-21T16:05:00Z actor=training-admin user=class-guest-8 event=account_disabled\ntraining-admin disabled class-guest-8 at 16:05 UTC.",
   "承認済み終了作業 TR-88": "Approved closure work TR-88",
   "研修用アカウント class-guest-8 は研修終了後、2026-10-21 UTC 16:00〜16:15 に無効化する。担当：研修係。状態：研修責任者が承認済み。": "Disable training account class-guest-8 after training, on October 21, 2026 from 16:00–16:15 UTC. Owner: Training team. Status: approved by the training lead.",
   "研修係からの回答": "Training team's reply",
@@ -7648,7 +7675,6 @@ globalThis.EASY_EN = {
   "表示された2つの記録から、そのまま事実として報告できる文を1つ選んでください。": "Which sentence can be reported directly as fact from these two records?",
   "認証ログと確認状況": "Authentication log and verification status",
   "認証ログ": "Authentication log",
-  "2026-10-21T08:18:00Z host=desk-east-04 user=yano event=login result=success\nUTC 08:18、desk-east-04 で yano アカウントのログインが成功した記録です。": "2026-10-21T08:18:00Z host=desk-east-04 user=yano event=login result=success\nA login using yano succeeded on desk-east-04 at 08:18 UTC.",
   "現在の確認状況": "Current verification status",
   "yano 本人が操作したかは、まだ確認していません。手元には、前後の操作内容の記録もありません。": "We have not confirmed whether yano personally performed the action. No records of preceding or subsequent activity are available.",
   "UTC 08:18 に desk-east-04 で yano アカウントのログインが成功した記録がある。": "A record shows a successful login using yano on desk-east-04 at 08:18 UTC.",
@@ -7704,7 +7730,6 @@ globalThis.EASY_EN = {
   "資料の初動手順に沿った、最初の対応を1つ選んでください。ここでの操作は学習上の選択で、実際の端末は操作しません。": "Choose the initial action matching the supplied procedure. This is a learning choice and does not operate any real device.",
   "通知と初動手順": "Notification and initial response procedure",
   "記録の受信状況": "Telemetry receipt status",
-  "2026-10-21T12:35:00Z host=room-display-06 event=telemetry_missing last_received=12:30:00Z\nUTC 12:30 を最後に、room-display-06 の記録が5分間届いていません。原因と利用への影響は、まだ確認していません。": "2026-10-21T12:35:00Z host=room-display-06 event=telemetry_missing last_received=12:30:00Z\nNo records have arrived from room-display-06 for five minutes since 12:30 UTC. Cause and user impact are unverified.",
   "表示端末の初動手順": "Display-device initial response procedure",
   "記録が5分以上届かない場合：端末名と最後の受信時刻を調査メモに残す。設備担当者へ、電源・通信状態と利用への影響を確認する。再起動・初期化・停止は、原因確認後に責任者の判断で実施する。": "If records are missing for at least five minutes: note the device and last received time. Ask facilities to check power, connectivity, and user impact. Restart, reset, or stop only after cause assessment and a responsible lead's decision.",
   "room-display-06 と最終受信12:30を記録し、設備担当へ電源・通信状態と利用への影響を確認する。": "Record room-display-06 and last receipt at 12:30, then ask facilities to check power, connectivity, and user impact.",
@@ -7731,7 +7756,6 @@ globalThis.EASY_EN = {
   "資料に合う短い報告を作ります。「確認した事実」「確認の限界」「次の行動」から、それぞれ1文ずつ選んでください。": "Build a short report matching the records. Select one sentence each for confirmed facts, limits, and next actions.",
   "アクセス記録と現在の確認状況": "Access record and current verification status",
   "ファイルへのアクセス記録": "File access record",
-  "2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied\nUTC 10:42、noda による staff-guide.pdf の読み取り要求は拒否されました。denied は、要求が許可されなかったという意味です。": "2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied\nAt 10:42 UTC, noda's request to read staff-guide.pdf was denied. denied means the request was not permitted.",
   "今回の読み取り要求1件だけを確認済みです。noda の業務上の利用理由と、必要なアクセス権は未確認です。資料管理担当者が、利用申請とアクセス権を確認できます。": "Only this one read request has been checked. noda's business reason and required access rights are unverified. The document administrator can check the access request and permissions.",
   "UTC 10:42、noda の staff-guide.pdf への読み取り要求が拒否された。": "At 10:42 UTC, noda's request to read staff-guide.pdf was denied.",
   "対象・時刻・結果がアクセス記録と一致します。": "The target, time, and result match the access record.",
@@ -7771,7 +7795,6 @@ globalThis.EASY_EN = {
   "SOCroom の一連の調査": "A complete SOCroom investigation",
   "ログを絞る→資料と照合する→判断する→根拠と次の行動を残す、というSOCroomの流れに進むための練習です。": "Practice SOCroom's sequence: narrow logs → compare documents → make a judgment → record evidence and next actions.",
   "render-kiosk-02 の job=R-204 に関するログを、3行すべて選んでください。host は端末名、job は1回分の仕事の番号です。": "Select all three logs for job=R-204 on render-kiosk-02. host is the device; job identifies one unit of work.",
-  "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。svc-render は自動処理用アカウント。": "At 21:00 UTC, conversion of lobby-map.svg to PDF began. svc-render is an automation account.",
   "別の端末・別のジョブで、メニューのPDF生成を開始。": "Another device and job began generating a menu PDF.",
   "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。": "The guide-map PDF was created under /srv/maps/ on the device. This path identifies the output location.",
   "同じ端末だが、別のジョブ R-203 の片付け処理。": "The same device performed cleanup for a different job, R-203.",
@@ -7837,6 +7860,16 @@ globalThis.EASY_EN = {
   "実際の動きと承認を照合する": "Compare activity with approval",
   "確認した範囲で判断する": "Judge within the checked scope",
   "調査を短く報告する": "Report the investigation briefly",
+  "host は機器名、event は起きた出来事です。meeting-gw-01 が接続を開始した記録です。": "host is the device name and event is the activity. This records meeting-gw-01 starting a connection.",
+  "UTC 22:04、printer-07 の再起動が完了した記録です。": "The restart of printer-07 completed at 22:04 UTC.",
+  "UTC 09:12、mori が design-notes フォルダーに ueda を追加しました。actor は操作した利用者、member は追加された利用者です。": "At 09:12 UTC, mori added ueda to design-notes. actor performed the action; member was added.",
+  "UTC 16:05、training-admin が class-guest-8 を無効化しました。": "training-admin disabled class-guest-8 at 16:05 UTC.",
+  "UTC 08:18、desk-east-04 で yano アカウントのログインが成功した記録です。": "A login using yano succeeded on desk-east-04 at 08:18 UTC.",
+  "UTC 12:30 を最後に、room-display-06 の記録が5分間届いていません。": "No records have arrived from room-display-06 for five minutes since 12:30 UTC.",
+  "原因と利用への影響は、まだ確認していません。": "Cause and user impact are unverified.",
+  "UTC 10:42、noda による staff-guide.pdf の読み取り要求は拒否されました。denied は、要求が許可されなかったという意味です。": "At 10:42 UTC, noda's request to read staff-guide.pdf was denied. denied means the request was not permitted.",
+  "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。": "At 21:00 UTC, conversion of lobby-map.svg to PDF began.",
+  "svc-render は自動処理用アカウント。": "svc-render is an automation account.",
   "SOCroom-easy — 小さな発見から、SOCへ。": "SOCroom-easy — Small discoveries, first steps into SOC.",
   "本文へ進む": "Skip to content",
   "この練習にはJavaScriptが必要です。インターネット接続は不要です。": "This exercise requires JavaScript. No internet connection is needed.",
@@ -8074,7 +8107,9 @@ globalThis.EASY_EN = {
   "別の教材へ進むかどうかは自由です。完了記録の共有や自動移動はありません。": "Moving to another tool is optional. Completion records are not shared, and navigation is never automatic.",
   "続ける・振り返る・次を試す": "Continue, review or try something new",
   "この級の卒業調査を復習する": "Review this level’s graduation investigation",
-  "今回練習した操作": "The skill you practiced"
+  "今回練習した操作": "The skill you practiced",
+  "このログの読み方を見る": "Show how to read this log",
+  "まず自分でログを読んで、必要なら「このログの読み方を見る」を開いて確かめましょう。": "Try reading the log yourself first. If needed, open “Show how to read this log” to check your understanding."
 };
 if(typeof module!=="undefined"&&module.exports)module.exports=globalThis.EASY_EN;
 </script>
@@ -8244,7 +8279,7 @@ if(typeof module!=="undefined"&&module.exports)module.exports=globalThis.EASY_EN
   }
   function searchableRow(row) {
     const reference = row.sourceType && row.sourceType !== 'log';
-    const source = reference ? [row.title, row.body].join(' ') : [row.raw || row.body, row.title, row.event, row.note].join(' ');
+    const source = reference ? [row.title, row.body].join(' ') : [row.raw || row.body, row.title, row.event, row.note, row.reading].join(' ');
     // Search both display languages regardless of the selected locale, so saved
     // queries and their grading proofs remain valid after switching languages.
     const english = I18N?.english(source) || source;
@@ -8671,6 +8706,8 @@ if(typeof module!=="undefined"&&module.exports)module.exports=globalThis.EASY_EN
   const paths={flag:'M5 21V3m0 1h13l-3 5 3 5H5',arrow:'M4 12h16m-6-6 6 6-6 6',check:'m5 12 4 4L19 6',book:'M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1zm0 0v15',search:'m21 21-5-5m2-6a8 8 0 1 1-16 0 8 8 0 0 1 16 0',lock:'M6 10h12v11H6zm3 0V6a3 3 0 0 1 6 0v4',save:'M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4',upload:'M12 16V4m-5 5 5-5 5 5M4 17v4h16v-4',spark:'m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z',home:'m3 10 9-7 9 7M5 9v12h14V9m-10 12v-8h6v8',close:'m6 6 12 12M18 6 6 18',refresh:'M20 7V2m0 5h-5m5 0a9 9 0 1 0 1 8',up:'m6 15 6-6 6 6',down:'m6 9 6 6 6-6',help:'M9 8a3 3 0 0 1 6 0c0 2-3 2-3 5m0 4v.1M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0'};
   const icon=name=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[name]||paths.flag}"/></svg>`;
   let progress=E.createProgress(),screen='map',storageOK=true,saveTimer,toastTimer,pendingImport=null,composing=false,restoreWarning='',unreadableSave=null,recoverySave=null,legacyToRemove=false,pendingRecovery=null;
+  let readingContext=null,readingHelpSeen=false,showReadingHelp=false;
+  const openReadings=new Set();
   try{
     recoverySave=localStorage.getItem(STORE+'.recovery');
     const raw=localStorage.getItem(STORE),legacy=raw===null?localStorage.getItem(LEGACY_STORE):null,source=raw??legacy;
@@ -8760,12 +8797,21 @@ if(typeof module!=="undefined"&&module.exports)module.exports=globalThis.EASY_EN
     }
     return result+esc(value.slice(cursor));
   }
-  function sourceCard(row,index,selectable=false){const input=record().input,chosen=(input.rowIds||[]).includes(row.id),query=step().kind==='filter'?input.query||'':'';const isReference=Boolean(row.sourceType&&row.sourceType!=='log');const content=isReference?`<div class="source-kind">${row.sourceType==='reply'?'担当者の回答':'参照する資料'}</div><h3>${esc(row.title||'確認資料')}</h3><p class="reference-body">${esc(row.body||'')}</p>`:`<div class="source-kind">記録 ${String(index+1).padStart(2,'0')}${row.event?`<span>${esc(row.event)}</span>`:''}</div>${row.title?`<h3>${esc(row.title)}</h3>`:''}<pre class="raw-log">${highlight(row.raw||row.body||'',query)}</pre>${row.note?`<p class="row-note">${esc(row.note)}</p>`:''}`;return `<article class="source-card ${chosen?'selected':''}" data-row="${esc(row.id)}">${content}${selectable?`<button class="row-select" data-select="${esc(row.id)}" aria-pressed="${chosen}" ${locked()?'disabled':''}>${icon(chosen?'check':'flag')}${chosen?'選択済み':'この記録を選ぶ'}</button>`:''}</article>`;}
+  function rememberReadings(){for(const detail of document.querySelectorAll('details[data-reading]')){if(detail.open)openReadings.add(detail.dataset.reading);else openReadings.delete(detail.dataset.reading);}}
+  function prepareReadings(){
+    const context=screen==='mission'?`${progress.currentId}:${record().stage}`:null;
+    if(context===readingContext){rememberReadings();return;}
+    readingContext=context;openReadings.clear();showReadingHelp=Boolean(context&&!readingHelpSeen&&step().rows?.some(row=>row.reading));
+    if(showReadingHelp)readingHelpSeen=true;
+  }
+  function readingHelp(){return showReadingHelp?'<p class="log-reading-help">まず自分でログを読んで、必要なら「このログの読み方を見る」を開いて確かめましょう。</p>':'';}
+  function logReading(row){return row.reading?`<details class="log-reading" data-reading="${esc(row.id)}" ${openReadings.has(row.id)?'open':''}><summary id="reading-toggle-${esc(row.id)}">このログの読み方を見る</summary><p class="log-reading-body">${esc(row.reading)}</p></details>`:'';}
+  function sourceCard(row,index,selectable=false){const input=record().input,chosen=(input.rowIds||[]).includes(row.id),query=step().kind==='filter'?input.query||'':'';const isReference=Boolean(row.sourceType&&row.sourceType!=='log');const content=isReference?`<div class="source-kind">${row.sourceType==='reply'?'担当者の回答':'参照する資料'}</div><h3>${esc(row.title||'確認資料')}</h3><p class="reference-body">${esc(row.body||'')}</p>`:`<div class="source-kind">記録 ${String(index+1).padStart(2,'0')}${row.event?`<span>${esc(row.event)}</span>`:''}</div>${row.title?`<h3>${esc(row.title)}</h3>`:''}<pre class="raw-log">${highlight(row.raw||row.body||'',query)}</pre>${row.note?`<p class="row-note">${esc(row.note)}</p>`:''}${logReading(row)}`;return `<article class="source-card ${chosen?'selected':''}" data-row="${esc(row.id)}">${content}${selectable?`<button class="row-select" data-select="${esc(row.id)}" aria-pressed="${chosen}" ${locked()?'disabled':''}>${icon(chosen?'check':'flag')}${chosen?'選択済み':'この記録を選ぶ'}</button>`:''}</article>`;}
   function filteredRows(){const q=normalize(record().input.query);return E.filterRows(step().rows||[],q);}
   function renderSourceItems(){const s=step(),rows=s.kind==='filter'?filteredRows():s.rows||[],selectable=['rows','filter','evidence'].includes(s.kind);return rows.length?rows.map(row=>sourceCard(row,(s.rows||[]).indexOf(row),selectable)).join(''):'<div class="empty"><strong>一致する記録がありません。</strong><p>検索欄の文字を短くするか、入力を消して見直してみましょう。</p></div>';}
   function renderSource(){const m=mission(),s=step(),input=record().input;if(s.kind==='token')return `<div class="source-board"><div class="board-heading"><span>${esc(s.sourceLabel||m.sourceLabel||'調べるログ')}</span><small>知りたい部分を1つクリック</small></div><div class="token-log">${(s.tokens||[]).map(t=>`<button class="log-token ${input.tokenId===t.id?'selected':''}" data-token="${esc(t.id)}" aria-pressed="${input.tokenId===t.id}" title="${esc(t.meaning)}" ${locked()?'disabled':''}>${esc(t.label)}</button>`).join('')}</div><p class="token-meaning">${input.tokenId?esc(s.tokens.find(t=>t.id===input.tokenId)?.meaning||''):'文字のまとまりを押すと、ここに意味が表示されます。'}</p><details class="raw-reference" ${s.showRaw?'open':''}><summary>1行のログとして見る</summary><pre class="raw-log">${esc(s.rows?.[0]?.raw||'')}</pre></details></div>`;
-    if(s.kind==='order'){const ids=input.orderIds||s.rows.map(r=>r.id);return `<div class="source-board"><div class="board-heading"><span>${esc(s.sourceLabel||m.sourceLabel||'並べ替えるログ')}</span><small>上が先、下が後</small></div><ol class="order-list">${ids.map((id,index)=>{const row=s.rows.find(r=>r.id===id);return `<li class="order-row"><span class="order-number">${index+1}</span><div><pre class="raw-log">${esc(row.raw)}</pre>${row.event?`<p>${esc(row.event)}</p>`:''}${row.note?`<p class="row-note">${esc(row.note)}</p>`:''}</div><div class="order-buttons"><button class="icon-btn" data-move="${id}" data-direction="-1" ${index===0||locked()?'disabled':''} aria-label="${esc(row.id)} を上へ">${icon('up')}</button><button class="icon-btn" data-move="${id}" data-direction="1" ${index===ids.length-1||locked()?'disabled':''} aria-label="${esc(row.id)} を下へ">${icon('down')}</button></div></li>`;}).join('')}</ol></div>`;}
-    return `<div class="source-board"><div class="board-heading"><span>${esc(s.sourceLabel||m.sourceLabel||'調べる記録')}</span><small>${s.kind==='evidence'?'根拠になるカードを選ぶ':['rows','filter'].includes(s.kind)?'必要な記録を選ぶ':'ゆっくり読んで大丈夫'}</small></div>${s.kind==='filter'?`<label class="search-label" for="log-query">ログの検索 <small>検索語を変えると選択はリセットされます</small></label><div class="searchbox">${icon('search')}<input id="log-query" type="search" maxlength="160" value="${esc(input.query||'')}" placeholder="例：host=pc-name" ${locked()?'disabled':''}><button class="icon-btn" data-action="clear-search" aria-label="検索を消す" ${locked()?'disabled':''}>${icon('close')}</button></div><p id="filter-count" class="filter-count">${filteredRows().length} / ${s.rows.length} 件表示</p>`:''}<div id="source-items" class="source-items">${renderSourceItems()}</div>${['rows','filter','evidence'].includes(s.kind)?`<p class="selected-count" id="selected-count">${(input.rowIds||[]).length}件選択中。もう一度押すと選択を外せます。</p>`:''}</div>`;
+    if(s.kind==='order'){const ids=input.orderIds||s.rows.map(r=>r.id);return `<div class="source-board"><div class="board-heading"><span>${esc(s.sourceLabel||m.sourceLabel||'並べ替えるログ')}</span><small>上が先、下が後</small></div>${readingHelp()}<ol class="order-list">${ids.map((id,index)=>{const row=s.rows.find(r=>r.id===id);return `<li class="order-row"><span class="order-number">${index+1}</span><div><pre class="raw-log">${esc(row.raw)}</pre>${row.event?`<p>${esc(row.event)}</p>`:''}${row.note?`<p class="row-note">${esc(row.note)}</p>`:''}${logReading(row)}</div><div class="order-buttons"><button class="icon-btn" data-move="${id}" data-direction="-1" ${index===0||locked()?'disabled':''} aria-label="${esc(row.id)} を上へ">${icon('up')}</button><button class="icon-btn" data-move="${id}" data-direction="1" ${index===ids.length-1||locked()?'disabled':''} aria-label="${esc(row.id)} を下へ">${icon('down')}</button></div></li>`;}).join('')}</ol></div>`;}
+    return `<div class="source-board"><div class="board-heading"><span>${esc(s.sourceLabel||m.sourceLabel||'調べる記録')}</span><small>${s.kind==='evidence'?'根拠になるカードを選ぶ':['rows','filter'].includes(s.kind)?'必要な記録を選ぶ':'ゆっくり読んで大丈夫'}</small></div>${s.kind==='filter'?`<label class="search-label" for="log-query">ログの検索 <small>検索語を変えると選択はリセットされます</small></label><div class="searchbox">${icon('search')}<input id="log-query" type="search" maxlength="160" value="${esc(input.query||'')}" placeholder="例：host=pc-name" ${locked()?'disabled':''}><button class="icon-btn" data-action="clear-search" aria-label="検索を消す" ${locked()?'disabled':''}>${icon('close')}</button></div><p id="filter-count" class="filter-count">${filteredRows().length} / ${s.rows.length} 件表示</p>`:''}${readingHelp()}<div id="source-items" class="source-items">${renderSourceItems()}</div>${['rows','filter','evidence'].includes(s.kind)?`<p class="selected-count" id="selected-count">${(input.rowIds||[]).length}件選択中。もう一度押すと選択を外せます。</p>`:''}</div>`;
   }
   function answerControls(){const s=step(),input=record().input;
     if(s.kind==='text')return `<label class="answer-label" for="answer-text">見つけた答え<input id="answer-text" type="text" value="${esc(input.text||'')}" maxlength="240" placeholder="ログに書かれた値を入力" autocomplete="off" spellcheck="false"></label>`;
@@ -8783,8 +8829,8 @@ if(typeof module!=="undefined"&&module.exports)module.exports=globalThis.EASY_EN
   function renderFeedback(){const r=record(),m=mission(),s=step(),f=r.feedback;if(!f)return '';const more=m.kind==='investigation'&&r.stage<m.steps.length-1,complete=f.passed&&!more,next=nextMission(m);return `<section class="feedback ${f.passed?'success':'try-again'}" id="feedback" tabindex="-1" aria-label="答え合わせ"><span class="feedback-kicker">${f.passed?(complete?'FLAG CAPTURED':'STEP CLEAR'):'TRY AGAIN'}</span><h3>${f.passed?(complete?'見つけた！フラグ獲得。':'この作業はできました。'):'もう一度、手がかりを見てみよう。'}</h3><p>${esc(f.message)}</p>${f.passed?`${f.message!==s.answerExplanation?`<p class="why-answer">${esc(s.answerExplanation)}</p>`:''}${complete?`<code class="earned-flag">${esc(m.flag)}</code><p class="point-note">この課題は100ポイント。何度解いても重複加算されません。</p>`:''}<button class="btn primary full next-step" data-action="${more?'advance':next?'next':'finish'}">${more?'次の作業へ':next?'次の課題へ':level().title+'の学習マップへ'} ${icon('arrow')}</button>${complete?`<div class="bridge-mini"><strong>今回練習した操作</strong><span>${esc(m.skill)}</span></div><button class="text-button" data-action="retry">もう一度、自分で解く</button>`:''}`:'<p class="small">間違えても減点はありません。ヒントも使えます。</p>'}</section>`;}
   function renderHints(){const r=record(),s=step(),n=r.attemptHintCounts?.[r.stage]||0,revealed=r.attemptRevealedStages?.includes(r.stage);return `<section class="hint-card" aria-label="学習のヒント"><div class="hint-heading">${icon('help')}<h3>迷ったら、ここから。</h3></div><p>ヒントを使っても、ポイントは減りません。</p>${(s.hints||[]).slice(0,n).map((h,i)=>`<div class="hint"><span>ヒント ${i+1}</span><p>${esc(h)}</p></div>`).join('')}<button class="btn full" data-action="hint" ${n>=(s.hints||[]).length?'disabled':''}>${n?'次のヒントを見る':'最初のヒントを見る'} <span>${n} / ${(s.hints||[]).length}</span></button>${revealed?`<div class="solution"><h4>答えと、その読み方</h4><p>${esc(s.solution)}</p><small>解説を見ただけではクリアになりません。課題で実際に操作してみましょう。</small></div>`:`<button class="text-button full" data-action="solution">答えと読み方を見て学ぶ</button>`}${!r.feedback?.passed&&(r.attemptAssisted||r.attempts||r.stage)?'<button class="text-button full" data-action="retry">ヒントを閉じて最初からやり直す</button>':''}</section>`;}
   function renderMission(){const m=mission(),r=record(),s=step(),chapter=chapterFor(m),investigation=m.kind==='investigation';$('app').innerHTML=header()+`<main class="lesson-page" id="main"><div class="lesson-breadcrumb"><button class="text-button" data-action="map">← 学習マップ</button><span>${esc(level().title)} · ${String(chapterIndex(m)).padStart(2,'0')} / ${esc(chapter.title)}</span><span class="lesson-position">${missionIndex(m)} / ${levelMissions().length}</span></div><header class="lesson-title"><div><p class="eyebrow">${investigation?'FINAL MISSION':'SMALL STEP / BIG DISCOVERY'}</p><h1>${esc(m.title)}</h1><p>${esc(m.brief)}</p></div><div class="mission-reward">${icon('flag')}<span>クリアで<strong>100 pt</strong></span></div></header>${investigation?`<ol class="investigation-steps" aria-label="ミニ調査の進み具合">${m.steps.map((st,index)=>`<li class="${index===r.stage?'current':index<r.stage?'done':''}" ${index===r.stage?'aria-current="step"':''}><span aria-hidden="true">${index<r.stage?'✓':index+1}</span><p>${esc(st.title)}</p></li>`).join('')}</ol>`:''}<div class="lesson-layout ${s.kind==='report'?'report-layout':''}"><div class="learning-column"><section class="learn-card"><div class="learn-heading"><span>${icon('book')}</span><div><small>まずは、ここだけ</small><h2>${esc(m.skill)}</h2></div><button class="text-button" data-action="glossary">用語帳</button></div>${m.learn.map(p=>`<p>${esc(p)}</p>`).join('')}<details class="worked-example"><summary>${esc(m.example.title||'別の例で見てみる')}</summary><p>${esc(m.example.text)}</p></details></section>${investigation?`<div class="stage-heading"><span>作業 ${r.stage+1} / ${m.steps.length}</span><h2>${esc(s.title)}</h2></div>`:''}${renderSource()}<div class="reading-note">${icon('book')}ログはシステムが残した記録です。ここにあるのは練習用の架空データです。</div></div><aside class="task-column"><section class="task-card"><div class="task-label"><span class="task-dot"></span>今回のミッション</div><h2 id="task-heading">${esc(s.task)}</h2><form id="answer-form" aria-labelledby="task-heading"><fieldset class="answer-fields" ${locked()?'disabled':''}>${answerControls()}</fieldset><button class="btn primary full submit-answer" id="submit-answer" type="submit" ${!readyInput()?'disabled':''}>${icon('check')}答え合わせ</button></form><p class="answer-help">${locked()?'結果を読んで、次へ進みましょう。':'見つけた答えを選ぶ・入力すると、答え合わせができます。'}</p></section>${renderReportPreview()}${renderFeedback()}${renderHints()}${r.completed&&!r.feedback?.passed?'<div class="review-note">この課題のフラグは獲得済みです。復習の間違いで消えることはありません。</div>':''}</aside></div></main>`+footer();}
-  function render(){const active=document.activeElement,activeId=active?.id,attrs=['data-level','data-open','data-token','data-select','data-move','data-action'],attr=attrs.find(a=>active?.hasAttribute?.(a)),value=attr?active.getAttribute(attr):null,direction=active?.dataset.direction;screen==='map'?renderMap():renderMission();I.apply(document);let restore=activeId?$(activeId):null;if(!restore&&attr)restore=Array.from($('app').querySelectorAll(`[${attr}]`)).find(el=>el.getAttribute(attr)===value&&(!direction||el.dataset.direction===direction));if(restore&&!restore.disabled)restore.focus({preventScroll:true});}
-  function openMission(id){try{E.openMission(progress,id);screen='mission';save();render();window.scrollTo?.({top:0,behavior:'instant'});document.querySelector('.lesson-title h1')?.setAttribute('tabindex','-1');document.querySelector('.lesson-title h1')?.focus({preventScroll:true});announce(mission().title,step().task);}catch(error){notify(error.message);}}
+  function render(){prepareReadings();const active=document.activeElement,activeId=active?.id,attrs=['data-level','data-open','data-token','data-select','data-move','data-action'],attr=attrs.find(a=>active?.hasAttribute?.(a)),value=attr?active.getAttribute(attr):null,direction=active?.dataset.direction;screen==='map'?renderMap():renderMission();I.apply(document);let restore=activeId?$(activeId):null;if(!restore&&attr)restore=Array.from($('app').querySelectorAll(`[${attr}]`)).find(el=>el.getAttribute(attr)===value&&(!direction||el.dataset.direction===direction));if(restore&&!restore.disabled)restore.focus({preventScroll:true});}
+  function openMission(id){try{E.openMission(progress,id);readingContext=null;screen='mission';save();render();window.scrollTo?.({top:0,behavior:'instant'});document.querySelector('.lesson-title h1')?.setAttribute('tabindex','-1');document.querySelector('.lesson-title h1')?.focus({preventScroll:true});announce(mission().title,step().task);}catch(error){notify(error.message);}}
   function updateAnswerState(){refreshReportPreview();if(!record().feedback)$('feedback')?.remove();const submit=$('submit-answer');if(submit)submit.disabled=!readyInput();const summary=$('answer-summary');if(summary){summary.innerHTML=answerSummary();I.apply(summary);}const selected=$('selected-count');if(selected){selected.textContent=`${(record().input.rowIds||[]).length}件選択中。もう一度押すと選択を外せます。`;I.apply(selected);}}
   function setInput(patch,rerender=false){if(locked())return;if('query' in patch&&normalize(patch.query)!==normalize(record().input.query))patch={...patch,rowIds:[]};try{E.setInput(progress,progress.currentId,patch);save();if(rerender)render();else updateAnswerState();}catch(error){notify(error.message);}}
   function showGlossary(){modal('用語をひとつずつ',`<p class="glossary-intro">全部覚えてから始めなくて大丈夫。出てきた言葉を、ここで確かめましょう。</p><dl class="glossary">${D.glossary.map(g=>`<div><dt>${esc(g.term)}</dt><dd>${esc(g.meaning)}${g.example?`<code>${esc(g.example)}</code>`:''}</dd></div>`).join('')}</dl>`);}
@@ -8797,7 +8843,7 @@ if(typeof module!=="undefined"&&module.exports)module.exports=globalThis.EASY_EN
     advance:()=>{E.advanceStep(progress,progress.currentId);save();render();$('task-heading')?.scrollIntoView?.({block:'center'});announce(step().title,step().task);},
     next:()=>{const next=nextMission(mission());if(next)openMission(next.id);},
     finish:()=>{screen='map';save(true);render();document.querySelector('.bridge-card')?.scrollIntoView?.({block:'center'});announce(format('{level}の{count}問を体験しました。',{level:t(level().title),count:levelMissions().length}),'次の練習への進み方を表示しています。');},
-    retry:()=>{E.retry(progress,progress.currentId);save();render();announce('ヒントと解説を閉じて、もう一度取り組めます。過去の利用履歴とフラグは保持しています。');},
+    retry:()=>{E.retry(progress,progress.currentId);readingContext=null;save();render();announce('ヒントと解説を閉じて、もう一度取り組めます。過去の利用履歴とフラグは保持しています。');},
     'clear-search':()=>{setInput({query:''},true);$('log-query')?.focus();},
     reset:()=>modal('学習の記録を最初からにする',`<p>${format('全{count}級のフラグ・下書き・ヒントの記録を消します。',{count:D.levels.length})}必要なら先に保存ファイルを取り出してください。SOCroomの進捗には影響しません。</p>`,`<button class="btn" data-action="export">進捗を保存</button><button class="btn" data-action="close">戻る</button><button class="btn danger" data-action="reset-confirmed">記録を消して始め直す</button>`),
     'reset-confirmed':()=>{closeModal();progress=E.createProgress();screen='map';save(true);render();notify('SOCroom-easyの記録を初期化しました。');},
@@ -8805,7 +8851,7 @@ if(typeof module!=="undefined"&&module.exports)module.exports=globalThis.EASY_EN
   };
   document.addEventListener('click',event=>{const el=event.target.closest('button,[data-action]');if(!el||el.disabled)return;try{if(el.dataset.action){event.preventDefault();actions[el.dataset.action]?.();}else if(el.dataset.level)selectLevel(el.dataset.level);else if(el.dataset.open)openMission(el.dataset.open);else if(el.dataset.token)setInput({tokenId:el.dataset.token},true);else if(el.dataset.select){const ids=record().input.rowIds||[],id=el.dataset.select;setInput({rowIds:ids.includes(id)?ids.filter(x=>x!==id):[...ids,id]},true);}else if(el.dataset.move){const ids=[...(record().input.orderIds||step().rows.map(r=>r.id))],index=ids.indexOf(el.dataset.move),other=index+Number(el.dataset.direction);if(other>=0&&other<ids.length){[ids[index],ids[other]]=[ids[other],ids[index]];setInput({orderIds:ids},true);}}}catch(error){notify(error.message);}});
   document.addEventListener('input',event=>{const el=event.target;if(composing||event.isComposing)return;if(el.id==='answer-text')setInput({text:el.value});else if(el.id==='log-query'){setInput({query:el.value});refreshSearch();}});
-  function refreshSearch(){const items=$('source-items'),count=$('filter-count');if(items){items.innerHTML=renderSourceItems();I.apply(items);}if(count){count.textContent=`${filteredRows().length} / ${step().rows.length} 件表示`;I.apply(count);}}
+  function refreshSearch(){rememberReadings();const items=$('source-items'),count=$('filter-count');if(items){items.innerHTML=renderSourceItems();I.apply(items);}if(count){count.textContent=`${filteredRows().length} / ${step().rows.length} 件表示`;I.apply(count);}}
   document.addEventListener('compositionstart',()=>{composing=true;});
   document.addEventListener('compositionend',event=>{composing=false;if(event.target.id==='log-query'){setInput({query:event.target.value});refreshSearch();}else if(event.target.id==='answer-text')setInput({text:event.target.value});});
   document.addEventListener('change',event=>{const el=event.target;if(el.id==='language-select'){if(I.setLocale(el.value)){closeModal();$('toast').hidden=true;$('announcement').textContent='';render();document.querySelector('.skip').textContent=t('本文へ進む');}return;}if(el.name==='answer-choice')setInput({choiceId:el.value});else if(el.dataset.part)setInput({parts:{...(record().input.parts||{}),[el.dataset.part]:el.value}});});

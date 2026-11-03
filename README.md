@@ -2,7 +2,7 @@
   <img src="docs/images/socroom-easy-banner.png" width="960" alt="道場で稽古するSOCroom-easyのキャラクターを描いたピクセルアート">
 </p>
 
-# SOCroom-easy v0.4.1
+# SOCroom-easy v0.4.2
 
 [すぐにやってみる / Play Now](https://retiacole.github.io/socroom-easy/) · [オフライン用HTML / Offline HTML](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html)
 
@@ -22,6 +22,10 @@
 3. 「練習を始める」または学習マップの最初の課題を押します。
 4. 説明と今回のミッションを読み、ログのクリック・検索・入力・並べ替えなどを試します。
 5. 「答え合わせ」で理由を確認し、「次の課題へ」進みます。
+
+ログの読み方の説明は、各記録の「このログの読み方を見る」から必要なときに開けます。生ログや判断に必要な資料は常に表示され、説明の閲覧でポイントやヒントの利用履歴は変わりません。
+
+Log-reading explanations start collapsed. Open **Show how to read this log** to check your understanding. Raw logs and essential reference material stay visible; opening an explanation does not affect points or hint history.
 
 インストール、ローカルサーバー、アカウントは不要です。オンライン版を開くときにはインターネット接続が必要ですが、ダウンロードしたHTMLはオフラインで使えます。教材・プログラム・見た目をHTML一つに含めています。JavaScriptを有効にした、更新済みのブラウザを使用してください。
 
