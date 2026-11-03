@@ -56,7 +56,8 @@
           "id": "e1-log",
           "sourceType": "log",
           "title": "今回のログ",
-          "body": "host=meeting-gw-01 event=connection_started\nhost は機器名、event は起きた出来事です。meeting-gw-01 が接続を開始した記録です。"
+          "body": "host=meeting-gw-01 event=connection_started",
+          "reading": "host は機器名、event は起きた出来事です。meeting-gw-01 が接続を開始した記録です。"
         },
         {
           "id": "e1-asset",
@@ -122,7 +123,8 @@
           "id": "e2-log",
           "sourceType": "log",
           "title": "printer-07 の実行ログ",
-          "body": "2026-10-21T22:04:00Z host=printer-07 event=restart result=completed\nUTC 22:04、printer-07 の再起動が完了した記録です。"
+          "body": "2026-10-21T22:04:00Z host=printer-07 event=restart result=completed",
+          "reading": "UTC 22:04、printer-07 の再起動が完了した記録です。"
         },
         {
           "id": "e2-approved",
@@ -180,7 +182,8 @@
           "id": "e3-log",
           "sourceType": "log",
           "title": "共有フォルダーの操作ログ",
-          "body": "2026-10-21T09:12:00Z folder=design-notes actor=mori event=member_added member=ueda\nUTC 09:12、mori が design-notes フォルダーに ueda を追加しました。actor は操作した利用者、member は追加された利用者です。"
+          "body": "2026-10-21T09:12:00Z folder=design-notes actor=mori event=member_added member=ueda",
+          "reading": "UTC 09:12、mori が design-notes フォルダーに ueda を追加しました。actor は操作した利用者、member は追加された利用者です。"
         },
         {
           "id": "e3-owner",
@@ -246,7 +249,8 @@
           "id": "e4-log",
           "sourceType": "log",
           "title": "class-guest-8 の操作ログ",
-          "body": "2026-10-21T16:05:00Z actor=training-admin user=class-guest-8 event=account_disabled\nUTC 16:05、training-admin が class-guest-8 を無効化しました。"
+          "body": "2026-10-21T16:05:00Z actor=training-admin user=class-guest-8 event=account_disabled",
+          "reading": "UTC 16:05、training-admin が class-guest-8 を無効化しました。"
         },
         {
           "id": "e4-doc",
@@ -311,7 +315,8 @@
           "id": "d1-log",
           "sourceType": "log",
           "title": "認証ログ",
-          "body": "2026-10-21T08:18:00Z host=desk-east-04 user=yano event=login result=success\nUTC 08:18、desk-east-04 で yano アカウントのログインが成功した記録です。"
+          "body": "2026-10-21T08:18:00Z host=desk-east-04 user=yano event=login result=success",
+          "reading": "UTC 08:18、desk-east-04 で yano アカウントのログインが成功した記録です。"
         },
         {
           "id": "d1-status",
@@ -449,7 +454,9 @@
           "id": "d3-alert",
           "sourceType": "log",
           "title": "記録の受信状況",
-          "body": "2026-10-21T12:35:00Z host=room-display-06 event=telemetry_missing last_received=12:30:00Z\nUTC 12:30 を最後に、room-display-06 の記録が5分間届いていません。原因と利用への影響は、まだ確認していません。"
+          "body": "2026-10-21T12:35:00Z host=room-display-06 event=telemetry_missing last_received=12:30:00Z",
+          "reading": "UTC 12:30 を最後に、room-display-06 の記録が5分間届いていません。",
+          "note": "原因と利用への影響は、まだ確認していません。"
         },
         {
           "id": "d3-runbook",
@@ -515,7 +522,8 @@
           "id": "d4-log",
           "sourceType": "log",
           "title": "ファイルへのアクセス記録",
-          "body": "2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied\nUTC 10:42、noda による staff-guide.pdf の読み取り要求は拒否されました。denied は、要求が許可されなかったという意味です。"
+          "body": "2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied",
+          "reading": "UTC 10:42、noda による staff-guide.pdf の読み取り要求は拒否されました。denied は、要求が許可されなかったという意味です。"
         },
         {
           "id": "d4-status",
@@ -627,37 +635,38 @@
               "id": "g1-log-a",
               "event": "render_started",
               "raw": "2026-10-21T21:00:00Z host=render-kiosk-02 user=svc-render job=R-204 event=render_started input=lobby-map.svg",
-              "note": "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。svc-render は自動処理用アカウント。"
+              "note": "svc-render は自動処理用アカウント。",
+              "reading": "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。"
             },
             {
               "id": "g1-noise-a",
               "event": "render_started",
               "raw": "2026-10-21T21:00:01Z host=render-kiosk-03 user=svc-render job=R-205 event=render_started input=cafe-menu.svg",
-              "note": "別の端末・別のジョブで、メニューのPDF生成を開始。"
+              "reading": "別の端末・別のジョブで、メニューのPDF生成を開始。"
             },
             {
               "id": "g1-log-b",
               "event": "pdf_created",
               "raw": "2026-10-21T21:00:04Z host=render-kiosk-02 user=svc-render job=R-204 event=pdf_created output=/srv/maps/lobby-map.pdf",
-              "note": "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。"
+              "reading": "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。"
             },
             {
               "id": "g1-noise-b",
               "event": "cleanup_completed",
               "raw": "2026-10-21T21:00:05Z host=render-kiosk-02 user=svc-render job=R-203 event=cleanup_completed",
-              "note": "同じ端末だが、別のジョブ R-203 の片付け処理。"
+              "reading": "同じ端末だが、別のジョブ R-203 の片付け処理。"
             },
             {
               "id": "g1-log-c",
               "event": "render_completed",
               "raw": "2026-10-21T21:00:06Z host=render-kiosk-02 user=svc-render job=R-204 event=render_completed result=success",
-              "note": "ジョブ R-204 のPDF生成処理が完了。"
+              "reading": "ジョブ R-204 のPDF生成処理が完了。"
             },
             {
               "id": "g1-noise-c",
               "event": "display_refreshed",
               "raw": "2026-10-21T21:00:07Z host=lobby-screen-01 user=svc-display job=D-81 event=display_refreshed",
-              "note": "別の端末で画面表示を更新。"
+              "reading": "別の端末で画面表示を更新。"
             }
           ],
           "answer": {

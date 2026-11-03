@@ -240,5 +240,7 @@
   "別の教材へ進むかどうかは自由です。完了記録の共有や自動移動はありません。": "Moving to another tool is optional. Completion records are not shared, and navigation is never automatic.",
   "続ける・振り返る・次を試す": "Continue, review or try something new",
   "この級の卒業調査を復習する": "Review this level’s graduation investigation",
-  "今回練習した操作": "The skill you practiced"
+  "今回練習した操作": "The skill you practiced",
+  "このログの読み方を見る": "Show how to read this log",
+  "まず自分でログを読んで、必要なら「このログの読み方を見る」を開いて確かめましょう。": "Try reading the log yourself first. If needed, open “Show how to read this log” to check your understanding."
 }
