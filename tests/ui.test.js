@@ -1068,3 +1068,66 @@ test('a fresh visit displays the browser language and a saved Japanese choice su
   const chosen = harness(t, null, {languages: ['en-US'], otherStorage: {[LANGUAGE_STORE]: 'ja'}});
   assert.equal(chosen.document.documentElement.lang, 'ja');
 });
+
+test('log reading is optional while evidence stays visible, and checking it does not affect grading', t => {
+  const h = harness(t, saveBefore('d4')), mission = E.getMission('d4');
+  const log = mission.rows.find(row => row.id === 'd4-log');
+  const status = mission.rows.find(row => row.id === 'd4-status');
+  h.click('.hero-start');
+  const reading = h.get('[data-row="d4-log"] .log-reading');
+  assert.equal(reading.open, false, 'the learner sees the source before its explanation');
+  assert.equal(h.get('[data-row="d4-log"] .raw-log').textContent,
+    '2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied');
+  assert.equal(h.get('[data-row="d4-log"] .log-reading-body').textContent, log.reading);
+  assert.equal(h.get('[data-row="d4-log"] summary').textContent, 'このログの読み方を見る');
+  assert.equal(h.get('[data-row="d4-status"] .reference-body').textContent, status.body);
+  assert.equal(h.document.querySelector('[data-row="d4-status"] details'), null,
+    'the known scope and required follow-up are evidence, not optional interpretation');
+  assert.ok(h.document.querySelector('.log-reading-help'), 'first encounter explains how to reveal the reading');
+  const before = h.snapshot();
+  h.click('[data-row="d4-log"] summary');
+  assert.equal(reading.open, true);
+  assert.deepEqual(h.snapshot(), before, 'reading a log explanation does not change progress or help history');
+  h.click('[data-row="d4-log"] summary');
+  assert.equal(reading.open, false, 'the explanation can be hidden again');
+  assert.deepEqual(h.snapshot(), before);
+  fillAnswerThroughDOM(h, mission);
+  h.submit();
+  const record = h.snapshot().progress.records.d4;
+  assert.equal(record.completed, true);
+  assert.equal(record.independent, true);
+  assert.equal(record.assisted, false);
+  assert.equal(record.hints, 0);
+  assert.equal(record.revealed, false);
+  assert.match(h.get('.point-note').textContent, /100/);
+});
+
+test('log reading stays open during the current task and locale changes, but resets for a fresh attempt', t => {
+  const h = harness(t, saveBefore('d4')), mission = E.getMission('d4');
+  const log = mission.rows.find(row => row.id === 'd4-log');
+  h.click('.hero-start');
+  h.click('[data-row="d4-log"] summary');
+  const beforeLanguage = h.snapshot();
+  setLanguage(h, 'en');
+  assert.equal(h.get('[data-row="d4-log"] .log-reading').open, true);
+  assert.equal(h.get('[data-row="d4-log"] .log-reading-body').textContent, EN[log.reading]);
+  assertEnglish(h, 'optional log reading');
+  assert.deepEqual(h.snapshot(), beforeLanguage);
+  setLanguage(h, 'ja');
+  assert.equal(h.get('[data-row="d4-log"] .log-reading').open, true);
+  assert.equal(h.get('[data-row="d4-log"] .log-reading-body').textContent, log.reading);
+  fillAnswerThroughDOM(h, mission);
+  h.submit();
+  assert.equal(h.get('[data-row="d4-log"] .log-reading').open, true,
+    'submitting an answer does not collapse the explanation being checked');
+  h.click('[data-action="retry"]');
+  assert.equal(h.get('[data-row="d4-log"] .log-reading').open, false,
+    'a new attempt starts with the source alone');
+  h.click('[data-row="d4-log"] summary');
+  h.click('[data-action="map"]');
+  h.click('[data-open="d4"]');
+  assert.equal(h.get('[data-row="d4-log"] .log-reading').open, false,
+    'reopening a lesson also starts with the source alone');
+  assert.equal(h.document.querySelector('.log-reading-help'), null,
+    'the introductory reading tip is not repeated during the same session');
+});
