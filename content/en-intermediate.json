@@ -208,7 +208,6 @@
   "同じ基準の時計で 11:00:01 の要求受付、11:00:03 の処理、11:00:05 の応答なら、その順に並べます。記録元が違うだけで、順番を変える必要はありません。": "With synchronized clocks, receipt at 11:00:01, processing at 11:00:03, and response at 11:00:05 occur in that order. Different sources do not change it.",
   "4枚を、記録された時刻が早い順に並べてください。": "Order the four cards from earliest recorded time to latest.",
   "予定表ファイルを作成。": "Schedule file created.",
-  "処理情報を返した応答。ファイル本体ではない。": "Response containing processing information, not the file itself.",
   "書き出し要求の受付。": "Export request received.",
   "書き出し処理を受け付け。": "Export job accepted.",
   "11:02:00 の要求受付→11:02:01 の処理受付→11:02:04 のファイル作成→11:02:05 の応答です。応答は処理情報であり、利用者のファイル受取完了までは示していません。": "The order is receipt at 11:02:00 → job accepted at 11:02:01 → file created at 11:02:04 → response at 11:02:05. The response contains job information and does not establish file receipt by the user.",
@@ -298,5 +297,7 @@
   "複数の記録をつなぐ": "Connect multiple records",
   "資料で判断を支える": "Support judgments with documents",
   "次の確認を伝える": "Communicate the next checks",
-  "卒業調査：書き出しの範囲": "Graduation: export scope"
+  "卒業調査：書き出しの範囲": "Graduation: export scope",
+  "処理情報を返した応答。": "Response containing processing information.",
+  "ファイル本体ではない。": "This is not the file itself."
 }
