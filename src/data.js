@@ -1,7 +1,7 @@
 /* Fictional teaching data, bundled for offline use. */
 globalThis.EASY_DATA = {
   "version": "socroom-easy-2",
-  "releaseVersion": "0.4.1",
+  "releaseVersion": "0.4.2",
   "levels": [
     {
       "id": "beginner",
@@ -1093,7 +1093,8 @@ globalThis.EASY_DATA = {
           "id": "e1-log",
           "sourceType": "log",
           "title": "今回のログ",
-          "body": "host=meeting-gw-01 event=connection_started\nhost は機器名、event は起きた出来事です。meeting-gw-01 が接続を開始した記録です。"
+          "body": "host=meeting-gw-01 event=connection_started",
+          "reading": "host は機器名、event は起きた出来事です。meeting-gw-01 が接続を開始した記録です。"
         },
         {
           "id": "e1-asset",
@@ -1160,7 +1161,8 @@ globalThis.EASY_DATA = {
           "id": "e2-log",
           "sourceType": "log",
           "title": "printer-07 の実行ログ",
-          "body": "2026-10-21T22:04:00Z host=printer-07 event=restart result=completed\nUTC 22:04、printer-07 の再起動が完了した記録です。"
+          "body": "2026-10-21T22:04:00Z host=printer-07 event=restart result=completed",
+          "reading": "UTC 22:04、printer-07 の再起動が完了した記録です。"
         },
         {
           "id": "e2-approved",
@@ -1219,7 +1221,8 @@ globalThis.EASY_DATA = {
           "id": "e3-log",
           "sourceType": "log",
           "title": "共有フォルダーの操作ログ",
-          "body": "2026-10-21T09:12:00Z folder=design-notes actor=mori event=member_added member=ueda\nUTC 09:12、mori が design-notes フォルダーに ueda を追加しました。actor は操作した利用者、member は追加された利用者です。"
+          "body": "2026-10-21T09:12:00Z folder=design-notes actor=mori event=member_added member=ueda",
+          "reading": "UTC 09:12、mori が design-notes フォルダーに ueda を追加しました。actor は操作した利用者、member は追加された利用者です。"
         },
         {
           "id": "e3-owner",
@@ -1286,7 +1289,8 @@ globalThis.EASY_DATA = {
           "id": "e4-log",
           "sourceType": "log",
           "title": "class-guest-8 の操作ログ",
-          "body": "2026-10-21T16:05:00Z actor=training-admin user=class-guest-8 event=account_disabled\nUTC 16:05、training-admin が class-guest-8 を無効化しました。"
+          "body": "2026-10-21T16:05:00Z actor=training-admin user=class-guest-8 event=account_disabled",
+          "reading": "UTC 16:05、training-admin が class-guest-8 を無効化しました。"
         },
         {
           "id": "e4-doc",
@@ -1352,7 +1356,8 @@ globalThis.EASY_DATA = {
           "id": "d1-log",
           "sourceType": "log",
           "title": "認証ログ",
-          "body": "2026-10-21T08:18:00Z host=desk-east-04 user=yano event=login result=success\nUTC 08:18、desk-east-04 で yano アカウントのログインが成功した記録です。"
+          "body": "2026-10-21T08:18:00Z host=desk-east-04 user=yano event=login result=success",
+          "reading": "UTC 08:18、desk-east-04 で yano アカウントのログインが成功した記録です。"
         },
         {
           "id": "d1-status",
@@ -1492,7 +1497,9 @@ globalThis.EASY_DATA = {
           "id": "d3-alert",
           "sourceType": "log",
           "title": "記録の受信状況",
-          "body": "2026-10-21T12:35:00Z host=room-display-06 event=telemetry_missing last_received=12:30:00Z\nUTC 12:30 を最後に、room-display-06 の記録が5分間届いていません。原因と利用への影響は、まだ確認していません。"
+          "body": "2026-10-21T12:35:00Z host=room-display-06 event=telemetry_missing last_received=12:30:00Z",
+          "reading": "UTC 12:30 を最後に、room-display-06 の記録が5分間届いていません。",
+          "note": "原因と利用への影響は、まだ確認していません。"
         },
         {
           "id": "d3-runbook",
@@ -1559,7 +1566,8 @@ globalThis.EASY_DATA = {
           "id": "d4-log",
           "sourceType": "log",
           "title": "ファイルへのアクセス記録",
-          "body": "2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied\nUTC 10:42、noda による staff-guide.pdf の読み取り要求は拒否されました。denied は、要求が許可されなかったという意味です。"
+          "body": "2026-10-21T10:42:00Z user=noda file=staff-guide.pdf event=read result=denied",
+          "reading": "UTC 10:42、noda による staff-guide.pdf の読み取り要求は拒否されました。denied は、要求が許可されなかったという意味です。"
         },
         {
           "id": "d4-status",
@@ -1672,37 +1680,38 @@ globalThis.EASY_DATA = {
               "id": "g1-log-a",
               "event": "render_started",
               "raw": "2026-10-21T21:00:00Z host=render-kiosk-02 user=svc-render job=R-204 event=render_started input=lobby-map.svg",
-              "note": "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。svc-render は自動処理用アカウント。"
+              "note": "svc-render は自動処理用アカウント。",
+              "reading": "UTC 21:00、案内図 lobby-map.svg をPDFにする処理を開始。"
             },
             {
               "id": "g1-noise-a",
               "event": "render_started",
               "raw": "2026-10-21T21:00:01Z host=render-kiosk-03 user=svc-render job=R-205 event=render_started input=cafe-menu.svg",
-              "note": "別の端末・別のジョブで、メニューのPDF生成を開始。"
+              "reading": "別の端末・別のジョブで、メニューのPDF生成を開始。"
             },
             {
               "id": "g1-log-b",
               "event": "pdf_created",
               "raw": "2026-10-21T21:00:04Z host=render-kiosk-02 user=svc-render job=R-204 event=pdf_created output=/srv/maps/lobby-map.pdf",
-              "note": "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。"
+              "reading": "案内図のPDFを端末内の /srv/maps/ に作成。このパスは保存先の場所。"
             },
             {
               "id": "g1-noise-b",
               "event": "cleanup_completed",
               "raw": "2026-10-21T21:00:05Z host=render-kiosk-02 user=svc-render job=R-203 event=cleanup_completed",
-              "note": "同じ端末だが、別のジョブ R-203 の片付け処理。"
+              "reading": "同じ端末だが、別のジョブ R-203 の片付け処理。"
             },
             {
               "id": "g1-log-c",
               "event": "render_completed",
               "raw": "2026-10-21T21:00:06Z host=render-kiosk-02 user=svc-render job=R-204 event=render_completed result=success",
-              "note": "ジョブ R-204 のPDF生成処理が完了。"
+              "reading": "ジョブ R-204 のPDF生成処理が完了。"
             },
             {
               "id": "g1-noise-c",
               "event": "display_refreshed",
               "raw": "2026-10-21T21:00:07Z host=lobby-screen-01 user=svc-display job=D-81 event=display_refreshed",
-              "note": "別の端末で画面表示を更新。"
+              "reading": "別の端末で画面表示を更新。"
             }
           ],
           "answer": {
@@ -1984,7 +1993,7 @@ globalThis.EASY_DATA = {
         {
           "id": "m-r2-log",
           "raw": "{\"timestamp\":\"2026-10-23T10:05:20Z\",\"host\":\"ws-18\",\"src\":\"10.40.1.18\",\"resolver\":\"10.40.0.53\",\"query\":\"reports-old.office.example\",\"type\":\"A\",\"rcode\":\"NXDOMAIN\"}",
-          "note": "type=A は IPv4 アドレスの問い合わせ。"
+          "reading": "type=A は IPv4 アドレスの問い合わせ。"
         }
       ],
       "answer": {
@@ -2102,17 +2111,17 @@ globalThis.EASY_DATA = {
         {
           "id": "m-r4-pass",
           "raw": "2026-10-23T10:12:00Z user=keito auth_id=AUTH-62 factor=password result=accepted",
-          "note": "パスワード要素の確認を通過。"
+          "reading": "パスワード要素の確認を通過。"
         },
         {
           "id": "m-r4-push",
           "raw": "2026-10-23T10:12:05Z user=keito auth_id=AUTH-62 factor=push result=denied",
-          "note": "追加の確認通知は拒否。"
+          "reading": "追加の確認通知は拒否。"
         },
         {
           "id": "m-r4-final",
           "raw": "2026-10-23T10:12:06Z user=keito auth_id=AUTH-62 event=auth_finished result=blocked",
-          "note": "この認証ではログイン完了を認めなかった。"
+          "reading": "この認証ではログイン完了を認めなかった。"
         }
       ],
       "answer": {
@@ -2173,32 +2182,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-f1-web",
           "raw": "2026-10-23T10:20:00Z component=web user=rio request_id=REQ-731 event=request_received path=/calendar",
-          "note": "予定表への要求を受付。"
+          "reading": "予定表への要求を受付。"
         },
         {
           "id": "m-f1-other",
           "raw": "2026-10-23T10:20:01Z component=web user=rio request_id=REQ-732 event=request_received path=/help",
-          "note": "同じ利用者からの別の要求。"
+          "reading": "同じ利用者からの別の要求。"
         },
         {
           "id": "m-f1-app",
           "raw": "2026-10-23T10:20:02Z component=app user=rio request_id=REQ-731 event=permission_checked result=denied",
-          "note": "要求に対する権限確認。"
+          "reading": "要求に対する権限確認。"
         },
         {
           "id": "m-f1-old",
           "raw": "2026-10-23T10:20:03Z component=app user=aya request_id=REQ-729 event=permission_checked result=allowed",
-          "note": "別の利用者・別の要求。"
+          "reading": "別の利用者・別の要求。"
         },
         {
           "id": "m-f1-response",
           "raw": "2026-10-23T10:20:04Z component=web user=rio request_id=REQ-731 event=response_sent status=403",
-          "note": "拒否の応答。"
+          "reading": "拒否の応答。"
         },
         {
           "id": "m-f1-other-response",
           "raw": "2026-10-23T10:20:05Z component=web user=rio request_id=REQ-732 event=response_sent status=200",
-          "note": "ヘルプへの別の要求の応答。"
+          "reading": "ヘルプへの別の要求の応答。"
         }
       ],
       "answer": {
@@ -2248,32 +2257,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-f2-a",
           "raw": "2026-10-23T10:25:00Z host=ws-18 query=reports-old.office.example type=A rcode=NXDOMAIN",
-          "note": "名前が存在しないという応答。"
+          "reading": "名前が存在しないという応答。"
         },
         {
           "id": "m-f2-b",
           "raw": "2026-10-23T10:25:01Z host=ws-19 query=reports-old.office.example type=A rcode=NXDOMAIN",
-          "note": "別の端末からの問い合わせ。"
+          "reading": "別の端末からの問い合わせ。"
         },
         {
           "id": "m-f2-c",
           "raw": "2026-10-23T10:25:02Z host=ws-18 query=reports.office.example type=A rcode=NOERROR answer=192.0.2.80",
-          "note": "アドレス回答のある問い合わせ。"
+          "reading": "アドレス回答のある問い合わせ。"
         },
         {
           "id": "m-f2-d",
           "raw": "2026-10-23T10:25:03Z host=ws-18 query=calendar-old.office.example type=A rcode=NXDOMAIN",
-          "note": "名前が存在しないという応答。"
+          "reading": "名前が存在しないという応答。"
         },
         {
           "id": "m-f2-e",
           "raw": "2026-10-23T10:25:04Z host=ws-18 query=calendar.office.example type=A rcode=SERVFAIL",
-          "note": "処理できなかった応答。名前不存在とは別。"
+          "reading": "処理できなかった応答。名前不存在とは別。"
         },
         {
           "id": "m-f2-f",
           "raw": "2026-10-23T10:25:05Z host=ws-19 query=calendar.office.example type=A rcode=NOERROR answer=192.0.2.81",
-          "note": "別の端末へのアドレス回答。"
+          "reading": "別の端末へのアドレス回答。"
         }
       ],
       "answer": {
@@ -2320,32 +2329,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-f3-a",
           "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-b",
           "raw": "2026-10-23T10:30:00Z user=mei attempt=M-11 event=mfa_result result=denied",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-c",
           "raw": "2026-10-23T10:30:10Z user=mei attempt=M-12 event=mfa_result result=denied",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-d",
           "raw": "2026-10-23T10:30:20Z user=mei attempt=M-13 event=mfa_result result=approved",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-e",
           "raw": "2026-10-23T10:30:30Z user=mei attempt=M-14 event=mfa_result result=timeout",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         },
         {
           "id": "m-f3-f",
           "raw": "2026-10-23T10:30:40Z user=mei attempt=M-15 event=mfa_result result=denied",
-          "note": "確認通知への応答記録。"
+          "reading": "確認通知への応答記録。"
         }
       ],
       "answer": {
@@ -2393,32 +2402,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-f4-a",
           "raw": "2026-10-23T10:35:00Z host=ws-22 user=mina event=file_read path=/team/plan.csv",
-          "note": "対象端末で計画表を読み取り。"
+          "reading": "対象端末で計画表を読み取り。"
         },
         {
           "id": "m-f4-b",
           "raw": "2026-10-23T10:35:01Z host=ws-22 user=mina2 event=file_read path=/team/plan.csv",
-          "note": "名前が似た別アカウント。"
+          "reading": "名前が似た別アカウント。"
         },
         {
           "id": "m-f4-c",
           "raw": "2026-10-23T10:35:02Z host=ws-23 user=mina event=file_read path=/team/plan.csv",
-          "note": "同じアカウントだが別端末。"
+          "reading": "同じアカウントだが別端末。"
         },
         {
           "id": "m-f4-d",
           "raw": "2026-10-23T10:35:03Z host=ws-22 user=mina event=file_created path=/temp/notes.txt",
-          "note": "同じ端末・アカウントの作成操作。"
+          "reading": "同じ端末・アカウントの作成操作。"
         },
         {
           "id": "m-f4-e",
           "raw": "2026-10-23T10:35:04Z host=ws-22 user=mina event=file_read path=/team/budget.csv",
-          "note": "対象端末で予算表を読み取り。"
+          "reading": "対象端末で予算表を読み取り。"
         },
         {
           "id": "m-f4-f",
           "raw": "2026-10-23T10:35:05Z host=ws-22 user=hana event=file_read path=/team/plan.csv",
-          "note": "別のアカウント。"
+          "reading": "別のアカウント。"
         }
       ],
       "answer": {
@@ -2467,22 +2476,23 @@ globalThis.EASY_DATA = {
         {
           "id": "m-c1-file",
           "raw": "2026-10-23T11:02:04Z component=app request_id=REQ-842 event=file_created artifact=calendar-842.csv",
-          "note": "予定表ファイルを作成。"
+          "reading": "予定表ファイルを作成。"
         },
         {
           "id": "m-c1-response",
           "raw": "2026-10-23T11:02:05Z component=web request_id=REQ-842 event=response_sent status=200 response_kind=job_metadata",
-          "note": "処理情報を返した応答。ファイル本体ではない。"
+          "note": "ファイル本体ではない。",
+          "reading": "処理情報を返した応答。"
         },
         {
           "id": "m-c1-request",
           "raw": "2026-10-23T11:02:00Z component=web request_id=REQ-842 event=request_received method=POST path=/api/calendar-export",
-          "note": "書き出し要求の受付。"
+          "reading": "書き出し要求の受付。"
         },
         {
           "id": "m-c1-queue",
           "raw": "2026-10-23T11:02:01Z component=app request_id=REQ-842 event=job_queued job=CAL-842",
-          "note": "書き出し処理を受け付け。"
+          "reading": "書き出し処理を受け付け。"
         }
       ],
       "answer": {
@@ -2531,32 +2541,32 @@ globalThis.EASY_DATA = {
         {
           "id": "m-c2-map",
           "raw": "2026-10-23T11:10:00Z user=mia request_id=REQ-712 job=JOB-38 event=job_assigned",
-          "note": "要求と処理番号の対応。"
+          "reading": "要求と処理番号の対応。"
         },
         {
           "id": "m-c2-other-map",
           "raw": "2026-10-23T11:10:01Z user=mia request_id=REQ-713 job=JOB-39 event=job_assigned",
-          "note": "同じアカウントの別要求。"
+          "reading": "同じアカウントの別要求。"
         },
         {
           "id": "m-c2-start",
           "raw": "2026-10-23T11:10:02Z job=JOB-38 event=job_started dataset=room_list",
-          "note": "JOB-38 の処理開始。room_list は会議室一覧。"
+          "reading": "JOB-38 の処理開始。room_list は会議室一覧。"
         },
         {
           "id": "m-c2-other-start",
           "raw": "2026-10-23T11:10:03Z job=JOB-39 event=job_started dataset=room_list",
-          "note": "JOB-39 の処理開始。"
+          "reading": "JOB-39 の処理開始。"
         },
         {
           "id": "m-c2-output",
           "raw": "2026-10-23T11:10:05Z job=JOB-38 event=artifact_created artifact=rooms-38.csv",
-          "note": "JOB-38 の成果物作成。"
+          "reading": "JOB-38 の成果物作成。"
         },
         {
           "id": "m-c2-other-output",
           "raw": "2026-10-23T11:10:06Z job=JOB-39 event=artifact_created artifact=rooms-39.csv",
-          "note": "別のジョブの成果物。"
+          "reading": "別のジョブの成果物。"
         }
       ],
       "answer": {
@@ -2604,17 +2614,17 @@ globalThis.EASY_DATA = {
         {
           "id": "m-c3-auth",
           "raw": "2026-10-23T11:20:00Z user=ren session=S-225 event=login_finished result=success",
-          "note": "このセッションの認証に成功。"
+          "reading": "このセッションの認証に成功。"
         },
         {
           "id": "m-c3-check",
           "raw": "2026-10-23T11:20:10Z user=ren session=S-225 request_id=REQ-225 event=permission_checked result=denied reason=missing_role required_role=admin",
-          "note": "管理者の役割がないため操作を拒否。"
+          "reading": "管理者の役割がないため操作を拒否。"
         },
         {
           "id": "m-c3-web",
           "raw": "2026-10-23T11:20:11Z user=ren session=S-225 request_id=REQ-225 method=GET path=/admin/settings status=403",
-          "note": "管理設定ページの要求に拒否の応答。"
+          "reading": "管理設定ページの要求に拒否の応答。"
         }
       ],
       "answer": {
@@ -2746,7 +2756,8 @@ globalThis.EASY_DATA = {
           "id": "m-e1-log",
           "sourceType": "log",
           "title": "今回の通信記録",
-          "body": "2026-10-23T12:00:00Z src=10.40.1.22 proxy=10.40.0.5 target_host=archive.vendor.example method=GET path=/documents\nproxy は中継機器、target_host は要求先の名前。"
+          "body": "2026-10-23T12:00:00Z src=10.40.1.22 proxy=10.40.0.5 target_host=archive.vendor.example method=GET path=/documents",
+          "reading": "proxy は中継機器、target_host は要求先の名前。"
         },
         {
           "id": "m-e1-service",
@@ -2812,7 +2823,8 @@ globalThis.EASY_DATA = {
           "id": "m-e2-log",
           "sourceType": "log",
           "title": "実際の書き出し記録",
-          "body": "2026-10-23T12:10:03Z user=svc-report request_id=REQ-550 event=export_completed dataset=salary_summary artifact=salary-550.csv\n給与集計のファイルを生成。"
+          "body": "2026-10-23T12:10:03Z user=svc-report request_id=REQ-550 event=export_completed dataset=salary_summary artifact=salary-550.csv",
+          "reading": "給与集計のファイルを生成。"
         },
         {
           "id": "m-e2-approval",
@@ -2877,7 +2889,8 @@ globalThis.EASY_DATA = {
           "id": "m-e3-log",
           "sourceType": "log",
           "title": "AUTH-78 の追加確認ログ",
-          "body": "2026-10-23T12:20:08Z user=tomoe auth_id=AUTH-78 factor=push result=denied\nこの資料に含まれるのは追加確認の結果だけ。"
+          "body": "2026-10-23T12:20:08Z user=tomoe auth_id=AUTH-78 factor=push result=denied",
+          "note": "この資料に含まれるのは追加確認の結果だけ。"
         },
         {
           "id": "m-e3-reply",
@@ -2895,7 +2908,8 @@ globalThis.EASY_DATA = {
           "id": "m-e3-other",
           "sourceType": "log",
           "title": "前日の別の認証",
-          "body": "2026-10-22T08:00:00Z user=tomoe auth_id=AUTH-10 event=auth_finished result=success\n前日の別の認証で成功した記録。"
+          "body": "2026-10-22T08:00:00Z user=tomoe auth_id=AUTH-10 event=auth_finished result=success",
+          "reading": "前日の別の認証で成功した記録。"
         }
       ],
       "answer": {
@@ -2942,7 +2956,9 @@ globalThis.EASY_DATA = {
           "id": "m-e4-log",
           "sourceType": "log",
           "title": "照会したい出来事",
-          "body": "2026-10-23T12:40:00Z host=files-gw-02 event=service_error\nfiles-gw-02 でサービスエラーが記録された。原因は未確認。"
+          "body": "2026-10-23T12:40:00Z host=files-gw-02 event=service_error",
+          "reading": "files-gw-02 でサービスエラーが記録された。",
+          "note": "原因は未確認。"
         },
         {
           "id": "m-e4-old",
@@ -3100,7 +3116,8 @@ globalThis.EASY_DATA = {
           "id": "m-d2-web",
           "sourceType": "log",
           "title": "現在ある Web 応答ログ",
-          "body": "2026-10-23T13:15:00Z user=ao request_id=REQ-902 method=POST path=/api/export status=200 response_kind=job_metadata\nこの応答には処理番号などが含まれ、ファイル本体や生成件数の記録ではない。"
+          "body": "2026-10-23T13:15:00Z user=ao request_id=REQ-902 method=POST path=/api/export status=200 response_kind=job_metadata",
+          "note": "この応答には処理番号などが含まれ、ファイル本体や生成件数の記録ではない。"
         },
         {
           "id": "m-d2-format",
@@ -3378,32 +3395,33 @@ globalThis.EASY_DATA = {
             {
               "id": "m-g1-request",
               "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-880 event=request_received method=POST path=/api/export",
-              "note": "書き出し要求を受付。"
+              "reading": "書き出し要求を受付。"
             },
             {
               "id": "m-g1-other-request",
               "raw": "2026-10-23T14:10:00Z component=web user=kei session=S-880 request_id=REQ-881 event=request_received method=GET path=/health",
-              "note": "同じ利用者とセッションからの状態確認要求。"
+              "reading": "同じ利用者とセッションからの状態確認要求。"
             },
             {
               "id": "m-g1-generated",
               "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv",
-              "note": "職員連絡先400件のファイル生成が完了。"
+              "reading": "職員連絡先400件のファイル生成が完了。"
             },
             {
               "id": "m-g1-other-generated",
               "raw": "2026-10-23T14:10:01Z component=app user=kei request_id=REQ-879 job=EX-89 event=export_completed dataset=public_agenda records=50 artifact=agenda-89.csv",
-              "note": "別要求で公開行事予定を50件生成。"
+              "reading": "別要求で公開行事予定を50件生成。"
             },
             {
               "id": "m-g1-response",
               "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-880 event=response_sent status=200 response_kind=job_metadata bytes=128",
-              "note": "128バイトの処理情報を応答。ファイル本体の受取完了ではない。"
+              "note": "ファイル本体の受取完了ではない。",
+              "reading": "128バイトの処理情報を応答。"
             },
             {
               "id": "m-g1-other-response",
               "raw": "2026-10-23T14:10:02Z component=web user=kei session=S-880 request_id=REQ-881 event=response_sent status=200 response_kind=health_status bytes=16",
-              "note": "別要求のサービス状態確認への応答。"
+              "reading": "別要求のサービス状態確認への応答。"
             }
           ],
           "answer": {
@@ -3431,7 +3449,9 @@ globalThis.EASY_DATA = {
               "id": "m-g1-evidence-actual",
               "sourceType": "log",
               "title": "REQ-880 のアプリ生成記録",
-              "body": "2026-10-23T14:10:01Z user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv\n職員連絡先400件のファイルを生成。前の段階で選んだ実際の記録。"
+              "body": "2026-10-23T14:10:01Z user=kei request_id=REQ-880 job=EX-90 event=export_completed dataset=staff_directory records=400 artifact=directory-90.csv",
+              "reading": "職員連絡先400件のファイルを生成。",
+              "note": "前の段階で選んだ実際の記録。"
             },
             {
               "id": "m-g1-evidence-approval",
@@ -3449,7 +3469,9 @@ globalThis.EASY_DATA = {
               "id": "m-g1-evidence-web",
               "sourceType": "log",
               "title": "REQ-880 の Web 応答",
-              "body": "2026-10-23T14:10:02Z request_id=REQ-880 status=200 response_kind=job_metadata bytes=128\n処理情報に対する成功応答。生成したデータ件数や業務上の承認を表す欄ではない。"
+              "body": "2026-10-23T14:10:02Z request_id=REQ-880 status=200 response_kind=job_metadata bytes=128",
+              "reading": "処理情報に対する成功応答。",
+              "note": "生成したデータ件数や業務上の承認を表す欄ではない。"
             }
           ],
           "answer": {
