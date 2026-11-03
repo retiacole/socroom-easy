@@ -107,7 +107,7 @@ test('flags identify intermediate and advanced courses and count answers use one
 });
 
 test('source records contain displayed fields and investigation sources live in stages',()=>{
-  const displayed=new Set(['id','raw','body','title','sourceType','event','note']);
+  const displayed=new Set(['id','raw','body','title','sourceType','event','note','reading']);
   for(const mission of D.missions){
     if(mission.kind==='investigation')assert.deepEqual(mission.rows,[],mission.id+' has no unused top-level source copy');
     for(const step of mission.steps||[mission])for(const row of step.rows){
