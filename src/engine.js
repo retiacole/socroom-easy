@@ -127,7 +127,7 @@
   }
   function searchableRow(row) {
     const reference = row.sourceType && row.sourceType !== 'log';
-    const source = reference ? [row.title, row.body].join(' ') : [row.raw || row.body, row.title, row.event, row.note].join(' ');
+    const source = reference ? [row.title, row.body].join(' ') : [row.raw || row.body, row.title, row.event, row.note, row.reading].join(' ');
     // Search both display languages regardless of the selected locale, so saved
     // queries and their grading proofs remain valid after switching languages.
     const english = I18N?.english(source) || source;
