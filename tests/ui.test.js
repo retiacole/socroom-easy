@@ -1022,7 +1022,7 @@ test('question titles retain their punctuation in Japanese and English announcem
 test('optional graduation guidance preserves assisted completion and same-room continuation offline', t => {
   const fresh = harness(t);
   assert.equal(fresh.document.querySelector('.optional-recommendation'), null);
-  assert.equal(fresh.get('.topbar .brand-version').textContent, 'v' + require('../package.json').version);
+  assert.equal(fresh.get('.topbar .brand-version').textContent, 'BLUE SERIES · v' + require('../package.json').version);
   for (const [levelId, target, nextLevel] of [['beginner','linuxroom.html','intermediate'], ['advanced','logroom.html',null]]) {
     const mission = D.missions.filter(m => m.level === levelId).at(-1);
     const progress = E.hydrate(saveBefore(mission.id));
@@ -1039,7 +1039,7 @@ test('optional graduation guidance preserves assisted completion and same-room c
     assert.match(h.get('.optional-recommendation small').textContent, /同じフォルダ/);
     const before = h.snapshot().progress.records;
     h.input('#language-select', 'en', 'change');
-    assert.equal(h.get('.topbar .brand-version').textContent, 'v' + require('../package.json').version);
+    assert.equal(h.get('.topbar .brand-version').textContent, 'BLUE SERIES · v' + require('../package.json').version);
     assert.doesNotMatch(h.get('.bridge-card').textContent, /[\u3040-\u30ff\u3400-\u9fff]/u);
     h.get('.graduation-reflection').open = true;
     assert.deepEqual(h.snapshot().progress.records, before);

@@ -2,6 +2,12 @@
   <img src="docs/images/socroom-easy-banner.png" width="960" alt="道場で稽古するSOCroom-easyのキャラクターを描いたピクセルアート">
 </p>
 
+<p align="center">
+  <a href="https://github.com/retiacole#blue-series"><img src="docs/images/blue-series.svg" width="960" alt="BLUE SERIES — 守るための基礎・検知・調査 / Foundations, detection and investigation"></a>
+</p>
+
+**BLUEシリーズ：守るための基礎・検知・調査。** [シリーズ一覧](https://github.com/retiacole#blue-series) · 弱点と影響の検証を学ぶ別のコース：[REDシリーズ・pentestroom](https://github.com/retiacole/pentestroom)。
+
 # SOCroom-easy v0.4.2
 
 [すぐにやってみる / Play Now](https://retiacole.github.io/socroom-easy/) · [オフライン用HTML / Offline HTML](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html)
