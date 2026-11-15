@@ -10,7 +10,7 @@
 
 # SOCroom-easy v0.4.2
 
-[すぐにやってみる / Play Now](https://retiacole.github.io/socroom-easy/) · [オフライン用HTML / Offline HTML](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html)
+[すぐにやってみる / Play Now](https://retiacole.github.io/socroom-easy/) · [オフライン用HTML / Offline HTML](https://github.com/retiacole/socroom-easy/blob/main/socroom-easy.html) · [質問・不具合を報告する](https://github.com/retiacole/socroom-easy/issues/new/choose) / [Ask a question or report a problem](https://github.com/retiacole/socroom-easy/issues/new/choose)
 
 <img src="docs/images/socroom-easy-character.png" align="right" width="120" alt="オレンジ色の道着を着たSOCroom-easyのキャラクター">
 
@@ -98,6 +98,14 @@ Open **Language → English** in the HTML menu. All 63 missions, hints, solution
 オンラインではおすすめを別タブで開きます。オフラインでは、別途入手した `linuxroom.html` または `logroom.html` を同じフォルダへ置くと、対応するローカルHTMLを開けます。ほかの教材はこの配布物には含まれません。SOCroomへ進みたい方は [SOCroom](https://retiacole.github.io/socroom/) のチュートリアルから始められます。
 
 After graduation, continue to the next level, review the investigation, or use the three optional reflection prompts and their review links. Hints are welcome; reflection does not affect points or unlocking. Optional suggestions link beginner graduates to Linuxroom and advanced graduates to Logroom. They never navigate automatically or share progress. For offline use, place the separately downloaded HTML beside this tool.
+
+## 質問・不具合の報告 / Questions and problems
+
+[質問・不具合を報告する](https://github.com/retiacole/socroom-easy/issues/new/choose) / [Ask a question or report a problem](https://github.com/retiacole/socroom-easy/issues/new/choose)
+
+分かりにくかった点や改善提案も、日本語・英語で受け付けています。投稿にはGitHubアカウントが必要です。内容は公開されるため、社内情報・個人情報は含めず、教材のデータで説明してください。
+
+Questions, unclear instructions, and suggestions are welcome in Japanese or English. A GitHub account is required to post. Posts are public: use the course's sample data and leave out company or personal information.
 
 ## ソースからの再ビルド
 
